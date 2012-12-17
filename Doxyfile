@@ -1,0 +1,28 @@
+# about the project
+PROJECT_NAME           = "bOoM"
+PROJECT_NUMBER         = 0.0
+PROJECT_BRIEF          = "A library to paint and animate 2d blobs."
+
+# filters
+FILE_PATTERNS          = *.c *.h *.cpp *.hpp *.rst
+
+# Where to output doc
+OUTPUT_DIRECTORY       = doc
+DOXYFILE_ENCODING      = UTF-8
+OUTPUT_LANGUAGE        = English
+TAB_SIZE               = 4
+
+# Documentation formatting
+ALWAYS_DETAILED_SEC    = YES
+SORT_MEMBER_DOCS       = YES
+SORT_BRIEF_DOCS        = YES
+SORT_MEMBERS_CTORS_1ST = YES
+SORT_GROUP_NAMES       = YES
+
+# Verbosity of Doxygen
+WARN_IF_UNDOCUMENTED   = NO
+
+# HTML settings
+HTML_COLORSTYLE_HUE    = 40
+HTML_COLORSTYLE_SAT    = 160
+HTML_TIMESTAMP         = YES

@@ -5,5 +5,16 @@ project(bOoM)
 set (bOoM_VERSION_MAJOR 0)
 set (bOoM_VERSION_MINOR 0)
 
-add_executable(boom_test main.cpp math2d.hpp dynamic.hpp)
+#define executable
+add_executable(boom_test
+        main.cpp
+        math2d.hpp
+        math2d.cpp
+        dynamic.hpp
+        basemath.hpp
+        basemath.cpp
+        )
 target_link_libraries (boom_test m)
+
+#use C++11
+list(APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -O0")

@@ -1,2 +1,6 @@
 # build directory
 build/
+# documentation directory
+doc/
+# random stuff directory
+randomStuff/
