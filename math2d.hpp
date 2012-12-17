@@ -257,6 +257,7 @@ typedef Move2<real> move2; //!< Euclidean plane move.
 real2 const zero2(0,0); //!< Constant to the null vector.
 rot2 const rot2_id(1.f,0.f); //!< Constant to the identity rotation.
 move2 const move2_id(rot2_id, zero2); //!< Constant to the identity move.
+real2 const nan2(NAN,NAN); //!< Constant to the null vector.
 // real angle utilities
 //! \brief Return a new real rotation object from `angle`, in radians.
 inline rot2 rot2from(real angle)

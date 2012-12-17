@@ -26,6 +26,16 @@ typedef float real;
 #define MIN(a,b) ((a)<=(b) ? (a) : (b))
 #endif
 
+//!  \brief Value `a` if `x<a`, `b` if `x>b` else `x`.
+#ifndef CLAMP
+#define CLAMP(a,x,b) MIN(b,MAX(a,x))
+#endif
+
+//!  \brief Tells wheter a real number `x` is inside interval `[a,b]`.
+#ifndef WITHIN
+#define WITHIN(a,x,b) ((a)<=(x)&&(x)<=(b))
+#endif
+
 //!  \brief The absolute value of integer, rational or real number.
 #ifndef ABS
 #define ABS(x) ((x)>0 ? (x) : -(x))

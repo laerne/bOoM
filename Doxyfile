@@ -4,7 +4,7 @@ PROJECT_NUMBER         = 0.0
 PROJECT_BRIEF          = "A library to paint and animate 2d blobs."
 
 # filters
-FILE_PATTERNS          = *.c *.h *.cpp *.hpp *.rst
+FILE_PATTERNS          = *.c *.h *.cpp *.hpp *.doxygen
 
 # Where to output doc
 OUTPUT_DIRECTORY       = doc

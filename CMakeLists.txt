@@ -7,12 +7,13 @@ set (bOoM_VERSION_MINOR 0)
 
 #define executable
 add_executable(boom_test
-        main.cpp
-        math2d.hpp
-        math2d.cpp
-        dynamic.hpp
-        basemath.hpp
         basemath.cpp
+        basemath.hpp
+        dynamic.hpp
+        intersection.hpp
+        main.cpp
+        math2d.cpp
+        math2d.hpp
         )
 target_link_libraries (boom_test m)
 

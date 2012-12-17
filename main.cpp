@@ -7,6 +7,12 @@
 #include "basemath.hpp"
 #include "math2d.hpp"
 #include "dynamic.hpp"
+#include "intersection.hpp"
+
+//! print pairs
+template<typename T1, typename T2>
+std::ostream& operator<<(std::ostream& s, std::pair<T1,T2> const pair)
+    { s <<"<" << std::get<0>(pair) <<"," << std::get<1>(pair) <<">";}
 
 //! unit test for math2d.hpp.
 void test__math2d()
@@ -124,32 +130,43 @@ void test__dynamic()
 }
 
 //! unit test for bOoM::eqn2 namespace
-void test_eqn2()
+void test__eqn2()
 {
     std::cout << "test__eqn2()" << std::endl;
     PRINT_EXPR(bOoM::eqn2::discriminant(1.f,0.f,-1.f));
-    std::pair<bOoM::real,bOoM::real> sols= bOoM::eqn2::solve(1.f,0.f,-1.f);
-    PRINT_EXPR(std::get<0>(sols));
-    PRINT_EXPR(std::get<1>(sols));
+    PRINT_EXPR(bOoM::eqn2::solve(1.f,0.f,-1.f));
 
     PRINT_EXPR(bOoM::eqn2::discriminant(1.f,0.f,1.f));
-    std::pair<bOoM::real,bOoM::real> nans= bOoM::eqn2::solve(1.f,0.f,1.f);
-    PRINT_EXPR(std::get<0>(nans));
-    PRINT_EXPR(std::get<1>(nans));
+    PRINT_EXPR(bOoM::eqn2::solve(1.f,0.f,1.f));
 
     PRINT_EXPR(bOoM::eqn2::discriminant(1.f,-2.f,1.f));
-    std::pair<bOoM::real,bOoM::real> single= bOoM::eqn2::solve(1.f,-2.f,1.f);
-    PRINT_EXPR(std::get<0>(single));
-    PRINT_EXPR(std::get<1>(single));
+    PRINT_EXPR(bOoM::eqn2::solve(1.f,-2.f,1.f));
     PRINTLN();
 }
 
-int main()
+//! unit test for intersection.hpp.
+void test__intersection()
 {
-    test__math2d();
-    test__math2d__approx_angle();
-    test__dynamic();
-    test_eqn2();
+    std::cout << "test__intersection()" << std::endl;
+    bOoM::real2 p(1,-3), q(-2,1);
+    bOoM::real2 v(-1,0), w(1,-4);
+    PRINT_EXPR(std::make_pair(p,v));
+    PRINT_EXPR(std::make_pair(q,w));
+    PRINT_EXPR(bOoM::line_intersection_factors(p,v,q,w));
+    PRINT_EXPR(bOoM::line_intersection(p,v,q,w));
+    PRINT_EXPR(bOoM::pointed_vector_intersection(p,v,q,w));
+    PRINT_EXPR(bOoM::pointed_vector_intersection(p,v*4.f,q,w));
+    PRINT_EXPR(bOoM::pointed_vector_intersection(p,v,p,v));
+    PRINTLN();
+}
+
+int main(void)
+{
+    //test__math2d();
+    //test__math2d__approx_angle();
+    //test__dynamic();
+    test__eqn2();
+    test__intersection();
     return 0;
 }
 

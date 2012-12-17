@@ -4,3 +4,8 @@ build/
 doc/
 # random stuff directory
 randomStuff/
+# ignore temporary files
+.*.swp
+*~
+**/.*.swp
+**/*~
