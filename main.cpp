@@ -133,14 +133,14 @@ void test__dynamic()
 void test__eqn2()
 {
     std::cout << "test__eqn2()" << std::endl;
-    PRINT_EXPR(bOoM::eqn2::discriminant(1.f,0.f,-1.f));
-    PRINT_EXPR(bOoM::eqn2::solve(1.f,0.f,-1.f));
+    PRINT_EXPR(bOoM::eqn2_discriminant(1.f,0.f,-1.f));
+    PRINT_EXPR(bOoM::eqn2_solve(1.f,0.f,-1.f));
 
-    PRINT_EXPR(bOoM::eqn2::discriminant(1.f,0.f,1.f));
-    PRINT_EXPR(bOoM::eqn2::solve(1.f,0.f,1.f));
+    PRINT_EXPR(bOoM::eqn2_discriminant(1.f,0.f,1.f));
+    PRINT_EXPR(bOoM::eqn2_solve(1.f,0.f,1.f));
 
-    PRINT_EXPR(bOoM::eqn2::discriminant(1.f,-2.f,1.f));
-    PRINT_EXPR(bOoM::eqn2::solve(1.f,-2.f,1.f));
+    PRINT_EXPR(bOoM::eqn2_discriminant(1.f,-2.f,1.f));
+    PRINT_EXPR(bOoM::eqn2_solve(1.f,-2.f,1.f));
     PRINTLN();
 }
 
@@ -162,7 +162,7 @@ void test__intersection()
 
 int main(void)
 {
-    //test__math2d();
+    test__math2d();
     //test__math2d__approx_angle();
     //test__dynamic();
     test__eqn2();

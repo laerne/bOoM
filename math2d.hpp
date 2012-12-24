@@ -25,13 +25,13 @@ template<typename R>
 struct V2
 {
     //! \brief Default constructor, with no initialisation of variables.
-    //C++11: V2() = default;
     V2(){}
     //! \brief Standard constructor.
     V2(R x, R y) : x(x), y(y) {}
+	//! \brief Copy constructor.
+    V2(V2<R> const& q) = default;
     //! \brief Per-component affectation operator.
-    //C++11: V2<R>& operator=(V2<R> const& q) = default;
-    V2<R>& operator= (V2<R> const& q) { x = q.x; y= q.y; return *this; }
+    V2<R>& operator= (V2<R> const& q) = default;
     //! \brief Per-component sum and affectation.
     V2<R>& operator+=(V2<R> const& q) { x += q.x; y+= q.y; return *this; }
     //! \brief Per-component difference and affectation.
@@ -48,8 +48,7 @@ struct V2
      *  For readability, the expression should be enclosed in parentheses :
      *  `(p|q)`.
      */
-    R      operator| (V2<R> const& q) const
-        { return x*q.x + y*q.y; }
+    R      operator| (V2<R> const& q) const { return x*q.x + y*q.y; }
     //! \brief Per-component equality operator.
     bool operator==(V2<R> const& q) const { return x==q.x && y==q.y; }
     //! \brief Per-component inequality operator.
@@ -147,8 +146,10 @@ struct Rot2
     Rot2(){}
     //! \brief Standard constructor.
     Rot2(R cos, R sin) : cos(cos), sin(sin) {}
+	//! \brief Copy constructor.
+    Rot2(Rot2<R> const& r) = default;
     //! \brief Per-component affectation operator.
-    Rot2<R>& operator=(Rot2<R> r) { cos=r.cos; sin=r.sin; return *this;}
+    Rot2<R>& operator=(Rot2<R> const& r) = default;
     /*! \brief Rotation composition and affectation.  Can be viewed as a matrix
      * product.
      *
@@ -204,8 +205,10 @@ struct Move2
     //! \brief Standard constructor.
     Move2(Rot2<R> const& rotation, V2<R> const& translation)
         : r(rotation), t(translation) {}
+	//! \brief Copy constructor.
+    Move2(Move2<R> const& mv) = default;
     //! \brief Per-component affectation operator.
-    Move2<R>& operator=(Move2<R> const& mv)   { r=mv.r; t=mv.t; return *this; }
+    Move2<R>& operator=(Move2<R> const& mv) = default;
     //! \brief Per-component equality operator.
     bool operator==(Move2<R> const& mv) const { return r==mv.r && t==mv.t; }
     //! \brief Per-component inequality operator.
