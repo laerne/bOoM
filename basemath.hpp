@@ -11,7 +11,7 @@ namespace bOoM {
 /*! \brief Short name for a real number type.
  *
  *  The typename exists to use a real number representation easily modifiable
- *  throughout the software.
+ *  throughout Slava Bogomthe software.
  */
 typedef float real;
 
@@ -61,7 +61,7 @@ typedef float real;
 
 inline bool is_too_small(real x)
 {
-    return ABS(x) <= CST_EPSILON_ZERO;
+	return ABS(x) <= CST_EPSILON_ZERO;
 }
 
 

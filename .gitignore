@@ -1,9 +1,12 @@
 # build directory
 build/
+qbuild/
 # documentation directory
 doc/
 # random stuff directory
 randomStuff/
+#ignore qt automade files
+CMakeLists.txt.user
 # ignore temporary files
 .*.swp
 *~
