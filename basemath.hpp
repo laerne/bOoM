@@ -14,6 +14,12 @@ namespace bOoM {
  *  throughout Slava Bogomthe software.
  */
 typedef float real;
+} // namespace bOoM
+constexpr bOoM::real operator"" _r(long double const x)
+	{ return static_cast<bOoM::real>(x); }
+constexpr bOoM::real operator"" _r(unsigned long long const x)
+	{ return static_cast<bOoM::real>(x); }
+namespace bOoM {
 
 
 //!  \brief The maximum between two elements of a totally orderable type.
@@ -52,9 +58,9 @@ typedef float real;
 #endif
 
 //!  \brief The constant π.
-#define CST_PI 3.14159265358979323846264338327950288419716939937510582097494459f
+#define CST_PI    3.14159265358979323846264338327950288419716939937510582097494
 //!  \brief The constant \f$\sqrt{2}\f$.
-#define CST_SQRT2 1.41421356237309504880168872420969807856967187537694807317668f
+#define CST_SQRT2 1.41421356237309504880168872420969807856967187537694807317668
 
 //! \brief Float number smaller than this value are considered to be 0.
 #define CST_EPSILON_ZERO 1e-6
@@ -66,7 +72,7 @@ inline bool is_too_small(real x)
 
 
 //! \brief The discriminant of the second degree equation.
-inline real eqn2_discriminant(real a2, real a1, real a0) { return SQ(a1) -4*a2*a0; }
+inline real eqn2_discriminant(real a0, real a1, real a2) { return SQ(a1) -4*a2*a0; }
 
 /*! \brief Return the roots of the second degree equation.
  *
@@ -74,14 +80,14 @@ inline real eqn2_discriminant(real a2, real a1, real a0) { return SQ(a1) -4*a2*a
  *  - if there is only one root, a pair with twice this same root is returned,
  *  - else return the two roots in a pair.
  */
-std::pair<real,real> eqn2_solve(real a2, real a1, real a0);
+std::pair<real,real> eqn2_solve(real a0, real a1, real a2);
 
 /*! \brief Return the roots of the second degree equation.
  *
  *  It Assumes that `d` is the non-negative valid discriminant of the given equation.
  *  This function computes a square root, which is a slow operation.
  */
-std::pair<real,real> eqn2_solve_with_precomputed_discriminant(real a2, real a1, real a0, real d);
+std::pair<real,real> eqn2_solve_with_precomputed_discriminant(real a0, real a1, real a2, real d);
 
 } //namespace bOoM
 #endif

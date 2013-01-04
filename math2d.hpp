@@ -38,6 +38,8 @@ struct V2
 	V2<R>& operator-=(V2<R> const& q) { x -= q.x; y-= q.y; return *this; }
 	//! \brief Per-component product by the scalar and affectation.
 	V2<R>& operator*=(R a) { x *= a; y*= a; return *this; }
+	//! \brief Per-component product by the inverse scalar and affectation.
+	V2<R>& operator/=(R a) { x /= a; y/= a; return *this; }
 	//! \brief Identity operator : return a copy of self.
 	V2<R>  operator+ () const         { return V2( x, y); }
 	//! \brief Opposite operator : return a new vector with opposite values.
@@ -65,6 +67,8 @@ struct V2
 	 * value of each of its components.
 	 */
 	R norm_max() const { return MAX(ABS(x),ABS(y)); }
+	//! \brief Returns wheter the vector is nan or not
+	bool isnan() const { return std::isnan(x) || std::isnan(y); }
 
 
 	R x;//!< abscissa.
@@ -82,6 +86,10 @@ V2<R> operator-(V2<R> const& p, V2<R> const& q)
 template<typename R>
 V2<R> operator*(V2<R> const& p, R a)
 	{ return V2<R>(p)*=a; }
+//! \brief Vector inverse scale operator, over a field `F`.
+template<typename F>
+V2<F> operator/(V2<F> const& p,F a)
+	{ return V2<F>(p)/=a; }
 //! \brief Dot product operator.  Equivalent to V2::operator| .
 template<typename R>
 R dotProduct(V2<R> const& p, V2<R> const& q)

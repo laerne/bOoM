@@ -11,6 +11,7 @@ add_executable(boom_test
 	basemath.hpp
 	dynamic.hpp
 	intersection.hpp
+	intersection.cpp
 	main.cpp
 	math2d.cpp
 	math2d.hpp

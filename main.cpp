@@ -12,7 +12,7 @@
 //! print pairs
 template<typename T1, typename T2>
 std::ostream& operator<<(std::ostream& s, std::pair<T1,T2> const pair)
-	{ s <<"<" << std::get<0>(pair) <<"," << std::get<1>(pair) <<">";}
+	{ s <<"{" << std::get<0>(pair) <<"," << std::get<1>(pair) <<"}";}
 
 //! unit test for math2d.hpp.
 void test__math2d()
@@ -29,7 +29,8 @@ void test__math2d()
 	PRINT_EXPR(undef);
 	PRINT_EXPR(def);
 	PRINT_EXPR(p+q);
-	PRINT_EXPR(p*2.f);
+	PRINT_EXPR(p*2.0_r);
+	PRINT_EXPR(p/(2_r));
 	PRINT_EXPR((p|q));
 	PRINT_EXPR((p+q-q|q+zero));
 	PRINT_EXPR(p.norm1());
@@ -133,14 +134,14 @@ void test__dynamic()
 void test__eqn2()
 {
 	std::cout << "test__eqn2()" << std::endl;
-	PRINT_EXPR(bOoM::eqn2_discriminant(1.f,0.f,-1.f));
-	PRINT_EXPR(bOoM::eqn2_solve(1.f,0.f,-1.f));
+	PRINT_EXPR(bOoM::eqn2_discriminant(1_r,0_r,-1_r));
+	PRINT_EXPR(bOoM::eqn2_solve(1_r,0_r,-1_r));
 
-	PRINT_EXPR(bOoM::eqn2_discriminant(1.f,0.f,1.f));
-	PRINT_EXPR(bOoM::eqn2_solve(1.f,0.f,1.f));
+	PRINT_EXPR(bOoM::eqn2_discriminant(1_r,0_r,1_r));
+	PRINT_EXPR(bOoM::eqn2_solve(1_r,0_r,1_r));
 
-	PRINT_EXPR(bOoM::eqn2_discriminant(1.f,-2.f,1.f));
-	PRINT_EXPR(bOoM::eqn2_solve(1.f,-2.f,1.f));
+	PRINT_EXPR(bOoM::eqn2_discriminant(1_r,-2_r,1_r));
+	PRINT_EXPR(bOoM::eqn2_solve(1_r,-2_r,1_r));
 	PRINTLN();
 }
 
@@ -149,22 +150,34 @@ void test__intersection()
 {
 	std::cout << "test__intersection()" << std::endl;
 	bOoM::real2 p(1,-3), q(-2,1);
-	bOoM::real2 v(-1,0), w(1,-4);
+	bOoM::real2 v(-1,0), w(-1,4);
 	PRINT_EXPR(std::make_pair(p,v));
 	PRINT_EXPR(std::make_pair(q,w));
 	PRINT_EXPR(bOoM::line_intersection_factors(p,v,q,w));
 	PRINT_EXPR(bOoM::line_intersection(p,v,q,w));
 	PRINT_EXPR(bOoM::pointed_vector_intersection(p,v,q,w));
-	PRINT_EXPR(bOoM::pointed_vector_intersection(p,v*4.f,q,w));
+	PRINT_EXPR(bOoM::pointed_vector_intersection(p,v*4_r,q,w));
 	PRINT_EXPR(bOoM::pointed_vector_intersection(p,v,p,v));
+	PRINTLN();
+
+	bOoM::real2 p1(2,0), p2(0,2);
+	bOoM::real2 v1(-1,0), v2(0,-1);
+	bOoM::real r1= 1.0, r2= 1.0;
+	PRINT_EXPR(std::make_pair(p1,p2));
+	PRINT_EXPR(std::make_pair(v1,v2));
+	PRINT_EXPR(std::make_pair(r1,r2));
+	PRINT_EXPR(bOoM::line_intersection(p1,v1,p2,v2));
+	PRINT_EXPR(bOoM::ball_intersection(p1,v1,r1,p2,v2,r2));
+	PRINT_EXPR(bOoM::ball_intersection(p1,-v1,r1,p2,v2,r2));
+	PRINT_EXPR(bOoM::ball_intersection(p1,v1,r1,p2,v2*2_r,r2));
 	PRINTLN();
 }
 
 int main(void)
 {
 	test__math2d();
-	//test__math2d__approx_angle();
-	//test__dynamic();
+	test__math2d__approx_angle();
+	test__dynamic();
 	test__eqn2();
 	test__intersection();
 	return 0;

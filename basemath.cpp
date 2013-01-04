@@ -2,14 +2,14 @@
 
 namespace bOoM {
 
-std::pair<real,real> eqn2_solve(real a2, real a1, real a0)
+std::pair<real,real> eqn2_solve(real a0, real a1, real a2)
 {
-	real d= eqn2_discriminant( a2, a1, a0 );
-	if ( d >= 0 ) return eqn2_solve_with_precomputed_discriminant(a2, a1, a0, d);
+	real d= eqn2_discriminant( a0, a1, a2 );
+	if ( d >= 0 ) return eqn2_solve_with_precomputed_discriminant(a0, a1, a2, d);
 	else return { NAN, NAN };
 }
 
-std::pair<real,real> eqn2_solve_with_precomputed_discriminant(real a2, real a1, real a0, real d)
+std::pair<real,real> eqn2_solve_with_precomputed_discriminant(real a0, real a1, real a2, real d)
 {
 	real twice_a2= 2*a2;
 	real sqrt_d= std::sqrt(d);
