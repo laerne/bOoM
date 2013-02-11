@@ -12,7 +12,7 @@
 //! print pairs
 template<typename T1, typename T2>
 std::ostream& operator<<(std::ostream& s, std::pair<T1,T2> const pair)
-	{ s <<"{" << std::get<0>(pair) <<"," << std::get<1>(pair) <<"}";}
+	{ s <<"{" << std::get<0>(pair) <<"," << std::get<1>(pair) <<"}"; return s; }
 
 //! unit test for math2d.hpp.
 void test__math2d()

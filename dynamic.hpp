@@ -25,7 +25,10 @@ struct PointDynamic
 
 //! \brief Output a string representation of the PointDynamic `dyn`.
 std::ostream& operator<<(std::ostream& s, PointDynamic const& dyn)
-	{ s <<"(pos:" <<dyn.pos <<",vel:" <<dyn.vel <<",acc:" <<dyn.acc <<")";}
+{
+    s <<"(pos:" <<dyn.pos <<",vel:" <<dyn.vel <<",acc:" <<dyn.acc <<")";
+    return s;
+}
 
 /*! \brief A dynamic oriented point.
  *
@@ -54,7 +57,10 @@ struct OrientedDynamic
 
 //! \brief Output a string representation of the OrientedDynamic `dyn`.
 std::ostream& operator<<(std::ostream& s, OrientedDynamic const& dyn)
-	{ s <<"(pos:" <<dyn.pos <<",vel:" <<dyn.vel <<",acc:" <<dyn.acc <<")";}
+{
+    s <<"(pos:" <<dyn.pos <<",vel:" <<dyn.vel <<",acc:" <<dyn.acc <<")";
+    return s;
+}
 
 } //namespace bOoM
 #endif

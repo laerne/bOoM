@@ -101,7 +101,7 @@ R crossProduct_z(V2<R> const& p, V2<R> const& q)
 //! \brief Output a string representation of a two-dimensional vector.
 template<typename R>
 std::ostream& operator<<(std::ostream& s, V2<R> const& p)
-	{ s <<"(" << p.x <<"," << p.y <<")";}
+	{ s <<"(" << p.x <<"," << p.y <<")"; return s; }
 
 
 
@@ -198,7 +198,7 @@ Rot2<R> operator*(Rot2<R> copy, Rot2<R> const& r)
 template<typename R>
 //! \brief Output a string representation of the rotation.
 std::ostream& operator<<(std::ostream& s, Rot2<R> const& r)
-	{ s <<"(cos:" << r.cos <<",sin:" << r.sin <<")";}
+	{ s <<"(cos:" << r.cos <<",sin:" << r.sin <<")"; return s; }
 
 
 /*! \brief Two-dimensional moves, i.e. orientation-preserving isometries.
@@ -247,7 +247,7 @@ Move2<R> compose(Move2<R> const& m2, Move2<R> const& m1)
 //! \brief Output a string representation of the move.
 template<typename R>
 std::ostream& operator<<(std::ostream& s, Move2<R> const& mv)
-	{ s <<"(r:" <<mv.r <<",t:" << mv.t <<")";}
+	{ s <<"(r:" <<mv.r <<",t:" << mv.t <<")"; return s; }
 
 //shortcuts
 //! Equivalent to `mv.map(p)` .
