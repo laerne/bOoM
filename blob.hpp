@@ -6,6 +6,7 @@
 
 namespace bOoM {
 
+// TODO move to math2d.hpp
 // field include textures. Just create a texture object overloading operator().
 template<typename A, typename B>
 struct Map
@@ -16,19 +17,8 @@ struct Map
  
 typedef Map<real  const, real>   Map_real;
 typedef Map<real2 const, real>   Field_real;
-typedef Map<real  const, colorA> Map_colorA;
-typedef Map<real2 const, colorA> Field_colorA;
-
-//template<typename A, typename B, typename C>
-//struct CompositionMap : public Map<A,C>
-//{
-//	CompositionMap( Map<B,C> g, Map<A,B> f ) : f(f), g(g) {}
-//    virtual real operator()(real x) const override
-//		{ return g(f(x)); }
-//	Map<A,B> f;
-//	Map<B,C> g;
-//}
-
+typedef Map<real  const, color> Map_color;
+typedef Map<real2 const, color> Field_color;
 
 struct CubicHillField : public Map_real
 {
@@ -81,52 +71,59 @@ struct CubicPlateField : public Map_real
 
 
 
+//blob Zone (bz)
+enum class ColorMode : unsigned char
+{
+	SPECIALIZED,
+	PER_BLOB_FILL_VORONOI,
+	PER_BLOB_FIELD_VORONOI,
+	PER_BLOB_FILL_COLOR_MEAN,
+	GLOBAL_FILL,
+	GLOBAL_COLORED_PHYS_FIELD,
+	GLOBAL_COLOR_FIELD,
+	GLOBAL_TEXTURE
+};
+
+struct BlobZone
+{
+// Physical properties
+// The shape of blob is assumed to be always a CIRCLE
+	real2 cm; // center of mass
+	OrientedDynamic mv; // position of the zone
+
+// Color properties
+	ColorMode color_mode;
+	union {
+		Color filled_color;
+		Map_real *phys_field_recoloration;
+		Texture *texture
+	};
+	HierarchicalBoundingCircleTree stain_texture;
+	HierarchicalBoundingCircleTree lczs;
+}
+
+
 
 
 
 //Blobs
 
-struct CircBlob
+struct CircleBlob
 {
-	PointDynamic dyn;
-	real_field1 f_phys;
-};
-struct CircBlob_ColPlain : public CircBlob
-{
-	colorA col;
-};
- struct CircBlob_ColHeight : public CircBlob
-{
-	Map_colorA f_col_in;
-};
-struct CircBlob_ColField : public CircBlob
-{
-	Map_colorA f_col_in;
-	Map_colorA f_col_out;
-};
-struct OrientedBlob
-{
-	dyn;
-	f_phys;
+	Dynamic dyn;
+	Map_real f_phys;
 };
 
-struct OrientedBlob_ColField : public OrientedBlob
+struct CircleBlob_ColoredFill : public CircBlob
 {
-	f_col_in;
-	f_col_out;
+	color col;
 };
 
-
-struct BlobZone
+struct CircleBlob_ColoredField : public CircBlob
 {
-// The shape of blob is assumed to be always a CIRCLE
-	blendingMode col_blend; // norm 2 Voronoi, mean of colors weighted by distances, ...
-	real_field2 shared_f_col_in; // =NULL when not using shared field function
-	real_field2 shared_f_col_out; // =NULL when not using shared field function
-
-	real2 cm; // center of mass
-	OrientedDynamic mv; // position of the zone
-}
+	Field_color f_col;
+};
 
 } //namespace bOoM
 #endif
+

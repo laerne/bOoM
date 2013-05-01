@@ -14,9 +14,12 @@ namespace bOoM {
  *  throughout Slava Bogomthe software.
  */
 typedef float real;
+
 } // namespace bOoM
+//! \brief real type literals, from decimal notation.
 constexpr bOoM::real operator"" _r(long double const x)
 	{ return static_cast<bOoM::real>(x); }
+//! \brief real type literals, from integer notation.
 constexpr bOoM::real operator"" _r(unsigned long long const x)
 	{ return static_cast<bOoM::real>(x); }
 namespace bOoM {

@@ -2,8 +2,6 @@
 #define PRINT_EXPR(e) std::cout << #e << " : " << (e) << std::endl
 #define PRINTLN() std::cout << std::endl
 
-//TODO replace <<= by something more usable.
-
 #include "basemath.hpp"
 #include "math2d.hpp"
 #include "dynamic.hpp"
