@@ -74,20 +74,25 @@ inline bool is_too_small(real x)
 }
 
 
-//! \brief The discriminant of the second degree equation.
+//! \brief Give the discriminant of the second degree equation.
 inline real eqn2_discriminant(real a0, real a1, real a2) { return SQ(a1) -4*a2*a0; }
 
 /*! \brief Return the roots of the second degree equation.
  *
  *  - If there is no roots, a `std::pair(NAN,NAN)` is returned,
  *  - if there is only one root, a pair with twice this same root is returned,
+ *    The two copies may slighty differ due error in computations.
  *  - else return the two roots in a pair.
+ *
+ *  This function computes a square root, which is a slow operation.
  */
 std::pair<real,real> eqn2_solve(real a0, real a1, real a2);
 
 /*! \brief Return the roots of the second degree equation.
  *
- *  It Assumes that `d` is the non-negative valid discriminant of the given equation.
+ *  As a precondition `d` is both non-negative and the valid discriminant of the given equation.
+ *  This function thus acts like eqn2_solve.
+ *
  *  This function computes a square root, which is a slow operation.
  */
 std::pair<real,real> eqn2_solve_with_precomputed_discriminant(real a0, real a1, real a2, real d);
