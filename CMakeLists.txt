@@ -15,6 +15,8 @@ add_executable(boom_test
 	main.cpp
 	math2d.cpp
 	math2d.hpp
+  TiledArray.tpp
+  TiledArray.hpp
 	)
 target_link_libraries (boom_test m)
 

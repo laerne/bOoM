@@ -6,13 +6,14 @@
 #include "math2d.hpp"
 #include "dynamic.hpp"
 #include "intersection.hpp"
+#include "TiledArray.hpp"
 
 //! print pairs
 template<typename T1, typename T2>
 std::ostream& operator<<(std::ostream& s, std::pair<T1,T2> const pair)
 	{ s <<"{" << std::get<0>(pair) <<"," << std::get<1>(pair) <<"}"; return s; }
 
-//! unit test for math2d.hpp.
+//! unit test for math2d.hpp
 void test__math2d()
 {
 	std::cout << "test__math2d()" << std::endl;
@@ -101,7 +102,7 @@ void test__math2d__approx_angle()
 	PRINTLN();
 }
 
-//! unit test for dynamic.hpp.
+//! unit test for dynamic.hpp
 void test__dynamic()
 {
 	std::cout << "test__dynamic()" << std::endl;
@@ -111,20 +112,13 @@ void test__dynamic()
 	bOoM::real2 t2(3,1);
 	bOoM::rot2 r2 = bOoM::rot2from(CST_PI/6);
 	bOoM::move2 m2(r2,t2);
-	bOoM::PointDynamic point_dyn(bOoM::zero2, t1, bOoM::zero2);
-	bOoM::OrientedDynamic dyn(bOoM::move2_id, m1, m2);
+	bOoM::Dynamic dyn(bOoM::move2_id, m1, m2);
 
-	PRINT_EXPR(point_dyn);
-	point_dyn.step();                     PRINT_EXPR(point_dyn);
-	point_dyn.step(); point_dyn.acc = t2; PRINT_EXPR(point_dyn);
-	point_dyn.step();                     PRINT_EXPR(point_dyn);
-	point_dyn.step();                     PRINT_EXPR(point_dyn);
 	PRINT_EXPR(dyn);
 	dyn.step(); PRINT_EXPR(dyn);
 	dyn.step(); PRINT_EXPR(dyn);
 	dyn.step(); PRINT_EXPR(dyn);
 	dyn.step(); PRINT_EXPR(dyn);
-	PRINT_EXPR(point_dyn);
 	PRINTLN();
 }
 
@@ -143,7 +137,7 @@ void test__eqn2()
 	PRINTLN();
 }
 
-//! unit test for intersection.hpp.
+//! unit test for intersection.hpp
 void test__intersection()
 {
 	std::cout << "test__intersection()" << std::endl;
@@ -171,6 +165,29 @@ void test__intersection()
 	PRINTLN();
 }
 
+//! unit test for TiledArray.hpp
+void test__TiledArray() {
+	bOoM::size_t_2 fullsize(14,9), tilesize(4,3);
+	bOoM::TiledArray<bOoM::V2<int>> tarray(fullsize, tilesize);
+	bOoM::TiledArray<int> tarray_int(fullsize, tilesize);
+
+	for( bOoM::size_t_2 p(0,0); p.y<tarray.totalSize.y; ++(p.y) )
+	{
+		for( p.x=0; p.x<tarray.totalSize.x; ++(p.x) )
+		{
+			 tarray[p]= bOoM::V2<int>( p.x, p.y );
+			 tarray_int[p]= tarray.indexOf(p);
+		}
+	}
+  PRINT_EXPR(tarray.mindexOf(tarray.indexOf(bOoM::size_t_2(3,4))));
+  PRINT_EXPR(tarray.mindexOf(tarray.indexOf(bOoM::size_t_2(13,8))));
+  PRINT_EXPR(tarray.isCorrectMindex(bOoM::size_t_2(13,8)));
+  PRINT_EXPR(tarray.isCorrectMindex(bOoM::size_t_2(11,9)));
+	PRINT_EXPR(tarray);
+	PRINT_EXPR(tarray_int);
+	PRINTLN();
+}
+
 int main(void)
 {
 	test__math2d();
@@ -178,6 +195,7 @@ int main(void)
 	test__dynamic();
 	test__eqn2();
 	test__intersection();
+	test__TiledArray();
 	return 0;
 }
 

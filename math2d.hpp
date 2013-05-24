@@ -12,8 +12,6 @@
 
 #include <iostream>
 #include "basemath.hpp"
-
-
 namespace bOoM {
 
 /*! \brief Two-dimensional vector structure.
