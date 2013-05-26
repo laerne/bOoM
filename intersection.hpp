@@ -49,14 +49,27 @@ inline real2 ball_intersection(
 	return ball_intersection(p,v,r_p,q,w,r_q, thisVariableIsUselessInEveryPossibleWay);
 }
 
-inline real2 ball_intersection_interval(
+inline real2 ball_intersection_before(
+		real2 const p, real2 const v, real const r_p,
+		real2 const q, real2 const w, real const r_q,
+		real time_limit )
+{
+	real t;
+	real2 intersection= ball_intersection(p,v,r_p,q,w,r_q, t);
+	if( t < time_limit )
+		return nan2;
+	else
+		return intersection;
+}
+
+inline real2 ball_intersection_within(
 		real2 const p, real2 const v, real const r_p,
 		real2 const q, real2 const w, real const r_q,
 		std::pair<real,real> time_interval )
 {
 	real t;
 	real2 intersection= ball_intersection(p,v,r_p,q,w,r_q, t);
-	if(std::isnan(t) || t < std::get<0>(time_interval) || t > std::get<0>(time_interval) )
+	if(t < std::get<0>(time_interval) || t > std::get<0>(time_interval) )
 		return nan2;
 	else
 		return intersection;

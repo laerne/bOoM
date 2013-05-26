@@ -53,21 +53,6 @@ struct V2
 	bool operator==(V2<R> const& q) const { return x==q.x && y==q.y; }
 	//! \brief Per-component inequality operator.
 	bool operator!=(V2<R> const& q) const { return x!=q.x || y!=q.y; }
-	/*! \brief Manhattan norm of the vector, i.e. the sum of the absolute value
-	 *  of each of its components.
-	 */
-	R norm1()    const { return ABS(x)+ABS(y); }
-	/*! \brief Squared euclidean norm of the vector, i.e. the sum of the
-	 *  square of each of its components.
-	 */
-	R norm2sq()  const { return SQ(x) + SQ(y); }
-	/*! \brief Maximum norm of the vector, i.e. the maximum over the absolute
-	 * value of each of its components.
-	 */
-	R norm_max() const { return MAX(ABS(x),ABS(y)); }
-	//! \brief Returns wheter the vector is nan or not
-	bool isnan() const { return std::isnan(x) || std::isnan(y); }
-
 
 	R x;//!< abscissa.
 	R y;//!< ordinate.
@@ -100,6 +85,25 @@ R crossProduct_z(V2<R> const& p, V2<R> const& q)
 template<typename R>
 std::ostream& operator<<(std::ostream& s, V2<R> const& p)
 	{ s <<"(" << p.x <<"," << p.y <<")"; return s; }
+
+/*! \brief Manhattan norm of the vector, i.e. the sum of the absolute value
+ *  of each of its components.
+ */
+template<typename R>
+R norm1(V2<R> const& p)    { return ABS(p.x)+ABS(p.y); }
+/*! \brief Squared euclidean norm of the vector, i.e. the sum of the
+ *  square of each of its components.
+ */
+template<typename R>
+R norm2sq(V2<R> const& p)  { return SQ(p.x) + SQ(p.y); }
+/*! \brief Maximum norm of the vector, i.e. the maximum over the absolute
+ * value of each of its components.
+ */
+template<typename R>
+R norm_max(V2<R> const& p) { return MAX(ABS(p.x),ABS(p.y)); }
+//! \brief Returns wheter the vector is nan or not
+template<typename R>
+bool isnan(V2<R> const& p) { return std::isnan(p.x) || std::isnan(p.y); }
 
 
 

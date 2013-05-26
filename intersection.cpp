@@ -10,9 +10,9 @@ real2 ball_intersection(
 	real2 v_w = v-w;
 	real r = r_p+r_q;
 
-	real c0= p_q.norm2sq()-SQ(r);
+	real c0= norm2sq(p_q)-SQ(r);
 	real c1= 2*(p_q|v_w);
-	real c2= v_w.norm2sq();
+	real c2= norm2sq(v_w);
 	real delta= eqn2_discriminant( c0, c1, c2 );
 	if ( delta < 0 )
 	{

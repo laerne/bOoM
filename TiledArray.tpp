@@ -100,7 +100,7 @@ size_t maxCellLen=7, sepLen=1;
 template<typename A>
 std::ostream& operator<<(std::ostream& s, TiledArray<A> const& tarray)
 {
-	s <<"TiledArray:" << std::endl;
+	s <<"TiledArray[V]" << std::endl;
 	for(size_t_2 p(0,tarray.totalSize.y-1); p.y<=tarray.totalSize.y; --(p.y))
 	{
 		for(p.x=0; p.x < tarray.totalSize.x; ++(p.x))

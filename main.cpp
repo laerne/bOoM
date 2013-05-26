@@ -1,5 +1,6 @@
 #include <iostream>
 #define PRINT_EXPR(e) std::cout << #e << " : " << (e) << std::endl
+#define TEST(f) std::cout << #f << std::endl; f
 #define PRINTLN() std::cout << std::endl
 
 #include "basemath.hpp"
@@ -16,7 +17,6 @@ std::ostream& operator<<(std::ostream& s, std::pair<T1,T2> const pair)
 //! unit test for math2d.hpp
 void test__math2d()
 {
-	std::cout << "test__math2d()" << std::endl;
 	bOoM::V2<bOoM::real> zero(0,0);
 	bOoM::V2<bOoM::real> p(1,3), q(2,-2);
 	bOoM::V2<bOoM::real> undef;
@@ -32,9 +32,9 @@ void test__math2d()
 	PRINT_EXPR(p/(2_r));
 	PRINT_EXPR((p|q));
 	PRINT_EXPR((p+q-q|q+zero));
-	PRINT_EXPR(p.norm1());
-	PRINT_EXPR(p.norm2sq());
-	PRINT_EXPR(q.norm_max());
+	PRINT_EXPR(norm1(p));
+	PRINT_EXPR(norm2sq(p));
+	PRINT_EXPR(norm_max(q));
 	PRINTLN();
 
 	bOoM::Rot2<bOoM::real> r1 = bOoM::rot2from(CST_PI/3);
@@ -62,7 +62,6 @@ void test__math2d()
 
 void test__math2d__approx_angle()
 {
-	std::cout << "test__math2d__approx_angle()" << std::endl;
 	bOoM::real2 angle0(3,0);
 	bOoM::real2 angle20( std::cos((20./180.)*CST_PI), std::sin((20./180.)*CST_PI) );
 	bOoM::real2 angle30( std::sqrt(3), 1 );
@@ -105,7 +104,6 @@ void test__math2d__approx_angle()
 //! unit test for dynamic.hpp
 void test__dynamic()
 {
-	std::cout << "test__dynamic()" << std::endl;
 	bOoM::real2 t1(2,0);
 	bOoM::rot2 r1 = bOoM::rot2from(CST_PI/3);
 	bOoM::move2 m1(r1,t1);
@@ -125,7 +123,6 @@ void test__dynamic()
 //! unit test for bOoM::eqn2 namespace
 void test__eqn2()
 {
-	std::cout << "test__eqn2()" << std::endl;
 	PRINT_EXPR(bOoM::eqn2_discriminant(1_r,0_r,-1_r));
 	PRINT_EXPR(bOoM::eqn2_solve(1_r,0_r,-1_r));
 
@@ -140,7 +137,6 @@ void test__eqn2()
 //! unit test for intersection.hpp
 void test__intersection()
 {
-	std::cout << "test__intersection()" << std::endl;
 	bOoM::real2 p(1,-3), q(-2,1);
 	bOoM::real2 v(-1,0), w(-1,4);
 	PRINT_EXPR(std::make_pair(p,v));
@@ -190,12 +186,12 @@ void test__TiledArray() {
 
 int main(void)
 {
-	test__math2d();
-	test__math2d__approx_angle();
-	test__dynamic();
-	test__eqn2();
-	test__intersection();
-	test__TiledArray();
+	TEST(test__math2d());
+	TEST(test__math2d__approx_angle());
+	TEST(test__dynamic());
+	TEST(test__eqn2());
+	TEST(test__intersection());
+	TEST(test__TiledArray());
 	return 0;
 }
 
