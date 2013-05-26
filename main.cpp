@@ -209,6 +209,11 @@ void test__allocator()
 	PRINT_EXPR(sa);
 	sa.deallocate(ra);
 	PRINT_EXPR(sa);
+	sa.deallocate(qi); //pointer invalid
+	sa.deallocate(pi); //pointer invalid
+	PRINT_EXPR(sa);
+	pi= (int*) sa.allocate(128);
+	PRINT_EXPR(sa);
 }
 
 int main(void)
