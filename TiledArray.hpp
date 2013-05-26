@@ -10,10 +10,6 @@
 
 #include "math2d.hpp"
 namespace bOoM {
-
-//! Two-dimentional index.  It is a pair of two size_t types.
-typedef V2<size_t> size_t_2;
-
 /*! Tiled array data structure.
  *
  * A tiled array is a two-dimensional array where indices are redistributed such that

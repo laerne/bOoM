@@ -42,45 +42,56 @@ struct V2
 	V2<R>  operator+ () const         { return V2( x, y); }
 	//! \brief Opposite operator : return a new vector with opposite values.
 	V2<R>  operator- () const         { return V2(-x,-y); }
-	/*! \brief Dot product operator : return the dot product of this vector and
-	 *  `q`.
-	 *
-	 *  For readability, the expression should be enclosed in parentheses :
-	 *  `(p|q)`.
-	 */
-	R      operator| (V2<R> const& q) const { return x*q.x + y*q.y; }
 	//! \brief Per-component equality operator.
 	bool operator==(V2<R> const& q) const { return x==q.x && y==q.y; }
 	//! \brief Per-component inequality operator.
 	bool operator!=(V2<R> const& q) const { return x!=q.x || y!=q.y; }
+	//! \brief If R is castable to M, then this cast V2<R> to V2<M> component-wise.
+	template<typename M>
+	operator V2<M>() { return V2<M>( (M)x, (M)y ); }
 
 	R x;//!< abscissa.
 	R y;//!< ordinate.
 };
+
 //! \brief Vector sum operator.
 template<typename R>
 V2<R> operator+(V2<R> const& p, V2<R> const& q)
 	{ return V2<R>(p)+=q; }
+
 //! \brief Vector difference operator.
 template<typename R>
 V2<R> operator-(V2<R> const& p, V2<R> const& q)
 	{ return V2<R>(p)-=q; }
+
 //! \brief Vector scale operator.
 template<typename R>
 V2<R> operator*(V2<R> const& p, R a)
 	{ return V2<R>(p)*=a; }
+
 //! \brief Vector inverse scale operator, over a field `F`.
 template<typename F>
-V2<F> operator/(V2<F> const& p,F a)
+V2<F> operator/(V2<F> const& p, F a)
 	{ return V2<F>(p)/=a; }
+
+/*! \brief Dot product operator : return the dot product of this vector and `q`.
+ *
+ *  For readability, the expression should be enclosed in parentheses : `(p|q)`.
+ */
+template<typename R>
+R operator| (V2<R> const& p, V2<R> const& q)
+	{ return p.x*q.x + p.y*q.y; }
+
 //! \brief Dot product operator.  Equivalent to V2::operator| .
 template<typename R>
 R dotProduct(V2<R> const& p, V2<R> const& q)
 	{ return p.x*q.x + p.y*q.y; }
+
 //! \brief Norm of the vector obtained by a cross product operation.
 template<typename R>
 R crossProduct_z(V2<R> const& p, V2<R> const& q)
 	{ return p.x*q.y - p.y*q.x; }
+
 //! \brief Output a string representation of a two-dimensional vector.
 template<typename R>
 std::ostream& operator<<(std::ostream& s, V2<R> const& p)
@@ -90,20 +101,36 @@ std::ostream& operator<<(std::ostream& s, V2<R> const& p)
  *  of each of its components.
  */
 template<typename R>
-R norm1(V2<R> const& p)    { return ABS(p.x)+ABS(p.y); }
+R norm1(V2<R> const& p)
+	{ return ABS(p.x)+ABS(p.y); }
+
 /*! \brief Squared euclidean norm of the vector, i.e. the sum of the
  *  square of each of its components.
  */
 template<typename R>
-R norm2sq(V2<R> const& p)  { return SQ(p.x) + SQ(p.y); }
+R norm2sq(V2<R> const& p)
+	{ return SQ(p.x) + SQ(p.y); }
+
 /*! \brief Maximum norm of the vector, i.e. the maximum over the absolute
  * value of each of its components.
  */
 template<typename R>
-R norm_max(V2<R> const& p) { return MAX(ABS(p.x),ABS(p.y)); }
+R norm_max(V2<R> const& p)
+	{ return MAX(ABS(p.x),ABS(p.y)); }
+
+//! \brief Right orthogonal vector of `p`.
+template<typename R>
+V2<R> rightOrthogonal(V2<R> const& p)
+	{ return V2<R>( p.y, -p.x ); }
+//! \brief Left orthogonal vector of `p`.
+template<typename R>
+V2<R> leftOrthogonal(V2<R> const& p)
+	{ return V2<R>( -p.y, p.x ); }
+
 //! \brief Returns wheter the vector is nan or not
 template<typename R>
-bool isnan(V2<R> const& p) { return std::isnan(p.x) || std::isnan(p.y); }
+bool isnan(V2<R> const& p)
+	{ return std::isnan(p.x) || std::isnan(p.y); }
 
 
 
@@ -178,8 +205,9 @@ struct Rot2
 	//! \brief Return the image point of the application of this rotation on `p`.
 	V2<R> map(V2<R> const& p) const
 		{ return V2<R>(  p.x*cos-p.y*sin,  p.x*sin+p.y*cos  ); }
-	//! \brief Return the inverse rotation.
-	Rot2<R> inv() const {return Rot2<R>(cos, -sin); }
+	//! \brief If R is castable to M, then this cast Rot2<R> to Rot2<M> component-wise.
+	template<typename M>
+	operator Rot2<M>() { return Rot2<M>( (M)cos, (M)sin ); }
 
 	/*! \brief Cosine of the angle of rotation.
 	 *
@@ -197,6 +225,9 @@ struct Rot2
 template<typename R>
 Rot2<R> operator*(Rot2<R> copy, Rot2<R> const& r)
 	{ return copy*=r; }
+//! \brief Return the inverse rotation.
+template<typename R>
+Rot2<R> inverse(Rot2<R> const& r) {return Rot2<R>(r.cos, -r.sin); }
 template<typename R>
 //! \brief Output a string representation of the rotation.
 std::ostream& operator<<(std::ostream& s, Rot2<R> const& r)
@@ -231,9 +262,9 @@ struct Move2
 	 */
 	Move2<R>& precompose(Move2<R> const& mv)
 		{ t=map(mv.t);  r=r*mv.r; return *this; }
-	//! \brief Return the inverse move for this move.
-	Move2<R>  inv() const
-		{ const Rot2<R> r_inv=r.inv(); return Move2<R>(r_inv, r_inv.map(t)); }
+	//! \brief If R is castable to M, then this cast Rot2<R> to Rot2<M> component-wise.
+	template<typename M>
+	operator Move2<M>() { return Move2<M>( (M)cos, (M)sin ); }
 
 	Rot2<R> r; //!< Rotation component.
 	V2<R> t;   //!< Translation component.
@@ -250,6 +281,10 @@ Move2<R> compose(Move2<R> const& m2, Move2<R> const& m1)
 template<typename R>
 std::ostream& operator<<(std::ostream& s, Move2<R> const& mv)
 	{ s <<"(r:" <<mv.r <<",t:" << mv.t <<")"; return s; }
+//! \brief Return the inverse move of `mv`
+template<typename R>
+Move2<R>  inverse(Move2<R> const& mv)
+	{ const Rot2<R> r_inv= mv.r.inv(); return Move2<R>(r_inv, r_inv.map(mv.t)); }
 
 //shortcuts
 //! Equivalent to `mv.map(p)` .
@@ -262,15 +297,15 @@ V2<R>& operator>>=(V2<R>& p, Move2<R> const& mv) { return p = mv.map(p); }
 
 
 // Common data types
-//typedef v2<std::size_t> size_t_2;
 typedef V2<real> real2; //!< Euclidean plane vector.
 typedef Rot2<real> rot2; //!< Euclidean plane rotation.
 typedef Move2<real> move2; //!< Euclidean plane move.
+typedef V2<std::size_t> size_t_2; //! Two-dimentional index/size.
 // Usefull constants
 real2 const zero2(0,0); //!< Constant to the null vector.
 rot2 const rot2_id(1.f,0.f); //!< Constant to the identity rotation.
 move2 const move2_id(rot2_id, zero2); //!< Constant to the identity move.
-real2 const nan2(NAN,NAN); //!< Constant to the null vector.
+real2 const nan2(NAN,NAN); //!< Constant to an non-existant vector.
 // real angle utilities
 //! \brief Return a new real rotation object from `angle`, in radians.
 inline rot2 rot2from(real angle)
@@ -283,7 +318,7 @@ real approx_angle4(real2 const& p);
 /*! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
  *
  * The function is a bit slower than \ref approx_angle4, but it is more precise :
- * it error never go over 1 degree.
+ * its errors never go over 1 degree.
  */
 real approx_angle8(real2 const& p);
 

@@ -3,6 +3,7 @@
 #define TEST(f) std::cout << #f << std::endl; f
 #define PRINTLN() std::cout << std::endl
 
+#include "allocator.hpp"
 #include "basemath.hpp"
 #include "math2d.hpp"
 #include "dynamic.hpp"
@@ -31,7 +32,10 @@ void test__math2d()
 	PRINT_EXPR(p*2.0_r);
 	PRINT_EXPR(p/(2_r));
 	PRINT_EXPR((p|q));
+	PRINT_EXPR((p*2_r|q*2_r));
 	PRINT_EXPR((p+q-q|q+zero));
+	PRINT_EXPR((p*2_r-p|q+zero*3_r));
+	PRINT_EXPR(rightOrthogonal(q));
 	PRINT_EXPR(norm1(p));
 	PRINT_EXPR(norm2sq(p));
 	PRINT_EXPR(norm_max(q));
@@ -44,7 +48,7 @@ void test__math2d()
 	PRINT_EXPR(r2);
 	PRINT_EXPR(id);
 	PRINT_EXPR(r1*r2);
-	PRINT_EXPR(r1.inv());
+	PRINT_EXPR(inverse(r1));
 	PRINT_EXPR(r1.map(q));
 	PRINTLN();
 
@@ -63,17 +67,21 @@ void test__math2d()
 void test__math2d__approx_angle()
 {
 	bOoM::real2 angle0(3,0);
-	bOoM::real2 angle20( std::cos((20./180.)*CST_PI), std::sin((20./180.)*CST_PI) );
+	bOoM::real2 angle11( std::cos((10_r/180_r)*CST_PI), std::sin((10_r/180_r)*CST_PI) );
+	bOoM::real2 angle20( std::cos((20_r/180_r)*CST_PI), std::sin((20_r/180_r)*CST_PI) );
 	bOoM::real2 angle30( std::sqrt(3), 1 );
-	bOoM::real2 angle40( std::cos((40./180.)*CST_PI), std::sin((40./180.)*CST_PI) );
+	bOoM::real2 angle40( std::cos((40_r/180_r)*CST_PI), std::sin((40_r/180_r)*CST_PI) );
 	bOoM::real2 angle45( 17, 17 );
-	bOoM::real2 angle80( std::cos((80./180.)*CST_PI), std::sin((80./180.)*CST_PI) );
-	bOoM::real2 angle120( std::cos((120./180.)*CST_PI), std::sin((120./180.)*CST_PI) );
+	bOoM::real2 angle80( std::cos((80_r/180_r)*CST_PI), std::sin((80_r/180_r)*CST_PI) );
+	bOoM::real2 angle120( std::cos((120_r/180_r)*CST_PI), std::sin((120_r/180_r)*CST_PI) );
 	bOoM::real2 angle180( -8, 0 );
-	bOoM::real2 angle234( 2*std::cos((234./180.)*CST_PI), 2*std::sin((234./180.)*CST_PI) );
+	bOoM::real2 angle234( 2*std::cos((234_r/180_r)*CST_PI), 2*std::sin((234_r/180_r)*CST_PI) );
 	PRINT_EXPR(angle0);
 	PRINT_EXPR(bOoM::approx_angle4(angle0));
 	PRINT_EXPR(bOoM::approx_angle8(angle0));
+	PRINT_EXPR(angle11);
+	PRINT_EXPR(bOoM::approx_angle4(angle11));
+	PRINT_EXPR(bOoM::approx_angle8(angle11));
 	PRINT_EXPR(angle20);
 	PRINT_EXPR(bOoM::approx_angle4(angle20));
 	PRINT_EXPR(bOoM::approx_angle8(angle20));
@@ -162,7 +170,8 @@ void test__intersection()
 }
 
 //! unit test for TiledArray.hpp
-void test__TiledArray() {
+void test__TiledArray()
+{
 	bOoM::size_t_2 fullsize(14,9), tilesize(4,3);
 	bOoM::TiledArray<bOoM::V2<int>> tarray(fullsize, tilesize);
 	bOoM::TiledArray<int> tarray_int(fullsize, tilesize);
@@ -171,7 +180,7 @@ void test__TiledArray() {
 	{
 		for( p.x=0; p.x<tarray.totalSize.x; ++(p.x) )
 		{
-			 tarray[p]= bOoM::V2<int>( p.x, p.y );
+			 tarray[p]= p;
 			 tarray_int[p]= tarray.indexOf(p);
 		}
 	}
@@ -184,6 +193,18 @@ void test__TiledArray() {
 	PRINTLN();
 }
 
+void test__allocator()
+{
+	bOoM::StackAllocator sa(32_bytes);
+	PRINT_EXPR(sa);
+	int* pi= (int*) sa.allocate( sizeof(int) );
+	*pi= -1;
+	PRINT_EXPR(sa);
+	int* qi= (int*) sa.allocate( sizeof(int) );
+	*qi= 0xf0f0f0f0;
+	PRINT_EXPR(sa);
+}
+
 int main(void)
 {
 	TEST(test__math2d());
@@ -192,6 +213,7 @@ int main(void)
 	TEST(test__eqn2());
 	TEST(test__intersection());
 	TEST(test__TiledArray());
+	TEST(test__allocator());
 	return 0;
 }
 

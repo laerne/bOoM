@@ -11,6 +11,12 @@ TiledArray<A>::TiledArray(size_t_2 totalSize, size_t_2 tileSize)
 	size_t_2 paddedSize= TiledArrayUtils::paddedToTile( totalSize, tileSize );
 	array= new A[paddedSize.x*paddedSize.y];
 
+	size_t areaInTiles= sizeInTiles.x * sizeInTiles.y;
+	fastArray_x = new size_t[totalSize.x +totalSize.y];
+	fastArray_y = fastArray_x +totalSize.x;
+	reverseFastArray_tile = new size_t_2[areaInTiles +tileArea];
+	reverseFastArray_local = reverseFastArray_tile +areaInTiles;
+
 	build_fastArrays(sizeInTiles);
 	build_reverseFastArrays(sizeInTiles);
 }
@@ -19,20 +25,18 @@ template<typename A>
 TiledArray<A>::~TiledArray()
 {
 	delete[] fastArray_x;
-	delete[] fastArray_y;
+	//delete[] fastArray_y;
 	delete[] reverseFastArray_tile;
-	delete[] reverseFastArray_local;
+	//delete[] reverseFastArray_local;
 	delete[] array;
 }
 
 template<typename A>
 void TiledArray<A>::build_fastArrays(size_t_2 const& sizeInTiles)
 {
-	fastArray_x = new size_t[totalSize.x];
 	for(int x=0; x<totalSize.x; ++x)
 		fastArray_x[x]= (x/localSize.x) *tileArea + (x%localSize.x);
 
-	fastArray_y = new size_t[totalSize.y];
 	for(int y=0; y<totalSize.y; ++y)
 		fastArray_y[y]= (y/localSize.y) *sizeInTiles.x *tileArea 
 		              + (y%localSize.y) *localSize.x;
@@ -43,13 +47,11 @@ void TiledArray<A>::build_reverseFastArrays(size_t_2 const& sizeInTiles)
 {
 	size_t areaInTiles= sizeInTiles.x * sizeInTiles.y;
 
-	reverseFastArray_tile = new size_t_2[areaInTiles];
 	for(int t=0; t<areaInTiles; ++t)
 		reverseFastArray_tile[t]= size_t_2(
 				(t%sizeInTiles.x) *localSize.x ,
 				(t/sizeInTiles.x) *localSize.y );
 
-	reverseFastArray_local = new size_t_2[tileArea];
 	for(int l=0; l<tileArea; ++l)
 		reverseFastArray_local[l]= size_t_2(
 				(l%localSize.x) ,

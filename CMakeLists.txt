@@ -7,6 +7,7 @@ set (bOoM_VERSION_MINOR 0)
 
 #define executable
 add_executable(boom_test
+	allocator.hpp
 	basemath.cpp
 	basemath.hpp
 	dynamic.hpp
