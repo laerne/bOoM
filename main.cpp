@@ -200,8 +200,14 @@ void test__allocator()
 	int* pi= (int*) sa.allocate( sizeof(int) );
 	*pi= -1;
 	PRINT_EXPR(sa);
-	int* qi= (int*) sa.allocate( sizeof(int) );
-	*qi= 0xf0f0f0f0;
+	bOoM::real* qi= (bOoM::real*) sa.allocate( sizeof(bOoM::real) );
+	*qi= NAN;
+	PRINT_EXPR(sa);
+	int* ra= (int*) sa.allocate( 10*sizeof(int) );
+	for(size_t i=0; i<10; ++i)
+		ra[i]= i;
+	PRINT_EXPR(sa);
+	sa.deallocate(ra);
 	PRINT_EXPR(sa);
 }
 

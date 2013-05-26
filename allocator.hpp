@@ -47,7 +47,8 @@ struct StackAllocator
 	void *allocate(std::size_t size)
 	{
 		//Double the size of the buffer if we do not have enough room left.
-		if( next +size +sizeof(std::size_t) >= buffer_end )
+		//TODO extract the realloc outside the loop.
+		while( next +size +sizeof(std::size_t) >= buffer_end )
 		{
 			size_t next_relative= next - buffer;
 			size_t fullSize= buffer_end - buffer;
@@ -63,10 +64,11 @@ struct StackAllocator
 	}
 	void deallocate(void *ptr)
 	{
-		assert( ptr == next && ptr > buffer);
+		assert( ptr > buffer);
 		next -= sizeof(std::size_t);
 		size_t size = *( (size_t*)next );
 		next -= size;
+		assert( ptr == next );
 	}
 
 	uint8_t* buffer;
@@ -81,9 +83,13 @@ std::ostream& operator<<(std::ostream& s, StackAllocator const& a)
 	int charactersOnLines= 0;
 	for(uint8_t* byte= a.buffer; byte < a.buffer_end; ++byte)
 	{
-		s << std::hex << std::setw(2) << (int)*byte << " ";
+		if(byte == a.next)
+			s << '|';
+		else
+			s << ' ';
+		s << std::hex << std::setw(2) << (int)*byte;
 		charactersOnLines += 3;
-		if(charactersOnLines >= 80)
+		if(charactersOnLines >= 96)
 		{
 			s << std::endl;
 			charactersOnLines=0;
