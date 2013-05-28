@@ -10,7 +10,7 @@ namespace bOoM {
 // _/   2   \_
 // Given in degrees on interval ]-180,180].
 
-real approx_angle4(real2 const& p)
+real approxDeg4(real2 const& p)
 {
 	if( is_too_small(p.x) && is_too_small(p.y)) return 0.0;
 	if( p.y >= -p.x)
@@ -42,7 +42,7 @@ real approx_angle4(real2 const& p)
 // _/ 5 | 6 \_
 
 
-real approx_angle8(real2 const& p)
+real approxDeg8(real2 const& p)
 {
 	if( is_too_small(p.x) && is_too_small(p.y))
 		return 0.0;

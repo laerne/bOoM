@@ -104,12 +104,21 @@ template<typename R>
 R norm1(V2<R> const& p)
 	{ return ABS(p.x)+ABS(p.y); }
 
+//! \brief Manhattan distance of two vectors. \sa norm1().
+template<typename R>
+R dist1(V2<R> const& p, V2<R> const& q)
+	{ return norm1(q-p); }
+
 /*! \brief Squared euclidean norm of the vector, i.e. the sum of the
  *  square of each of its components.
  */
 template<typename R>
 R norm2sq(V2<R> const& p)
-	{ return SQ(p.x) + SQ(p.y); }
+	{ return SQ(p.x)+SQ(p.y); }
+//! \brief Squared euclidean distance of two vectors. \sa norm2sq().
+template<typename R>
+R dist2sq(V2<R> const& p, V2<R> const& q)
+	{ return norm2sq(q-p); }
 
 /*! \brief Maximum norm of the vector, i.e. the maximum over the absolute
  * value of each of its components.
@@ -117,6 +126,10 @@ R norm2sq(V2<R> const& p)
 template<typename R>
 R norm_max(V2<R> const& p)
 	{ return MAX(ABS(p.x),ABS(p.y)); }
+//! \brief Maximum distance of two vectors. \sa norm_max().
+template<typename R>
+R dist_max(V2<R> const& p, V2<R> const& q)
+	{ return norm_max(q-p); }
 
 //! \brief Right orthogonal vector of `p`.
 template<typename R>
@@ -308,19 +321,19 @@ move2 const move2_id(rot2_id, zero2); //!< Constant to the identity move.
 real2 const nan2(NAN,NAN); //!< Constant to an non-existant vector.
 // real angle utilities
 //! \brief Return a new real rotation object from `angle`, in radians.
-inline rot2 rot2from(real angle)
+inline rot2 rot2FromRadian(real angle)
 	{ return rot2(std::cos(angle), std::sin(angle)); }
 /*! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
  *
  * Tests suggests that the maximum error can rise up to four degrees.
  */
-real approx_angle4(real2 const& p);
+real approxDeg4(real2 const& p);
 /*! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
  *
  * The function is a bit slower than \ref approx_angle4, but it is more precise :
  * its errors never go over 1 degree.
  */
-real approx_angle8(real2 const& p);
+real approxDeg8(real2 const& p);
 
 } //namespace bOoM
 #endif

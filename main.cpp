@@ -41,8 +41,8 @@ void test__math2d()
 	PRINT_EXPR(norm_max(q));
 	PRINTLN();
 
-	bOoM::Rot2<bOoM::real> r1 = bOoM::rot2from(CST_PI/3);
-	bOoM::Rot2<bOoM::real> r2 = bOoM::rot2from(CST_PI/6);
+	bOoM::Rot2<bOoM::real> r1 = bOoM::rot2FromRadian(CST_PI/3);
+	bOoM::Rot2<bOoM::real> r2 = bOoM::rot2FromRadian(CST_PI/6);
 	bOoM::Rot2<bOoM::real> id = bOoM::rot2_id;
 	PRINT_EXPR(r1);
 	PRINT_EXPR(r2);
@@ -64,7 +64,7 @@ void test__math2d()
 	PRINTLN();
 }
 
-void test__math2d__approx_angle()
+void test__math2d__approxDeg()
 {
 	bOoM::real2 angle0(3,0);
 	bOoM::real2 angle11( std::cos((10_r/180_r)*CST_PI), std::sin((10_r/180_r)*CST_PI) );
@@ -77,35 +77,35 @@ void test__math2d__approx_angle()
 	bOoM::real2 angle180( -8, 0 );
 	bOoM::real2 angle234( 2*std::cos((234_r/180_r)*CST_PI), 2*std::sin((234_r/180_r)*CST_PI) );
 	PRINT_EXPR(angle0);
-	PRINT_EXPR(bOoM::approx_angle4(angle0));
-	PRINT_EXPR(bOoM::approx_angle8(angle0));
+	PRINT_EXPR(bOoM::approxDeg4(angle0));
+	PRINT_EXPR(bOoM::approxDeg8(angle0));
 	PRINT_EXPR(angle11);
-	PRINT_EXPR(bOoM::approx_angle4(angle11));
-	PRINT_EXPR(bOoM::approx_angle8(angle11));
+	PRINT_EXPR(bOoM::approxDeg4(angle11));
+	PRINT_EXPR(bOoM::approxDeg8(angle11));
 	PRINT_EXPR(angle20);
-	PRINT_EXPR(bOoM::approx_angle4(angle20));
-	PRINT_EXPR(bOoM::approx_angle8(angle20));
+	PRINT_EXPR(bOoM::approxDeg4(angle20));
+	PRINT_EXPR(bOoM::approxDeg8(angle20));
 	PRINT_EXPR(angle30);
-	PRINT_EXPR(bOoM::approx_angle4(angle30));
-	PRINT_EXPR(bOoM::approx_angle8(angle30));
+	PRINT_EXPR(bOoM::approxDeg4(angle30));
+	PRINT_EXPR(bOoM::approxDeg8(angle30));
 	PRINT_EXPR(angle40);
-	PRINT_EXPR(bOoM::approx_angle4(angle40));
-	PRINT_EXPR(bOoM::approx_angle8(angle40));
+	PRINT_EXPR(bOoM::approxDeg4(angle40));
+	PRINT_EXPR(bOoM::approxDeg8(angle40));
 	PRINT_EXPR(angle45);
-	PRINT_EXPR(bOoM::approx_angle4(angle45));
-	PRINT_EXPR(bOoM::approx_angle8(angle45));
+	PRINT_EXPR(bOoM::approxDeg4(angle45));
+	PRINT_EXPR(bOoM::approxDeg8(angle45));
 	PRINT_EXPR(angle80);
-	PRINT_EXPR(bOoM::approx_angle4(angle80));
-	PRINT_EXPR(bOoM::approx_angle8(angle80));
+	PRINT_EXPR(bOoM::approxDeg4(angle80));
+	PRINT_EXPR(bOoM::approxDeg8(angle80));
 	PRINT_EXPR(angle120);
-	PRINT_EXPR(bOoM::approx_angle4(angle120));
-	PRINT_EXPR(bOoM::approx_angle8(angle120));
+	PRINT_EXPR(bOoM::approxDeg4(angle120));
+	PRINT_EXPR(bOoM::approxDeg8(angle120));
 	PRINT_EXPR(angle180);
-	PRINT_EXPR(bOoM::approx_angle4(angle180));
-	PRINT_EXPR(bOoM::approx_angle8(angle180));
+	PRINT_EXPR(bOoM::approxDeg4(angle180));
+	PRINT_EXPR(bOoM::approxDeg8(angle180));
 	PRINT_EXPR(angle234);
-	PRINT_EXPR(bOoM::approx_angle4(angle234));
-	PRINT_EXPR(bOoM::approx_angle8(angle234));
+	PRINT_EXPR(bOoM::approxDeg4(angle234));
+	PRINT_EXPR(bOoM::approxDeg8(angle234));
 	PRINTLN();
 }
 
@@ -113,10 +113,10 @@ void test__math2d__approx_angle()
 void test__dynamic()
 {
 	bOoM::real2 t1(2,0);
-	bOoM::rot2 r1 = bOoM::rot2from(CST_PI/3);
+	bOoM::rot2 r1 = bOoM::rot2FromRadian(CST_PI/3);
 	bOoM::move2 m1(r1,t1);
 	bOoM::real2 t2(3,1);
-	bOoM::rot2 r2 = bOoM::rot2from(CST_PI/6);
+	bOoM::rot2 r2 = bOoM::rot2FromRadian(CST_PI/6);
 	bOoM::move2 m2(r2,t2);
 	bOoM::Dynamic dyn(bOoM::move2_id, m1, m2);
 
@@ -219,7 +219,7 @@ void test__allocator()
 int main(void)
 {
 	TEST(test__math2d());
-	TEST(test__math2d__approx_angle());
+	TEST(test__math2d__approxDeg());
 	TEST(test__dynamic());
 	TEST(test__eqn2());
 	TEST(test__intersection());
