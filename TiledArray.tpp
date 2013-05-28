@@ -73,10 +73,10 @@ bool TiledArray<A>::isCorrectMindex(size_t_2 midx) const
 	{ return (midx.x<totalSize.x) && (midx.y<totalSize.y); }
 
 template<typename A>
-A const& TiledArray<A>::at(size_t_2 midx) const
+A const& TiledArray<A>::operator[](size_t_2 midx) const
 	{ return array[indexOf(midx)]; }
 template<typename A>
-A const& TiledArray<A>::at(size_t idx) const
+A const& TiledArray<A>::operator[](size_t idx) const
 	{ return array[idx]; }
 template<typename A>
 A& TiledArray<A>::operator[](size_t_2 midx)
@@ -107,7 +107,7 @@ std::ostream& operator<<(std::ostream& s, TiledArray<A> const& tarray)
 	{
 		for(p.x=0; p.x < tarray.totalSize.x; ++(p.x))
 		{
-			std::string str = toString<A>(tarray.at(p));
+			std::string str = toString<A>(tarray[p]);
 			str.resize(maxCellLen, ' ');
 			std::string whitespaces;
 			whitespaces.resize(sepLen, ' ');

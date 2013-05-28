@@ -1,6 +1,6 @@
 #include <iostream>
 #define PRINT_EXPR(e) std::cout << #e << " : " << (e) << std::endl
-#define TEST(f) std::cout << #f << std::endl; f
+#define PRINT_INSTR(f) std::cout << #f << std::endl; f
 #define PRINTLN() std::cout << std::endl
 
 #include "allocator.hpp"
@@ -196,35 +196,37 @@ void test__TiledArray()
 void test__allocator()
 {
 	bOoM::StackAllocator sa(32_bytes);
-	PRINT_EXPR(sa);
-	int* pi= (int*) sa.allocate( sizeof(int) );
+	std::cout << sa;
+	PRINT_INSTR(int* pi= (int*) sa.allocate( sizeof(int) ));
 	*pi= -1;
-	PRINT_EXPR(sa);
-	bOoM::real* qi= (bOoM::real*) sa.allocate( sizeof(bOoM::real) );
+	std::cout << sa;
+	PRINT_INSTR(bOoM::real* qi= (bOoM::real*) sa.allocate( sizeof(bOoM::real) ));
 	*qi= NAN;
-	PRINT_EXPR(sa);
-	int* ra= (int*) sa.allocate( 10*sizeof(int) );
+	std::cout << sa;
+	PRINT_INSTR(int* ra= (int*) sa.allocate( 10*sizeof(int) ));
 	for(size_t i=0; i<10; ++i)
 		ra[i]= i;
-	PRINT_EXPR(sa);
-	sa.deallocate(ra);
-	PRINT_EXPR(sa);
-	sa.deallocate(qi); //pointer invalid
-	sa.deallocate(pi); //pointer invalid
-	PRINT_EXPR(sa);
-	pi= (int*) sa.allocate(128);
-	PRINT_EXPR(sa);
+	std::cout << sa;
+	PRINT_INSTR(sa.deallocate(ra));
+	std::cout << sa;
+	PRINT_INSTR(sa.deallocate(qi)); //pointer invalid
+	PRINT_INSTR(sa.clearPages());
+	std::cout << sa;
+	PRINT_INSTR(sa.deallocate(pi)); //pointer invalid
+	std::cout << sa;
+	PRINT_INSTR(pi= (int*) sa.allocate(128));
+	std::cout << sa;
 }
 
 int main(void)
 {
-	TEST(test__math2d());
-	TEST(test__math2d__approxDeg());
-	TEST(test__dynamic());
-	TEST(test__eqn2());
-	TEST(test__intersection());
-	TEST(test__TiledArray());
-	TEST(test__allocator());
+	PRINT_INSTR(test__math2d());
+	PRINT_INSTR(test__math2d__approxDeg());
+	PRINT_INSTR(test__dynamic());
+	PRINT_INSTR(test__eqn2());
+	PRINT_INSTR(test__intersection());
+	PRINT_INSTR(test__TiledArray());
+	PRINT_INSTR(test__allocator());
 	return 0;
 }
 

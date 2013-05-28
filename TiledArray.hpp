@@ -73,9 +73,9 @@ public:
 	//! \brief Returns whether the given two-dimensional index is a valid index of the TiledArray.
 	bool isCorrectMindex(size_t_2 midx) const;
 	//! \brief Returns a constant reference to the element at index `midx`.
-	A const& at(size_t_2 midx) const;
+	A const& operator[](size_t_2 midx) const;
 	//! \brief Returns a constant reference to the element at index `idx`.
-	A const& at(size_t idx) const;
+	A const& operator[](size_t idx) const;
 	//! \brief Returns a reference to the element at index `midx`.
 	A& operator[](size_t_2 midx);
 	//! \brief Returns a reference to the element at index `idx`.

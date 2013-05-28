@@ -5,6 +5,7 @@
 #include <cassert>
 #include <iostream>
 #include <iomanip>
+#include <vector>
 
 constexpr std::size_t operator"" _bytes(unsigned long long const x)
 	{ return static_cast<std::size_t>(x); }
@@ -31,31 +32,47 @@ class StdAllocator
 //! Global StdAllocator (like a singleton)
 StdAllocator stdAllocator;
 
+struct StackAllocator;
+struct StackAllocator_Page;
+std::ostream& operator<<(std::ostream& s, StackAllocator const& a);
+std::ostream& operator<<(std::ostream& s, StackAllocator_Page const& page);
+
 //!inspired from box2d
-struct StackAllocator
+struct StackAllocator_Page
 {
-	explicit StackAllocator(std::size_t size = 1_megabytes)
+	explicit StackAllocator_Page()
+		: buffer(NULL), next(NULL), buffer_end(NULL)
+	{
+	}
+
+	explicit StackAllocator_Page(std::size_t size)
 	{
 		buffer=(uint8_t*) std::malloc(size);
 		//TODO fail if buffer == null
 		next= buffer;
 		buffer_end= buffer+size;
 	}
+	StackAllocator_Page(StackAllocator_Page const& other) = delete; // not copyable
+	StackAllocator_Page(StackAllocator_Page && other)               // but moveable
+	{
+		buffer = other.buffer;
+		next = other.next;
+		buffer_end = other.buffer_end;
+		other.buffer = NULL;
+		other.next = NULL;
+		other.buffer_end = NULL;
+	}
 
-	~StackAllocator() { free(buffer); }
+	~StackAllocator_Page()
+	{
+		free(buffer);
+	}
 
 	void *allocate(std::size_t size)
 	{
 		//Double the size of the buffer if we do not have enough room left.
 		//TODO extract the realloc outside the loop.
-		while( next +size +sizeof(std::size_t) >= buffer_end )
-		{
-			size_t next_relative= next - buffer;
-			size_t fullSize= buffer_end - buffer;
-			buffer= (uint8_t*) std::realloc( buffer, 2*fullSize );
-			next= buffer +next_relative;
-			buffer_end= buffer + (2*fullSize);
-		}
+		assert( next +size +sizeof(std::size_t) <= buffer_end );
 		void* ptr= next;
 		next += size;
 		*( (size_t*)next ) = size ;
@@ -64,7 +81,7 @@ struct StackAllocator
 	}
 	void deallocate(void *ptr)
 	{
-		assert( ptr > buffer);
+		assert( ptr >= buffer && ptr < buffer_end );
 		next -= sizeof(std::size_t);
 		size_t size = *( (size_t*)next );
 		next -= size;
@@ -74,28 +91,91 @@ struct StackAllocator
 	uint8_t* buffer;
 	uint8_t* next;
 	uint8_t* buffer_end;
-	//TODO add a threshold to div by 2 the size of the buffer ?
 };
 
-std::ostream& operator<<(std::ostream& s, StackAllocator const& a)
+inline std::size_t minimalLengthFor(std::size_t l)
 {
-	s << "StdAllocator[" << std::endl;
-	int charactersOnLines= 0;
-	for(uint8_t* byte= a.buffer; byte < a.buffer_end; ++byte)
+	return l + sizeof(std::size_t);
+}
+
+struct StackAllocator
+{
+	StackAllocator() = delete;
+	StackAllocator(std::size_t page_length)
+		: page_length(page_length), pages(0)
+	{}
+	StackAllocator(StackAllocator const&) = delete;
+
+	void *allocate(std::size_t size)
 	{
-		if(byte == a.next)
-			s << '|';
-		else
-			s << ' ';
+		for(auto page_it = pages.begin(); page_it < pages.end(); ++page_it)
+		{
+			if( (page_it->next) +size +sizeof(std::size_t) < page_it->buffer_end )
+				return page_it->allocate(size);
+		}
+ 		pages.emplace_back(   std::max( page_length, minimalLengthFor(size) )   );
+		return pages.back().allocate(size);
+	}
+
+	void deallocate(void *ptr)
+	{
+		for(auto page_it = pages.begin(); page_it < pages.end(); ++page_it)
+		{
+			if( ptr >= page_it->buffer && ptr < page_it->buffer_end )
+			{
+				page_it->deallocate(ptr);
+				return;
+			}
+		}
+		//if we reach here, the pointer do not reference to any page.
+		assert(false);
+	}
+
+	void clearPages()
+	{
+		while( pages.rbegin() != pages.rend() && pages.rbegin()->buffer == pages.rbegin()->next )
+			pages.pop_back();
+	}
+
+	~StackAllocator(){}
+	std::size_t page_length;
+	std::vector<StackAllocator_Page> pages;
+};
+
+
+#define PRINT_WIDTH__RAW_MEMORY 96
+
+std::ostream& operator<<(std::ostream& s, StackAllocator_Page const& page)
+{
+	int charactersOnLines= 0;
+	for(uint8_t* byte= page.buffer; byte < page.buffer_end; ++byte)
+	{
+		s << ( byte==page.next ? '|' : ' ' );
 		s << std::hex << std::setw(2) << (int)*byte;
 		charactersOnLines += 3;
-		if(charactersOnLines >= 96)
+		if(charactersOnLines >= PRINT_WIDTH__RAW_MEMORY)
 		{
 			s << std::endl;
 			charactersOnLines=0;
 		}
 	}
-	s << "]";
+	if(charactersOnLines!=0)
+			s << std::endl;
+
+	return s;
+}
+
+std::ostream& operator<<(std::ostream& s, StackAllocator const& a)
+{
+	std::string hline;
+	hline.resize( PRINT_WIDTH__RAW_MEMORY +1 - sizeof("--StackAllocator"), '-' );
+	s << "--StackAllocator" << hline << std::endl;
+	hline.resize( PRINT_WIDTH__RAW_MEMORY, '-' );
+	for(auto page_it = a.pages.begin(); page_it < a.pages.end(); ++page_it)
+	{
+		s << *page_it;
+		s << hline << std::endl;
+	}
 
 	return s;
 }
