@@ -1,5 +1,12 @@
 #ifndef H_allocator
 #define H_allocator
+
+/*! \file allocator.hpp \brief File containing multiple custom allocators.
+ *
+ *  This file is concerned with compact allocation schemes, and defines some
+ *  classes for specific-case pre-allocate strategies.
+ */
+
 #include <cstdlib>
 #include <cstdint>
 #include <cassert>

@@ -3,8 +3,10 @@ PROJECT_NAME           = "bOoM"
 PROJECT_NUMBER         = 0.0
 PROJECT_BRIEF          = "A library to paint and animate 2d blobs."
 
-# filters
-FILE_PATTERNS          = *.c *.h *.cpp *.hpp *.doxygen
+# whate source files to search for
+INPUT                  = src
+RECURSIVE              = YES
+FILE_PATTERNS          = *.c *.h *.cpp *.hpp *.tpp *.doxygen
 
 # Where to output doc
 OUTPUT_DIRECTORY       = doc
@@ -18,6 +20,7 @@ SORT_MEMBER_DOCS       = YES
 SORT_BRIEF_DOCS        = YES
 SORT_MEMBERS_CTORS_1ST = YES
 SORT_GROUP_NAMES       = YES
+SOURCE_BROWSER         = YES
 
 # Verbosity of Doxygen
 WARN_IF_UNDOCUMENTED   = NO

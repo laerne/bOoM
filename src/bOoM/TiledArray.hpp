@@ -10,10 +10,10 @@
 
 #include "math2d.hpp"
 namespace bOoM {
-/*! Tiled array data structure.
+/*! \brief A two-dimensional array optimized for both vertical and horizontal acces performance.
  *
- * A tiled array is a two-dimensional array where indices are redistributed such that
- * caching neighboring cells is efficient both horizontally and vertically.
+ * A tiled array has indices redistributed such that caching neighboring cells
+ * are stored not far away one from each other.
  * Conceptually, it can be viewed as nesting regular 2D arrays into a larger
  * regular 2D array.
  * The sub-arrays are called “tiles”.
@@ -101,17 +101,21 @@ private:
 	A *array; //!< Array containing the actual contents.
 };
 
-/*! \brief Print a tiled array as a 2D representation.
- *
- * Each cell representation is truncated to a maximum of 7 chararters.
- */
+//! \brief Print a tiled array as a 2D representation.
+//!
+//! Each cell representation is truncated to a maximum of 7 chararters.
+//! \relates bOoM::TiledArray
 template<typename A>
 std::ostream& operator<<(std::ostream& s, TiledArray<A> const& tarray);
 
 namespace TiledArrayUtils {
+	//! \brief Round up each component of `n` such that it is a multiple of the correspondant component of `t`.
 	size_t_2 paddedToTile(size_t_2 n, size_t_2 t);
+	//! \brief Return the number of times `t` must be fit in `n` to cover it all, per component.
 	size_t_2 inTileUnits(size_t_2 n, size_t_2 t);
+	//! \brief Round up `n` such that it is a multiple of `t`.
 	size_t paddedToTile(size_t n, size_t t);
+	//! \brief Return the minimal `k` such that `k*t >= n`.
 	size_t inTileUnits(size_t n, size_t t);
 } //namespace TiledArrayUtils
 

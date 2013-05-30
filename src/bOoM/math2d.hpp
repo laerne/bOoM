@@ -23,11 +23,11 @@ template<typename R>
 struct V2
 {
 	//! \brief Default constructor, with no initialisation of variables.
-	V2(){}
+	constexpr V2(){}
 	//! \brief Standard constructor.
-	V2(R x, R y) : x(x), y(y) {}
+	constexpr V2(R x, R y) : x(x), y(y) {}
 	//! \brief Copy constructor.
-	V2(V2<R> const& q) = default;
+	constexpr V2(V2<R> const& q) = default;
 	//! \brief Per-component affectation operator.
 	V2<R>& operator= (V2<R> const& q) = default;
 	//! \brief Per-component sum and affectation.
@@ -55,92 +55,105 @@ struct V2
 };
 
 //! \brief Vector sum operator.
+//! \relates bOoM::V2
 template<typename R>
 V2<R> operator+(V2<R> const& p, V2<R> const& q)
 	{ return V2<R>(p)+=q; }
 
 //! \brief Vector difference operator.
+//! \relates bOoM::V2
 template<typename R>
 V2<R> operator-(V2<R> const& p, V2<R> const& q)
 	{ return V2<R>(p)-=q; }
 
 //! \brief Vector scale operator.
+//! \relates bOoM::V2
 template<typename R>
 V2<R> operator*(V2<R> const& p, R a)
 	{ return V2<R>(p)*=a; }
 
 //! \brief Vector inverse scale operator, over a field `F`.
+//! \relates bOoM::V2
 template<typename F>
 V2<F> operator/(V2<F> const& p, F a)
 	{ return V2<F>(p)/=a; }
 
-/*! \brief Dot product operator : return the dot product of this vector and `q`.
- *
- *  For readability, the expression should be enclosed in parentheses : `(p|q)`.
- */
+//! \brief Dot product operator : return the dot product of this vector and `q`.
+//!
+//! For readability, the expression should be enclosed in parentheses : `(p|q)`.
+//! \relates bOoM::V2
 template<typename R>
 R operator| (V2<R> const& p, V2<R> const& q)
 	{ return p.x*q.x + p.y*q.y; }
 
 //! \brief Dot product operator.  Equivalent to V2::operator| .
+//! \relates bOoM::V2
 template<typename R>
 R dotProduct(V2<R> const& p, V2<R> const& q)
 	{ return p.x*q.x + p.y*q.y; }
 
 //! \brief Norm of the vector obtained by a cross product operation.
+//! \relates bOoM::V2
 template<typename R>
 R crossProduct_z(V2<R> const& p, V2<R> const& q)
 	{ return p.x*q.y - p.y*q.x; }
 
 //! \brief Output a string representation of a two-dimensional vector.
+//! \relates bOoM::V2
 template<typename R>
 std::ostream& operator<<(std::ostream& s, V2<R> const& p)
 	{ s <<"(" << p.x <<"," << p.y <<")"; return s; }
 
-/*! \brief Manhattan norm of the vector, i.e. the sum of the absolute value
- *  of each of its components.
- */
+//! \brief Manhattan norm of the vector, i.e. the sum of the absolute value
+//  of each of its components.
+//! \relates bOoM::V2
 template<typename R>
 R norm1(V2<R> const& p)
 	{ return ABS(p.x)+ABS(p.y); }
 
 //! \brief Manhattan distance of two vectors. \sa norm1().
+//! \relates bOoM::V2
 template<typename R>
 R dist1(V2<R> const& p, V2<R> const& q)
 	{ return norm1(q-p); }
 
-/*! \brief Squared euclidean norm of the vector, i.e. the sum of the
- *  square of each of its components.
- */
+//! \brief Squared euclidean norm of the vector, i.e. the sum of the
+//  square of each of its components.
+//! \relates bOoM::V2
 template<typename R>
 R norm2sq(V2<R> const& p)
 	{ return SQ(p.x)+SQ(p.y); }
 //! \brief Squared euclidean distance of two vectors. \sa norm2sq().
+//! \relates bOoM::V2
 template<typename R>
 R dist2sq(V2<R> const& p, V2<R> const& q)
 	{ return norm2sq(q-p); }
 
-/*! \brief Maximum norm of the vector, i.e. the maximum over the absolute
- * value of each of its components.
- */
+//! \brief Maximum norm of the vector, i.e. the maximum over the absolute
+// value of each of its components.
+//! \relates bOoM::V2
 template<typename R>
 R norm_max(V2<R> const& p)
 	{ return MAX(ABS(p.x),ABS(p.y)); }
 //! \brief Maximum distance of two vectors. \sa norm_max().
+//! \relates bOoM::V2
 template<typename R>
 R dist_max(V2<R> const& p, V2<R> const& q)
 	{ return norm_max(q-p); }
 
 //! \brief Right orthogonal vector of `p`.
+//! \relates bOoM::V2
 template<typename R>
 V2<R> rightOrthogonal(V2<R> const& p)
 	{ return V2<R>( p.y, -p.x ); }
 //! \brief Left orthogonal vector of `p`.
+//! \relates bOoM::V2
 template<typename R>
 V2<R> leftOrthogonal(V2<R> const& p)
 	{ return V2<R>( -p.y, p.x ); }
 
 //! \brief Returns wheter the vector is nan or not
+//! \relates bOoM::V2
 template<typename R>
 bool isnan(V2<R> const& p)
 	{ return std::isnan(p.x) || std::isnan(p.y); }
@@ -193,11 +206,11 @@ template<typename R>
 struct Rot2
 {
 	//! \brief Default constructor, with no initialisation of variables.
-	Rot2(){}
+	constexpr Rot2(){}
 	//! \brief Standard constructor.
-	Rot2(R cos, R sin) : cos(cos), sin(sin) {}
+	constexpr Rot2(R cos, R sin) : cos(cos), sin(sin) {}
 	//! \brief Copy constructor.
-	Rot2(Rot2<R> const& r) = default;
+	constexpr Rot2(Rot2<R> const& r) = default;
 	//! \brief Per-component affectation operator.
 	Rot2<R>& operator=(Rot2<R> const& r) = default;
 	/*! \brief Rotation composition and affectation.  Can be viewed as a matrix
@@ -222,27 +235,28 @@ struct Rot2
 	template<typename M>
 	operator Rot2<M>() { return Rot2<M>( (M)cos, (M)sin ); }
 
-	/*! \brief Cosine of the angle of rotation.
-	 *
-	 * It is scaled by the determinant of this matrix.
-	 */
+	//! \brief Cosine of the angle of rotation.
+	//!
+	//! It is scaled by the determinant of this matrix.
 	R cos;
-	/*! \brief Sine of the angle of rotation.
-	 *
-	 * It is scaled by the determinant of this matrix.
-	 */
+	//! \brief Sine of the angle of rotation.
+	//!
+	//! It is scaled by the determinant of this matrix.
 	R sin;
 };
 
 //! \brief Rotation composition.  \see Rot2::operator*=
+//! \relates bOoM::Rot2
 template<typename R>
 Rot2<R> operator*(Rot2<R> copy, Rot2<R> const& r)
 	{ return copy*=r; }
 //! \brief Return the inverse rotation.
+//! \relates bOoM::Rot2
 template<typename R>
 Rot2<R> inverse(Rot2<R> const& r) {return Rot2<R>(r.cos, -r.sin); }
 template<typename R>
 //! \brief Output a string representation of the rotation.
+//! \relates bOoM::Rot2
 std::ostream& operator<<(std::ostream& s, Rot2<R> const& r)
 	{ s <<"(cos:" << r.cos <<",sin:" << r.sin <<")"; return s; }
 
@@ -255,12 +269,12 @@ template<typename R>
 struct Move2
 {
 	//! \brief Default constructor, with no initialisation of variables.
-	Move2(){}
+	constexpr Move2(){}
 	//! \brief Standard constructor.
-	Move2(Rot2<R> const& rotation, V2<R> const& translation)
+	constexpr Move2(Rot2<R> const& rotation, V2<R> const& translation)
 		: r(rotation), t(translation) {}
 	//! \brief Copy constructor.
-	Move2(Move2<R> const& mv) = default;
+	constexpr Move2(Move2<R> const& mv) = default;
 	//! \brief Per-component affectation operator.
 	Move2<R>& operator=(Move2<R> const& mv) = default;
 	//! \brief Per-component equality operator.
@@ -269,10 +283,9 @@ struct Move2
 	bool operator!=(Move2<R> const& mv) const { return r!=mv.r || t!=mv.t; }
 	//! \brief Return the image point of the application of this move on `p`.
 	V2<R> map(V2<R> const& p) const { return r.map(p) += t; }
-	/*! \brief Assign `this`∘`mv` to this move.
-	 *
-	 * Note that move composition is not commutative.
-	 */
+	//! \brief Assign `this`∘`mv` to this move.
+	//!
+	//! Note that move composition is not commutative.
 	Move2<R>& precompose(Move2<R> const& mv)
 		{ t=map(mv.t);  r=r*mv.r; return *this; }
 	//! \brief If R is castable to M, then this cast Rot2<R> to Rot2<M> component-wise.
@@ -283,27 +296,31 @@ struct Move2
 	V2<R> t;   //!< Translation component.
 };
 
-/*! Return a new move representing the composition of `m1` and `m2`.
- *
- * Note that move composition is not commutative.
- */
+//! Return a new move representing the composition of `m1` and `m2`.
+//!
+//! Note that move composition is not commutative.
+//! \relates bOoM::Move2
 template<typename R>
 Move2<R> compose(Move2<R> const& m2, Move2<R> const& m1)
 	{ return Move2<R>(m2).precompose(m1); }
 //! \brief Output a string representation of the move.
+//! \relates bOoM::Move2
 template<typename R>
 std::ostream& operator<<(std::ostream& s, Move2<R> const& mv)
 	{ s <<"(r:" <<mv.r <<",t:" << mv.t <<")"; return s; }
 //! \brief Return the inverse move of `mv`
+//! \relates bOoM::Move2
 template<typename R>
 Move2<R>  inverse(Move2<R> const& mv)
 	{ const Rot2<R> r_inv= mv.r.inv(); return Move2<R>(r_inv, r_inv.map(mv.t)); }
 
 //shortcuts
 //! Equivalent to `mv.map(p)` .
+//! \relates bOoM::Move2
 template<typename R>
 V2<R> operator>>(V2<R> const& p, Move2<R> const& mv) { return mv.map(p); }
 //! Equivalent to `p= mv.map(p)` .
+//! \relates bOoM::Move2
 template<typename R>
 V2<R>& operator>>=(V2<R>& p, Move2<R> const& mv) { return p = mv.map(p); }
 
@@ -315,24 +332,25 @@ typedef Rot2<real> rot2; //!< Euclidean plane rotation.
 typedef Move2<real> move2; //!< Euclidean plane move.
 typedef V2<std::size_t> size_t_2; //! Two-dimentional index/size.
 // Usefull constants
-real2 const zero2(0,0); //!< Constant to the null vector.
-rot2 const rot2_id(1.f,0.f); //!< Constant to the identity rotation.
-move2 const move2_id(rot2_id, zero2); //!< Constant to the identity move.
-real2 const nan2(NAN,NAN); //!< Constant to an non-existant vector.
+real2 constexpr zero2(0,0); //!< Constant to the null vector.
+rot2 constexpr rot2_id(1.f,0.f); //!< Constant to the identity rotation.
+move2 constexpr move2_id(rot2_id, zero2); //!< Constant to the identity move.
+real2 constexpr nan2(NAN,NAN); //!< Constant to an non-existant vector.
 // real angle utilities
 //! \brief Return a new real rotation object from `angle`, in radians.
+//! \relates bOoM::Rot2
 inline rot2 rot2FromRadian(real angle)
 	{ return rot2(std::cos(angle), std::sin(angle)); }
-/*! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
- *
- * Tests suggests that the maximum error can rise up to four degrees.
- */
+//! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
+//!
+//! Tests suggests that the maximum error can rise up to four degrees.
+//! \relates bOoM::Rot2
 real approxDeg4(real2 const& p);
-/*! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
- *
- * The function is a bit slower than \ref approx_angle4, but it is more precise :
- * its errors never go over 1 degree.
- */
+//! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
+//!
+//! The function is a bit slower than \ref approx_angle4, but it is more precise :
+//! its errors never go over 1 degree.
+//! \relates bOoM::Rot2
 real approxDeg8(real2 const& p);
 
 } //namespace bOoM

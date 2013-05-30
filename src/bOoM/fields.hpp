@@ -4,7 +4,7 @@
 #include "basemath.hpp"
 namespace bOoM {
 
-struct CubicHillField : public Map_real
+struct CubicHillField
 {
 	CubicHillField(real inner_radius, real outer_radius)
 		: support(outer_radius)
@@ -35,7 +35,7 @@ struct CubicHillField : public Map_real
 	real support;
 };
 
-struct CubicPlateField : public Map_real
+struct CubicPlateField
 {
 	CubicPlateField(real inner_radius, real outer_radius)
 		inner_radius(inner_radius), outer_radius(outer_radius)
