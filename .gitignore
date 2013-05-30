@@ -1,14 +1,18 @@
-# build directory
-build/
-qbuild/
+# build directories
+build
+build.*
 # documentation directory
-doc/
+doc
 # random stuff directory
-randomStuff/
-#ignore qt automade files
+randomStuff
+#ignore autobuilt files
 CMakeLists.txt.user
+Doxyfile.auto
 # ignore temporary files
 .*.swp
 *~
 **/.*.swp
 **/*~
+#ignore backup files
+*.bak
+**/*.bak

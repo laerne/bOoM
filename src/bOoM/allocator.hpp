@@ -25,6 +25,7 @@ constexpr std::size_t operator"" _gigabytes(unsigned long long const x)
 
 namespace bOoM {
 
+//! TODO use std::Allocator<T> !!!
 class StdAllocator
 {
 	void *allocate(std::size_t size)
@@ -108,7 +109,7 @@ inline std::size_t minimalLengthFor(std::size_t l)
 struct StackAllocator
 {
 	StackAllocator() = delete;
-	StackAllocator(std::size_t page_length)
+	explicit StackAllocator(std::size_t page_length)
 		: page_length(page_length), pages(0)
 	{}
 	StackAllocator(StackAllocator const&) = delete;

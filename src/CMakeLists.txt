@@ -1,14 +1,14 @@
-#Search each main namespace
+project(bOoM)
+
+# CMake version
+cmake_minimum_required(VERSION 2.6)
+# version number
+set (bOoM_VERSION_MAJOR 0)
+set (bOoM_VERSION_MINOR 0)
+
+# Set verbose
+#set (CMAKE_VERBOSE_MAKEFILE true)
+
+# Build library, tests, ...
 add_subdirectory(bOoM)
-MESSAGE(STATUS ${CMAKE_INCLUDE_PATH})
-
-
-#These source directories are roots for header files.
-include_directories(bOoM)
-#define executable
-add_executable(boom_test main.cpp)
-
-target_link_libraries (boom_test m boom)
-
-#use C++11
-list(APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -O0")
+add_subdirectory(test)

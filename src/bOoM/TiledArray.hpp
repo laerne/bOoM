@@ -5,7 +5,6 @@
  *  \sa TiledArray
  */
 
-#include <vector>
 #include <iostream>
 
 #include "math2d.hpp"

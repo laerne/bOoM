@@ -3,12 +3,12 @@
 #define PRINT_INSTR(f) std::cout << #f << std::endl; f
 #define PRINTLN() std::cout << std::endl
 
-#include "allocator.hpp"
-#include "basemath.hpp"
-#include "math2d.hpp"
-#include "dynamic.hpp"
-#include "intersection.hpp"
-#include "TiledArray.hpp"
+#include "bOoM/allocator.hpp"
+#include "bOoM/basemath.hpp"
+#include "bOoM/math2d.hpp"
+#include "bOoM/dynamic.hpp"
+#include "bOoM/intersection.hpp"
+#include "bOoM/TiledArray.hpp"
 
 //! print pairs
 template<typename T1, typename T2>

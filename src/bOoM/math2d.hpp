@@ -25,7 +25,7 @@ struct V2
 	//! \brief Default constructor, with no initialisation of variables.
 	constexpr V2(){}
 	//! \brief Standard constructor.
-	constexpr V2(R x, R y) : x(x), y(y) {}
+	constexpr V2(R const& x, R const& y) : x(x), y(y) {}
 	//! \brief Copy constructor.
 	constexpr V2(V2<R> const& q) = default;
 	//! \brief Per-component affectation operator.
@@ -35,9 +35,9 @@ struct V2
 	//! \brief Per-component difference and affectation.
 	V2<R>& operator-=(V2<R> const& q) { x -= q.x; y-= q.y; return *this; }
 	//! \brief Per-component product by the scalar and affectation.
-	V2<R>& operator*=(R a) { x *= a; y*= a; return *this; }
+	V2<R>& operator*=(R const& a) { x *= a; y*= a; return *this; }
 	//! \brief Per-component product by the inverse scalar and affectation.
-	V2<R>& operator/=(R a) { x /= a; y/= a; return *this; }
+	V2<R>& operator/=(R const& a) { x /= a; y/= a; return *this; }
 	//! \brief Identity operator : return a copy of self.
 	V2<R>  operator+ () const         { return V2( x, y); }
 	//! \brief Opposite operator : return a new vector with opposite values.
@@ -69,13 +69,13 @@ V2<R> operator-(V2<R> const& p, V2<R> const& q)
 //! \brief Vector scale operator.
 //! \relates bOoM::V2
 template<typename R>
-V2<R> operator*(V2<R> const& p, R a)
+V2<R> operator*(V2<R> const& p, R const& a)
 	{ return V2<R>(p)*=a; }
 
 //! \brief Vector inverse scale operator, over a field `F`.
 //! \relates bOoM::V2
 template<typename F>
-V2<F> operator/(V2<F> const& p, F a)
+V2<F> operator/(V2<F> const& p, F const& a)
 	{ return V2<F>(p)/=a; }
 
 //! \brief Dot product operator : return the dot product of this vector and `q`.
@@ -202,13 +202,14 @@ bool isnan(V2<R> const& p)
  *   \right).
  * \f]
  */
+//TODO : use V2 instead of a Rot2 ?
 template<typename R>
 struct Rot2
 {
 	//! \brief Default constructor, with no initialisation of variables.
 	constexpr Rot2(){}
 	//! \brief Standard constructor.
-	constexpr Rot2(R cos, R sin) : cos(cos), sin(sin) {}
+	constexpr Rot2(R const& cos, R const& sin) : cos(cos), sin(sin) {}
 	//! \brief Copy constructor.
 	constexpr Rot2(Rot2<R> const& r) = default;
 	//! \brief Per-component affectation operator.
@@ -220,9 +221,9 @@ struct Rot2
 	 * operations), the composition is commutative.
 	 */
 	Rot2<R>& operator*=(Rot2<R> r)
-		{ const R cos_= cos;
+		{ R const cos_= cos;
 		  cos= cos*r.cos -sin*r.sin;
-		  sin= sin*r.cos +cos*r.sin;
+		  sin= sin*r.cos +cos_*r.sin;
 		  return *this; }
 	//! \brief Per-component equality operator.
 	bool operator==(Rot2<R> const& r) const { return cos==r.cos && sin==r.sin; }
