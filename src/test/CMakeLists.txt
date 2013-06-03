@@ -6,7 +6,7 @@ add_executable(old_stdout_test old_stdout_test.cpp)
 target_link_libraries (old_stdout_test m boom)
 
 # New cppunit test
-add_executable(boomtest test__math2d.cpp)
+add_executable(boomtest main.cpp)
 target_link_libraries (boomtest m boom cppunit dl)
 
 # Use C++11
