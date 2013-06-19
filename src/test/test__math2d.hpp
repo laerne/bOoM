@@ -68,6 +68,12 @@ public:
 		CPPUNIT_ASSERT_EQUAL( -4_r, (p2*2_r-p2|p3+zero2*3_r) );
 	}
 
+	void testCrossProduct()
+	{
+		CPPUNIT_ASSERT_EQUAL( -6_r, crossProduct_z(p0,q0) );
+		CPPUNIT_ASSERT_EQUAL( 0_r, crossProduct_z(p1,zero2) );
+	}
+
 	void testOrthogonal()
 	{
 		CPPUNIT_ASSERT_EQUAL( real2(-2_r,-2_r), rightOrthogonal(p3) );
@@ -81,12 +87,6 @@ public:
 		CPPUNIT_ASSERT_EQUAL( 10_r, norm2sq(p2) );
 		CPPUNIT_ASSERT_EQUAL( 2_r, norm_max(p3) );
 		CPPUNIT_ASSERT_EQUAL( 0_r, norm_max(zero2) );
-	}
-
-	void testCrossProduct()
-	{
-		CPPUNIT_ASSERT_EQUAL( -6_r, crossProduct_z(p0,q0) );
-		CPPUNIT_ASSERT_EQUAL( 0_r, crossProduct_z(p1,zero2) );
 	}
 };
 

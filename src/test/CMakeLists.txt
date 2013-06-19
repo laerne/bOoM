@@ -1,11 +1,4 @@
-# Set environment
-include_directories(${CMAKE_SOURCE_DIR})
-
-# Old test that printed expressions to stdout~:
-add_executable(old_stdout_test old_stdout_test.cpp)
-target_link_libraries (old_stdout_test m boom)
-
-# New cppunit test
+# cppunit test
 add_executable(boomtest main.cpp)
 target_link_libraries (boomtest m boom cppunit dl)
 
