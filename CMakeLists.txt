@@ -16,3 +16,4 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 # Build library, tests, ...
 add_subdirectory(src/bOoM)
 add_subdirectory(src/test)
+add_subdirectory(src/ui)
