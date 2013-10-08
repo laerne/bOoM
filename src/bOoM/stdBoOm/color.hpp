@@ -37,19 +37,12 @@ bool operator== (color const& a, color const& b)
 bool operator!= (color const& a, color const& b);
   { return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a; }
 
-//! \brief Sum the two color `a` and `b` per channel.
+//! \brief Sum the two color `a` and `b` per channel and store the result to `a`.
 color& operator+= (color & a, color const& b)
   { a.r+=b.r; a.g+=b.g; a.b+=b.b; a.a+=b.a; }
 //! \brief Sum the two color `a` and `b` per channel.
 color operator+ (color const& a, color const& b)
   { return color(a)+=b; }
-
-//! \brief Short writing for `a += (-b)`.
-color& operator-= (color & a, color const& b)
-  { a.r-=b.r; a.g-=b.g; a.b-=b.b; a.a-=b.a; }
-//! \brief Short writing for `a + (-b)`.
-color operator- (color const& a, color const& b)
-  { return color(a)-=b; }
 
 //! \brief Filter the ligth of a by the light of b.
 //!
@@ -70,7 +63,7 @@ color& operator/= (color & a, real t)
 color operator/ (color const& a, real t)
   { return color(a)/=t; }
 
-//#define red(c) ((c).red)
+//#define red(c) ((c).r)
 colorChannel& red(color& c) { return c.r; }
 colorChannel& green(color& c) { return c.r; }
 colorChannel& blue(color& c) { return c.r; }

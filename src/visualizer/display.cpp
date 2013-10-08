@@ -1,22 +1,34 @@
 #include "display.hpp"
 #include <iostream>
 
-#include <allegro5/allegro.h>
+#include <SDL2/SDL.h>
 
-int run_display()
+SDL_Window *sdlWindow;
+SDL_Renderer *sdlRenderer;
+
+int init_display()
 {
-	int status = al_init();
-  if(!status)
-     return -1;
+	if( SDL_Init(SDL_INIT_VIDEO) != 0)
+		return -1;
+	SDL_CreateWindowAndRenderer(800, 600, SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
+	if( sdlWindow == NULL || sdlRenderer == NULL )
+		return -2;
+	atexit(SDL_Quit);
 
-  ALLEGRO_DISPLAY *display = al_create_display(1024, 768);
-	if(!display)
-     return -1;
-
-  al_clear_to_color(al_map_rgb(0,0,0));
-  al_flip_display();
-  al_rest(3.0);
-  al_destroy_display(display);
+	SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(sdlRenderer);
 
   return 0;
+}
+
+int term_display()
+{
+	SDL_Quit();
+	return 0;
+}
+
+int render_display()
+{
+	SDL_RenderPresent(sdlRenderer);
+	return 0;
 }
