@@ -2,37 +2,35 @@
 #define H_solid
 namespace bOoM {
 
-struct Solid
+class Solid : event_based_actor
 {
-	real2 center_of_mass;
+public:
+	Solid(real2 initial_origin, real2 initial_velocity = zero2, real2 initial_acceleration = zero2, real tmptest__radius)
+		: origin(initial_origin), centerOfMass(zero2),
+		velocity(initial_velocity), acceleration(initial_acceleration),
+		tmptest__radius(tmptest__radius)
+	{}
+	Solid(Solid const& other) = delete; //delete until we implement a clean copy constructor.
+
+	virtual void init();
+private:
+	int render(ScreenProperties const& bufferType, ScreenBuffer& buffer);
+
+	behavior idle = (
+		on(RENDER, arg_match) >> [=](ScreenProperties const& bufferType, ScreenBuffer & buffer)
+		{
+			render(bufferType, buffer);
+			//TODO failure test
+			reply(DID_RENDER);
+		};
+	);
+
+	real2 origin;
+	real2 centerOfMass;
 	real2 velocity;
 	real2 acceleration;
 
 	real2 tmptest__radius;
-
-/* PSEUDO-CODE : main loop
-*****
-* 1 *
-*****
-while software_is_running:
-	time_step = 10_ms
-	while time_step > 0 && agent.has_msg()
-		msg = agent.poll()
-		handle(msg)
-		time_step -= time_to_compute
-	if time_step > 0:
-		msg = agent.receive( wait_max = time_step )
-		if( msg != NULL )
-			handle( msg )
-	move_entity()
-	check_collision()
-	if(has_collision)
-		set_acceleration_vectors()
-*****
-* 2 *
-*****
-	  
- */
 };
 
 } //namespace bOoM
