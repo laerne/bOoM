@@ -7,7 +7,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/ui/text/TestRunner.h>
 
-#include <bOoM/stdBoOm/math2d.hpp>
+#include <bOoM/math2d.hpp>
 
 #include <cstdlib>
 

@@ -10,8 +10,9 @@ set( bOoM_VERSION_PATCH 0 )
 #set (CMAKE_VERBOSE_MAKEFILE true)
 
 # Set environment
-# Include files are not yet separated from source.
-include_directories(${CMAKE_SOURCE_DIR}/src)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++0x -W -Wall")
+set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} "-g -O0")
+include_directories("${CMAKE_SOURCE_DIR}/include")
 
 # Build library, tests, ...
 add_subdirectory(src/bOoM)

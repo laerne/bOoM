@@ -1,4 +1,4 @@
-#include "intersection.hpp"
+#include <bOoM/intersection.hpp>
 
 namespace bOoM {
 

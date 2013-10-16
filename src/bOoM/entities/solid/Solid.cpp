@@ -1,4 +1,4 @@
-#include "Solid.hpp"
+#include <bOoM/entities/solid/Solid.hpp>
 namespace bOoM {
 int Solid::init()
 {

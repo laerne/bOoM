@@ -120,6 +120,6 @@ namespace TiledArrayUtils {
 
 } //namespace bOoM
 
-#include "TiledArray.tpp"
+#include "stdBoOm/TiledArray.tpp"
 #endif
 

@@ -1,4 +1,4 @@
-#include "basemath.hpp"
+#include <bOoM/basemath.hpp>
 
 namespace bOoM {
 
