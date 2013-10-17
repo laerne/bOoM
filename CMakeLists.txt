@@ -10,12 +10,17 @@ set( bOoM_VERSION_PATCH 0 )
 #set (CMAKE_VERBOSE_MAKEFILE true)
 
 # Set environment
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++0x -W -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} "-g -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -W -Wall")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+#set(CMAKE_CXX_FLAGS_DEBUG "-g3")
 include_directories("${CMAKE_SOURCE_DIR}/include")
+
 
 # Build library, tests, ...
 add_subdirectory(src/bOoM)
+get_property(libboom_path TARGET boom PROPERTY location)
+
 enable_testing()
 add_subdirectory(src/test)
+
 add_subdirectory(src/visualizer)

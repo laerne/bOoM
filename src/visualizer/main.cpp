@@ -1,38 +1,34 @@
 //Trivial displayer <NOT THREAD SAFE>
-#include <iostream>
-#include "display.hpp"
+#include <cppa/cppa.hpp>
 #include <SDL2/SDL.h>
 
+#include <chrono>
+#include <exception>
+#include <iostream>
+
+#include "SimpleDisplayActor.hpp"
+#include "SimpleInputActor.hpp"
+
+using namespace bOoM;
+
+void on_crash_exit()
+{
+	cppa::shutdown();
+	SDL_Quit();
+}
+
 int main(int argc, char **argv){
-	int status = init_display();
-	if( status != 0 )
-	{
-		std::cerr << "Failed to init the trivial display." << std::endl;
-		return status;
-	}
+	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_EVENTS ) != 0)
+		cppa::aout << "SDL failed to initiate." << std::endl;
+	atexit(on_crash_exit);
 
-	SDL_Event e;
-	bool run = true;
-	
-	while( status==0 && run )
-	{
-		status = render_display();
-		if( SDL_PollEvent( &e ) == 1)
-		{
-			switch(e.type)
-			{
-				case SDL_QUIT:
-				case SDL_KEYDOWN:
-					run = false;
-					break;
-			}
-		}
-	}
+	cppa::actor_ptr a_display = cppa::spawn<SimpleDisplayActor>( 600, 800, std::chrono::milliseconds(100) );
+	cppa::actor_ptr a_keyboardManager = cppa::spawn<SimpleInputActor>( a_display );
+	//cppa::actor_ptr a = cppa::spawn<StupidelySimpleActorWithConstructor>(2);
 
-	status = term_display();
-	if( status != 0 )
-	{
-		std::cerr << "Failed to init the trivial display." << std::endl;
-		return status;
-	}
+	cppa::await_all_others_done();
+	cppa::shutdown();
+	SDL_Quit();
+
+	return 0;
 }
