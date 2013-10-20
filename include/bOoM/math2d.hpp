@@ -46,7 +46,7 @@ struct V2
 	bool operator==(V2<R> const& q) const { return x==q.x && y==q.y; }
 	//! \brief Per-component inequality operator.
 	bool operator!=(V2<R> const& q) const { return x!=q.x || y!=q.y; }
-	//! \brief If R is castable to M, then this cast V2<R> to V2<M> component-wise.
+	//! \brief If R is castable to M, then this casts V2<R> to V2<M> component-wise.
 	template<typename M>
 	operator V2<M>() { return V2<M>( (M)x, (M)y ); }
 
@@ -110,7 +110,6 @@ std::ostream& operator<<(std::ostream& s, V2<R> const& p)
 template<typename R>
 R norm1(V2<R> const& p)
 	{ return ABS(p.x)+ABS(p.y); }
-
 //! \brief Manhattan distance of two vectors. \sa norm1().
 //! \relates bOoM::V2
 template<typename R>
@@ -160,107 +159,39 @@ bool isnan(V2<R> const& p)
 
 
 
-/*! \brief Two-dimensional rotation matrices.
+
+//! \brief Return the image point of the application on `p` of rotation specified by vector `r`.
+//! \relates bOoM::V2
+//! \see rotations.hpp
+template<typename R>
+V2<R> rot2_map(V2<R> const& r, V2<R> const& p)
+	{ return V2<R>(  p.x*r.x-p.y*r.y,  p.x*r.y+p.y*r.x  ); }
+
+/*! \brief Rotation (specified by a vector) composition and affectation.  Can
+ * be viewed as a matrix product.
  *
- * Stored as a pair of a sine \f$s\f$ and a cosine \f$c\f$, for efficiency reasons.
- * The operation matrix deduced from this sine and cosine is :
- * \f[
- *   \left(
- *   \begin{array}{cc}
- *      \mathtt{c} & -\mathtt{s} \\
- *      \mathtt{s} &  \mathtt{c} \\
- *   \end{array}
- *   \right).
- * \f]
- *
- * Please note nothing enforce you to have actual sine and cosine, i.e that
- * \f$\texttt{c}^2+\texttt{s}^2=1\f$.
- * In the case this last equality is no verified, the matrix represents a
- * scale-$-then-rotate operation :
- * \f[
- *   \left(
- *   \begin{array}{cc}
- *      \mathtt{c} & -\mathtt{s} \\
- *      \mathtt{s} &  \mathtt{c} \\
- *   \end{array}
- *   \right)
- * =
- *   \left(
- *   \begin{array}{cc}
- *      \frac{\mathtt{c}}{\texttt{c}^2+\texttt{s}^2} &
- *      \frac{-\mathtt{s}}{\texttt{c}^2+\texttt{s}^2} \\
- *      \frac{\mathtt{s}}{\texttt{c}^2+\texttt{s}^2} &
- *      \frac{\mathtt{c}}{\texttt{c}^2+\texttt{s}^2} \\
- *   \end{array}
- *   \right)
- * \cdot
- *   \left(
- *   \begin{array}{cc}
- *      \texttt{c}^2+\texttt{s}^2 & 0 \\
- *      0 & \texttt{c}^2+\texttt{s}^2 \\
- *   \end{array}
- *   \right).
- * \f]
+ * Since it involves only two-dimensional rotations (and possibly scale
+ * operations), the composition is commutative.
+ * \relates bOoM::V2
  */
-//TODO : use V2 instead of a Rot2 ?
 template<typename R>
-struct Rot2
+V2<R>& rot2_mult_inplace(V2<R> & r1, V2<R> const& r2)
 {
-	//! \brief Default constructor, with no initialisation of variables.
-	constexpr Rot2(){}
-	//! \brief Standard constructor.
-	constexpr Rot2(R const& cos, R const& sin) : cos(cos), sin(sin) {}
-	//! \brief Copy constructor.
-	constexpr Rot2(Rot2<R> const& r) = default;
-	//! \brief Per-component affectation operator.
-	Rot2<R>& operator=(Rot2<R> const& r) = default;
-	/*! \brief Rotation composition and affectation.  Can be viewed as a matrix
-	 * product.
-	 *
-	 * Since it involves only two-dimensional rotations (and possibly scale
-	 * operations), the composition is commutative.
-	 */
-	Rot2<R>& operator*=(Rot2<R> r)
-		{ R const cos_= cos;
-		  cos= cos*r.cos -sin*r.sin;
-		  sin= sin*r.cos +cos_*r.sin;
-		  return *this; }
-	//! \brief Per-component equality operator.
-	bool operator==(Rot2<R> const& r) const { return cos==r.cos && sin==r.sin; }
-	//! \brief Per-component inequality operator.
-	bool operator!=(Rot2<R> const& r) const { return cos!=r.cos || sin!=r.sin; }
-	//! \brief Return the image point of the application of this rotation on `p`.
-	V2<R> map(V2<R> const& p) const
-		{ return V2<R>(  p.x*cos-p.y*sin,  p.x*sin+p.y*cos  ); }
-	//! \brief If R is castable to M, then this cast Rot2<R> to Rot2<M> component-wise.
-	template<typename M>
-	operator Rot2<M>() { return Rot2<M>( (M)cos, (M)sin ); }
-
-	//! \brief Cosine of the angle of rotation.
-	//!
-	//! It is scaled by the determinant of this matrix.
-	R cos;
-	//! \brief Sine of the angle of rotation.
-	//!
-	//! It is scaled by the determinant of this matrix.
-	R sin;
-};
-
-//! \brief Rotation composition.  \see Rot2::operator*=
-//! \relates bOoM::Rot2
+	R const cos = r1.x;
+	r1.x= r1.x*r2.x - r1.y*r2.y;
+	r1.y= r1.y*r2.x + cos*r2.y;
+	return r1;
+}
+//! \brief Rotation (specified by a vector) composition.
+//! \relates bOoM::V2
 template<typename R>
-Rot2<R> operator*(Rot2<R> copy, Rot2<R> const& r)
-	{ return copy*=r; }
+V2<R> rot2_mult(V2<R> copy, V2<R> const& r)
+	{ return rot2_mult_inplace(copy,r); }
+	
 //! \brief Return the inverse rotation.
-//! \relates bOoM::Rot2
+//! \relates bOoM::V2
 template<typename R>
-Rot2<R> inverse(Rot2<R> const& r) {return Rot2<R>(r.cos, -r.sin); }
-template<typename R>
-//! \brief Output a string representation of the rotation.
-//! \relates bOoM::Rot2
-std::ostream& operator<<(std::ostream& s, Rot2<R> const& r)
-	{ s <<"(cos:" << r.cos <<",sin:" << r.sin <<")"; return s; }
-
+V2<R> rot2_inverse(V2<R> const& r) {return V2<R>(r.x, -r.y); }
 
 /*! \brief Two-dimensional moves, i.e. orientation-preserving isometries.
  *
@@ -270,9 +201,10 @@ template<typename R>
 struct Move2
 {
 	//! \brief Default constructor, with no initialisation of variables.
+	//
 	constexpr Move2(){}
 	//! \brief Standard constructor.
-	constexpr Move2(Rot2<R> const& rotation, V2<R> const& translation)
+	constexpr Move2(V2<R> const& rotation, V2<R> const& translation)
 		: r(rotation), t(translation) {}
 	//! \brief Copy constructor.
 	constexpr Move2(Move2<R> const& mv) = default;
@@ -283,17 +215,17 @@ struct Move2
 	//! \brief Per-component inequality operator.
 	bool operator!=(Move2<R> const& mv) const { return r!=mv.r || t!=mv.t; }
 	//! \brief Return the image point of the application of this move on `p`.
-	V2<R> map(V2<R> const& p) const { return r.map(p) += t; }
+	V2<R> map(V2<R> const& p) const { return rot2_map(r,p) += t; }
 	//! \brief Assign `this`∘`mv` to this move.
 	//!
 	//! Note that move composition is not commutative.
 	Move2<R>& precompose(Move2<R> const& mv)
-		{ t=map(mv.t);  r=r*mv.r; return *this; }
-	//! \brief If R is castable to M, then this cast Rot2<R> to Rot2<M> component-wise.
+		{ t=map(mv.t);  rot2_mult_inplace(r,mv.r); return *this; }
+	//! \brief If R is castable to M, then this cast Move2<R> to Move2<M> component-wise.
 	template<typename M>
-	operator Move2<M>() { return Move2<M>( (M)cos, (M)sin ); }
+	operator Move2<M>() { return Move2<M>( (M)r, (M)t ); }
 
-	Rot2<R> r; //!< Rotation component.
+	V2<R> r; //!< Rotation component.
 	V2<R> t;   //!< Translation component.
 };
 
@@ -313,7 +245,7 @@ std::ostream& operator<<(std::ostream& s, Move2<R> const& mv)
 //! \relates bOoM::Move2
 template<typename R>
 Move2<R>  inverse(Move2<R> const& mv)
-	{ const Rot2<R> r_inv= mv.r.inv(); return Move2<R>(r_inv, r_inv.map(mv.t)); }
+	{ const V2<R> r_inv= rot2_inverse(mv.r); return Move2<R>(r_inv, rot2_map(r_inv, mv.t)); }
 
 //shortcuts
 //! Equivalent to `mv.map(p)` .
@@ -329,29 +261,25 @@ V2<R>& operator>>=(V2<R>& p, Move2<R> const& mv) { return p = mv.map(p); }
 
 // Common data types
 typedef V2<real> real2; //!< Euclidean plane vector.
-typedef Rot2<real> rot2; //!< Euclidean plane rotation.
 typedef Move2<real> move2; //!< Euclidean plane move.
 typedef V2<std::size_t> size_t_2; //! Two-dimentional index/size.
 // Usefull constants
 real2 constexpr zero2(0,0); //!< Constant to the null vector.
-rot2 constexpr rot2_id(1.f,0.f); //!< Constant to the identity rotation.
+real2 constexpr rot2_id(1.f,0.f); //!< Constant to the identity rotation.
 move2 constexpr move2_id(rot2_id, zero2); //!< Constant to the identity move.
 real2 constexpr nan2(NAN,NAN); //!< Constant to an non-existant vector.
 // real angle utilities
 //! \brief Return a new real rotation object from `angle`, in radians.
-//! \relates bOoM::Rot2
-inline rot2 rot2FromRadian(real angle)
-	{ return rot2(std::cos(angle), std::sin(angle)); }
+inline real2 rot2_fromRadian(real angle)
+	{ return real2(std::cos(angle), std::sin(angle)); }
 //! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
 //!
 //! Tests suggests that the maximum error can rise up to four degrees.
-//! \relates bOoM::Rot2
 real approxDeg4(real2 const& p);
 //! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
 //!
 //! The function is a bit slower than \ref approx_angle4, but it is more precise :
 //! its errors never go over 1 degree.
-//! \relates bOoM::Rot2
 real approxDeg8(real2 const& p);
 
 } //namespace bOoM

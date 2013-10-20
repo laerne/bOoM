@@ -1,14 +1,17 @@
 #ifndef H_color
 #define H_color
 
-#include <basemath.hpp>
+#include <SDL2/SDL.h>
+#include "basemath.hpp"
 
 namespace bOoM
 {
 
+typedef SDL_Color colour;
+
 typedef float colorChannel;
 
-struct color
+struct color_f
 {
 	color() {};
 	explicit color( colorChannel red, colorChannel green, colorChannel blue, colorChannel alpha = 1.0f )
@@ -20,7 +23,7 @@ struct color
 	color( color const& other ) = default;
 	operator= ( color const& other ) = default;
 	explicit operator uint32_t()
-    { return a<<24 | b<<16 | g<<8 | r; }
+    { return uint32_t(a*255)<<24 | uint32_t(b*255)<<16 | uint32_t(g*255)<<8 | uint32_t(r*255); }
 
 	colorChannel r;
 	colorChannel g;

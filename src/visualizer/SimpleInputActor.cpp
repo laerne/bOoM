@@ -1,4 +1,7 @@
 #include "SimpleInputActor.hpp"
+
+#include <iostream>
+
 namespace bOoM {
 
 SimpleInputActor::SimpleInputActor(cppa::actor_ptr const& display_actor)
@@ -12,6 +15,7 @@ void SimpleInputActor::init()
 	SDL_Event e;
 	while( run && SDL_WaitEvent( &e ) == 1 )
 	{
+		//cppa::aout << "Received event of type " << e.type << std::endl;
 		switch(e.type)
 		{
 			case SDL_QUIT:

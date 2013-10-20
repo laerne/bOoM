@@ -1,9 +1,9 @@
-#ifndef H_message_names
-#define H_message_names
+#ifndef H_message_type
+#define H_message_type
 
 namespace common {
 
-enum class message_name : int_fast16_t {
+enum message_type : int_fast16_t {
 	// rendering-related messages
 	RENDER = 1,
 	DID_RENDER,
