@@ -1,7 +1,7 @@
 #include "SimpleDisplayActor.hpp"
 #include <stdexcept>
 
-namespace bOoM {
+namespace visualizer {
 
 SimpleDisplayActor::SimpleDisplayActor(int window_width, int window_height, std::chrono::steady_clock::duration refresh_span)
 	: w(window_width), h(window_height),
@@ -54,5 +54,5 @@ void SimpleDisplayActor::handle_messages()
 	);
 }
 
-} //namespace bOoM
+} //namespace visualizer
 

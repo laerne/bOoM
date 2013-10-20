@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace bOoM {
+namespace visualizer {
 
 SimpleInputActor::SimpleInputActor(cppa::actor_ptr const& display_actor)
 	: display_actor(display_actor) {}
@@ -28,5 +28,5 @@ void SimpleInputActor::init()
 	}
 }
 
-} //namespace bOoM
+} //namespace visualizer
 

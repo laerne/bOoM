@@ -4,7 +4,7 @@
 #include <cppa/cppa.hpp>
 #include <SDL2/SDL.h>
 
-namespace bOoM {
+namespace visualizer {
 struct SimpleInputActor : public cppa::event_based_actor {
 	SimpleInputActor(cppa::actor_ptr const& display_actor);
 	virtual ~SimpleInputActor();
@@ -13,7 +13,7 @@ struct SimpleInputActor : public cppa::event_based_actor {
 	cppa::actor_ptr display_actor;
 };
 
-} //namespace bOoM
+} //namespace visualizer
 #endif
 
 

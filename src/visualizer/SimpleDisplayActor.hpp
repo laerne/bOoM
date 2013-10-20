@@ -1,12 +1,11 @@
 #ifndef H_SimpleDisplayActor
 #define H_SimpleDisplayActor
 
-#include <cppa/cppa.hpp>
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <unordered_map>
 
-namespace bOoM {
+namespace visualizer {
 
 struct SimpleDisplayActor : public cppa::event_based_actor
 {
@@ -32,14 +31,12 @@ struct SimpleDisplayActor : public cppa::event_based_actor
 	SDL_Window *sdl_window;
 	SDL_Renderer *sdl_renderer;
 
-	//std::unordered_map< cppa::actor_ptr, SDL_Texture* > entity_images;
-
 	std::chrono::steady_clock::duration const refresh_span;
 	std::chrono::steady_clock::duration remaining_span;
 	std::chrono::steady_clock::time_point last_time;
 };
 
-} //namespace bOoM
+} //namespace visualizer
 
 #endif
  
