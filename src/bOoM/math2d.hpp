@@ -103,7 +103,7 @@ R crossProduct_z(V2<R> const& p, V2<R> const& q)
 template<typename R>
 std::ostream& operator<<(std::ostream& s, V2<R> const& p)
 	{ s <<"(" << p.x <<"," << p.y <<")"; return s; }
-
+	
 //! \brief Manhattan norm of the vector, i.e. the sum of the absolute value
 //  of each of its components.
 //! \relates bOoM::V2
@@ -159,7 +159,6 @@ bool isnan(V2<R> const& p)
 
 
 
-
 //! \brief Return the image point of the application on `p` of rotation specified by vector `r`.
 //! \relates bOoM::V2
 //! \see rotations.hpp
@@ -191,7 +190,8 @@ V2<R> rot2_mult(V2<R> copy, V2<R> const& r)
 //! \brief Return the inverse rotation.
 //! \relates bOoM::V2
 template<typename R>
-V2<R> rot2_inverse(V2<R> const& r) {return V2<R>(r.x, -r.y); }
+V2<R> rot2_inverse(V2<R> const& r) { return V2<R>(r.x, -r.y)/=norm2sq(r); }
+//TODO bypass the above division when norm of r is 1.
 
 /*! \brief Two-dimensional moves, i.e. orientation-preserving isometries.
  *
@@ -223,10 +223,10 @@ struct Move2
 		{ t=map(mv.t);  rot2_mult_inplace(r,mv.r); return *this; }
 	//! \brief If R is castable to M, then this cast Move2<R> to Move2<M> component-wise.
 	template<typename M>
-	operator Move2<M>() { return Move2<M>( (M)r, (M)t ); }
+	operator Move2<M>() { return Move2<M>( (V2<M>)r, (V2<M>)t ); }
 
 	V2<R> r; //!< Rotation component.
-	V2<R> t;   //!< Translation component.
+	V2<R> t; //!< Translation component.
 };
 
 //! Return a new move representing the composition of `m1` and `m2`.
@@ -245,7 +245,7 @@ std::ostream& operator<<(std::ostream& s, Move2<R> const& mv)
 //! \relates bOoM::Move2
 template<typename R>
 Move2<R>  inverse(Move2<R> const& mv)
-	{ const V2<R> r_inv= rot2_inverse(mv.r); return Move2<R>(r_inv, rot2_map(r_inv, mv.t)); }
+	{ const V2<R> r_inv= rot2_inverse(mv.r); return Move2<R>(r_inv, -rot2_map(r_inv, mv.t)); }
 
 //shortcuts
 //! Equivalent to `mv.map(p)` .
@@ -263,15 +263,24 @@ V2<R>& operator>>=(V2<R>& p, Move2<R> const& mv) { return p = mv.map(p); }
 typedef V2<real> real2; //!< Euclidean plane vector.
 typedef Move2<real> move2; //!< Euclidean plane move.
 typedef V2<std::size_t> size_t_2; //! Two-dimentional index/size.
+
 // Usefull constants
 real2 constexpr zero2(0,0); //!< Constant to the null vector.
 real2 constexpr rot2_id(1.f,0.f); //!< Constant to the identity rotation.
 move2 constexpr move2_id(rot2_id, zero2); //!< Constant to the identity move.
 real2 constexpr nan2(NAN,NAN); //!< Constant to an non-existant vector.
+
+
+// approximative comparators
+inline bool equals_about(real2 const& p, real2 const& q)
+	{ return equals_about(p.x,q.x) && equals_about(p.y,q.y); }
+inline bool equals_about(move2 const& a, move2 const& b)
+	{ return equals_about(a.t,b.t) && equals_about(a.r,b.r); }
+
 // real angle utilities
 //! \brief Return a new real rotation object from `angle`, in radians.
 inline real2 rot2_fromRadian(real angle)
-	{ return real2(std::cos(angle), std::sin(angle)); }
+	{ return real2(COS(angle), SIN(angle)); }
 //! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
 //!
 //! Tests suggests that the maximum error can rise up to four degrees.

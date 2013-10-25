@@ -12,22 +12,23 @@ namespace bOoM {
 
 real approxDeg4(real2 const& p)
 {
-	if( is_too_small(p.x) && is_too_small(p.y)) return 0.0;
+	if( equals_about(p.x,0_r) && equals_about(p.y,0_r) )
+		return 0_r;
 	if( p.y >= -p.x)
 	{
 		if( p.y <= p.x ) //quadrant 0
-			return 45*(p.y/p.x);
+			return 45_r*(p.y/p.x);
 		else //quadrant 1
-			return 90 -45*(p.x/p.y);
+			return 90_r -45_r*(p.x/p.y);
 	}
 	else
 	{
 		if( p.y <= p.x ) //quadrant 2
-			return -90 -45*(p.x/p.y);
+			return -90_r -45_r*(p.x/p.y);
 		else //quadrant 3
 		{
-			real yx = 45*(p.y/p.x);
-			return (yx <= 0)? (180+yx) : (-180+yx);
+			real yx = 45_r*(p.y/p.x);
+			return (yx <= 0_r)? (180_r+yx) : (-180_r+yx);
 		}
 	}
 }
@@ -44,81 +45,81 @@ real approxDeg4(real2 const& p)
 
 real approxDeg8(real2 const& p)
 {
-	if( is_too_small(p.x) && is_too_small(p.y))
-		return 0.0;
+	if( equals_about(p.x,0_r) && equals_about(p.y,0_r) )
+		return 0_r;
 
 	real2 a, b; //pivot point of the quadrant
 	real shift; //angle shift
 
-	if(p.y >= 0)
+	if(p.y >= 0_r)
 	{
-		if(p.x >= 0)
+		if(p.x >= 0_r)
 		{
 			if(p.y <= p.x) // half-quadrant 0
 			{
-				a= real2( 1, 0 );
-				b= real2( CST_SQRT2/2, CST_SQRT2/2 );
-				shift=0.0;
+				a= real2( 1_r, 0_r );
+				b= real2( CST_SQRT2/2_r, CST_SQRT2/2_r );
+				shift=0_r;
 			}
 			else // half-quadrant 1
 			{
-				a= real2( CST_SQRT2/2, CST_SQRT2/2 );
-				b= real2( 0, 1 );
-				shift=45.0;
+				a= real2( CST_SQRT2/2_r, CST_SQRT2/2_r );
+				b= real2( 0_r, 1_r );
+				shift=45_r;
 			}
 		}
 		else
 		{
 			if(p.y > -p.x) // half-quadrant 2
 			{
-				a= real2( 0, 1 );
-				b= real2( -CST_SQRT2/2, CST_SQRT2/2 );
-				shift=90.0;
+				a= real2( 0_r, 1_r );
+				b= real2( -CST_SQRT2/2_r, CST_SQRT2/2_r );
+				shift=90_r;
 			}
 			else // half-quadrant 3
 			{
-				a= real2( -CST_SQRT2/2, CST_SQRT2/2 );
-				b= real2( -1, 0 );
-				shift=135.0;
+				a= real2( -CST_SQRT2/2_r, CST_SQRT2/2_r );
+				b= real2( -1_r, 0_r );
+				shift=135_r;
 			}
 		}
 	}
 	else
 	{
-		if(p.x < 0)
+		if(p.x < 0_r)
 		{
 			if(p.y >= p.x) // half-quadrant 4
 			{
-				a= real2( -1, 0 );
-				b= real2( -CST_SQRT2/2, -CST_SQRT2/2 );
-				shift=-180.0;
+				a= real2( -1_r, 0_r );
+				b= real2( -CST_SQRT2/2_r, -CST_SQRT2/2_r );
+				shift=-180_r;
 			}
 			else // half-quadrant 5
 			{
-				a= real2( -CST_SQRT2/2, -CST_SQRT2/2 );
-				b= real2( 0, -1 );
-				shift=-135.0;
+				a= real2( -CST_SQRT2/2_r, -CST_SQRT2/2_r );
+				b= real2( 0_r, -1_r );
+				shift=-135_r;
 			}
 		}
 		else
 		{
 			if(-p.y > p.x) // half-quadrant 6
 			{
-				a= real2( 0, -1 );
-				b= real2( CST_SQRT2/2, -CST_SQRT2/2 );
-				shift=-90.0;
+				a= real2( 0_r, -1_r );
+				b= real2( CST_SQRT2/2_r, -CST_SQRT2/2_r );
+				shift=-90_r;
 			}
 			else // half-quadrant 7
 			{
-				real2 a( CST_SQRT2/2, -CST_SQRT2/2 );
-				real2 b( 0, 1 );
-				shift=-45.0;
+				real2 a( CST_SQRT2/2_r, -CST_SQRT2/2_r );
+				real2 b( 0_r, 1_r );
+				shift=-45_r;
 			}
 		}
 	}
 
 	real proportion= crossProduct_z(p,a) / crossProduct_z(p,(a-b)) ;
-	return 45.0*proportion + shift;
+	return 45_r*proportion + shift;
 }
 
 } //namespace bOoM
