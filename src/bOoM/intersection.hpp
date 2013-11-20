@@ -51,6 +51,15 @@ inline bool has_line_intersection( move2 const& l1, move2 const& l2 )
  */
 bool line_intersection( move2 const& l1, move2 const& l2, real2& hitpoint, real& hitpoint_factor );
 
+/*! \brief Tells wheter two line cross each other.
+ *
+ * If the line cross each other, the intersection point is stored in `hitpoint`.
+ * Besides, `hitpoint_factor1` and \a `hitpoint_factor2` are set such that :
+ * ```
+ *  l1.t + l1.r*hitpoint_factor1 = hitpoint
+ *  l2.t + l2.r*hitpoint_factor2 = hitpoint
+ * ```
+ */
 bool line_intersection( move2 const& l1, move2 const& l2, real2& hitpoint, real& hitpoint_factor1, real& hitpoint_factor2 );
 
 /********************************
@@ -91,6 +100,8 @@ bool intersection( circle const& c1, circle const& c2, real2& centroid, real& me
  * LINE-CIRCLE INTERSECTION *
  ****************************/
 
+//! \brief Tells wheter there is an intersection between a line and a circle.
+//! \retval `true` if there is an intersection, `false` else.
 inline bool has_line_intersection( circle const& c, move2 const& line )
 {
 	real2 closest_point_to_center = line.t + line.r * ((c.center-line.t|line.r)/norm2sq(line.r));
@@ -127,15 +138,57 @@ bool intersection( aabr const& r1, aabr const& r2, real2& centroid, real& mesure
 /**************************
  * LINE-AABR INTERSECTION *
  **************************/
+ 
+//! \brief Tells wheter there is an intersection between a line and a axis-aligned rectangle.
+//! \retval `true` if there is an intersection, `false` else.
 bool has_intersection( aabr const& r, move2 const& line );
+
+/*! \brief computes the intersection between a line and a axis-aligned rectangle.
+ * 
+ *  \retval `true` if an intersection occurred, `false` else.
+ *  
+ *  Beside the input rectangle `r` and input line `line`, the function requires two arguments by reference for outputting where exactly the intersection occurs.
+ *  The position of `line.t` on the line doesn't affect the result.
+ *
+ *  \param hitpoint Position of the _first_ hit between the line and the rectangle.  The direction of the line is the direction of vector `line.r`.
+ *  \param hitpoint_factor Factor `f` such that at the end of the function
+ *  ``` hitpoint == line.t + hitpoint_factor*line.r ```
+ *  
+ * \relates bOoM::aabr
+ */
+bool line_intersection( aabr const& r, move2 const& line, real2& hitpoint, real& hitpoint_factor );
+
+/*! \brief computes the intersection between a line and a axis-aligned rectangle.
+ * 
+ *  \retval `true` if an intersection occurred, `false` else.
+ *  
+ *  Beside the input rectangle `r` and input line `line`, the function requires four arguments by reference for outputting where exactly the intersection occurs.
+ *  
+ *  \param hitpoint1 Position of the _first_ hit between the line and the rectangle.  The direction of the line is the direction of vector `line.r`.
+ *  \param hitpoint1_factor Factor `f` such that at the end of the function
+ *  ``` hitpoint1 == line.t + hitpoint1_factor*line.r ```
+ *  
+ *  \param hitpoint2 Position of the _first_ hit between the line and the rectangle.  The direction of the line is the direction of vector `line.r`.
+ *  \param hitpoint2_factor Factor `f` such that at the end of the function
+ *  ``` hitpoint2 == line.t + hitpoint2_factor*line.r ```
+ *  
+ *  The exact position of `line.t` on the line doesn't affect the result.
+ * \relates bOoM::aabr
+ */
+bool line_intersection( aabr const& r, move2 const& line,
+		real2& hitpoint1, real& hitpoint1_factor, real2& hitpoint2, real& hitpoint2_factor );
+		
+bool aabr_smallest_subaabr_containing_line( aabr const& r, move2 const& line, aabr& res__aabr);
 
 /****************************
  * CIRCLE-AABR INTERSECTION *
  ****************************/
+//! \brief Tells wheter there is an intersection between a circle and a axis-aligned rectangle.
+//! \retval `true` if there is an intersection, `false` else.
 inline bool has_intersection( circle const& c, aabr const& r )
 {
-	real2 closet_point( CLAMP(r.left,c.center.x,r.right), CLAMP(r.bottom,c.center.x,r.top) );
-	return dist2sq(c.center, closet_point) <= SQ(c.radius);
+	real2 closest_point( CLAMP(r.left,c.center.x,r.right), CLAMP(r.bottom,c.center.x,r.top) );
+	return dist2sq(c.center, closest_point) <= SQ(c.radius);
 }
 
 /***************************

@@ -41,10 +41,7 @@ void SimpleDisplayObject::loop()
 					//break;
 			}
 		}
-		
-		SDL_RenderClear(sdl_renderer);
-		std::cout << "Generation of a new image" << std::endl;
-		SDL_RenderPresent(sdl_renderer);
+		render();
 		
 		std::chrono::steady_clock::time_point current_time= std::chrono::steady_clock::now();
 		remaining_span = std::max( 
@@ -55,6 +52,13 @@ void SimpleDisplayObject::loop()
 		SDL_Delay(remaining_span.count());
 	}
 	remaining_span = refresh_span;
+}
+
+void SimpleDisplayObject::render()
+{
+	SDL_RenderClear(sdl_renderer);
+	std::cout << "Generation of a new image" << std::endl;
+	SDL_RenderPresent(sdl_renderer);
 }
 
 } //namespace visualizer

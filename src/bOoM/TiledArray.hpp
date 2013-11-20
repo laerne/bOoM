@@ -8,6 +8,8 @@
 #include <iostream>
 
 #include "math2d.hpp"
+#include "color.hpp"
+
 namespace bOoM {
 /*! \brief A two-dimensional array optimized for both vertical and horizontal acces performance.
  *
@@ -48,6 +50,8 @@ public:
 	 *  forgotten, as destructing a regular array would do.
 	 */
 	~TiledArray();
+	TiledArray(TiledArray<A> const& other) = delete;
+	TiledArray(TiledArray<A> && other);
 
 	/*! \brief Returns the one-dimensional index for this table of the given two-dimensional index.
 	 *
@@ -86,6 +90,9 @@ public:
 	size_t_2 const totalSize;
 	//! \brief The number of elements per tile.
 	size_t const tileArea;
+	
+	size_t totalWidth() { return totalSize.x; }
+	size_t totalHeight() { return totalSize.y; }
 private:
 	//! \brief Build TiledArray::fastArray_x and TiledArray::fastArray_y
 	void build_fastArrays(size_t_2 const& sizeInTiles);

@@ -15,9 +15,13 @@ public:
 
 	void loop();
 
+protected:
+	virtual void render();
+
 private:
 	SDL_Window *sdl_window;
 	SDL_Renderer *sdl_renderer;
+
 
 	std::chrono::milliseconds const refresh_span;
 };

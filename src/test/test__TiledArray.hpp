@@ -30,6 +30,7 @@ public:
   
 	CPPUNIT_TEST_SUITE( Test__TiledArray );
 		CPPUNIT_TEST( testIndex );
+		CPPUNIT_TEST( testAssign );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testIndex()
@@ -39,6 +40,13 @@ public:
 
 		CPPUNIT_ASSERT_EQUAL(   m,   tarray_int->mindexOf(tarray_int->indexOf(m))   );
 		CPPUNIT_ASSERT_EQUAL(   i,   tarray_int->indexOf(tarray_int->mindexOf(i))   );
+	}
+	
+	void testAssign()
+	{
+		size_t_2 asize = {6,6};
+		size_t_2 tsize = {2,2};
+		TiledArray<int> t = TiledArray<int>( asize, tsize );
 	}
 };
 

@@ -134,6 +134,7 @@ color const black(0.f,0.f,0.f);
 color const transparent(0.f,0.f,0.f,1.f);
 } //namespace tone
 
+
 } //namespace bOoM
 #endif
 

@@ -7,18 +7,37 @@ template<typename A>
 TiledArray<A>::TiledArray(size_t_2 totalSize, size_t_2 tileSize)
 	: localSize(tileSize), totalSize(totalSize), tileArea(tileSize.x*tileSize.y)
 {
+	//precompute a few useful values
 	size_t_2 sizeInTiles= TiledArrayUtils::inTileUnits( totalSize, tileSize );
 	size_t_2 paddedSize= TiledArrayUtils::paddedToTile( totalSize, tileSize );
-	array= new A[paddedSize.x*paddedSize.y];
-
 	size_t areaInTiles= sizeInTiles.x * sizeInTiles.y;
+	
+	//allocate the arrays
+	array= new A[paddedSize.x*paddedSize.y];
 	fastArray_x = new size_t[totalSize.x +totalSize.y];
 	fastArray_y = fastArray_x +totalSize.x;
 	reverseFastArray_tile = new size_t_2[areaInTiles +tileArea];
 	reverseFastArray_local = reverseFastArray_tile +areaInTiles;
 
+	//build the index arrays
 	build_fastArrays(sizeInTiles);
 	build_reverseFastArrays(sizeInTiles);
+}
+
+template<typename A>
+TiledArray<A>::TiledArray(TiledArray<A> && other)
+	: localSize(other.localSize), totalSize(other.totalSize), tileArea(other.tileArea)
+{
+	//delete first the now unused arrays
+	delete[] fastArray_x;
+	delete[] reverseFastArray_tile;
+	delete[] array;
+	//then link to the rhs arrays.
+	fastArray_x = other.fastArray_x;
+	fastArray_y = other.fastArray_y;
+	reverseFastArray_tile = other.reverseFastArray_tile;
+	reverseFastArray_local = other.reverseFastArray_local;
+	array= other.array;
 }
 
 template<typename A>
