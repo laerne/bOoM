@@ -104,6 +104,10 @@ inline real eqn2_discriminant(real a0, real a1, real a2) { return SQ(a1) -4*a2*a
  *  - if there is only one root, a pair with twice this same root is returned,
  *    The two copies may slighty differ due error in computations.
  *  - else return the two roots in a pair.
+ *  
+ *  \param a0 Independent term.
+ *  \param a1 Coefficient of the `x` term.
+ *  \param a2 Coefficient of the `x*x` term.
  *
  *  This function computes a square root, which is a slow operation.
  */

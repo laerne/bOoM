@@ -12,7 +12,7 @@ std::pair<real,real> eqn2_solve(real a0, real a1, real a2)
 std::pair<real,real> eqn2_solve_with_precomputed_discriminant(real a0, real a1, real a2, real d)
 {
 	real twice_a2= 2*a2;
-	real sqrt_d= std::sqrt(d);
+	real sqrt_d= SQRT(d);
 	real left_root=  (-a1 + sqrt_d) / (twice_a2);
 	real right_root= (-a1 - sqrt_d) / (twice_a2);
 	return { left_root, right_root };

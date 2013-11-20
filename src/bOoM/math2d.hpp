@@ -229,7 +229,7 @@ struct Move2
 	V2<R> t; //!< Translation component.
 };
 
-//! Return a new move representing the composition of `m1` and `m2`.
+//! \brief Return a new move representing the composition of `m1` and `m2`.
 //!
 //! Note that move composition is not commutative.
 //! \relates bOoM::Move2
@@ -248,11 +248,11 @@ Move2<R>  inverse(Move2<R> const& mv)
 	{ const V2<R> r_inv= rot2_inverse(mv.r); return Move2<R>(r_inv, -rot2_map(r_inv, mv.t)); }
 
 //shortcuts
-//! Equivalent to `mv.map(p)` .
+//! \brief Equivalent to `mv.map(p)` .
 //! \relates bOoM::Move2
 template<typename R>
 V2<R> operator>>(V2<R> const& p, Move2<R> const& mv) { return mv.map(p); }
-//! Equivalent to `p= mv.map(p)` .
+//! \brief Equivalent to `p= mv.map(p)` .
 //! \relates bOoM::Move2
 template<typename R>
 V2<R>& operator>>=(V2<R>& p, Move2<R> const& mv) { return p = mv.map(p); }

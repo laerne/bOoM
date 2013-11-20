@@ -20,7 +20,8 @@ class Test__shapes : public CppUnit::TestFixture
 	circle c0, c1, cm1, celse;
 	move2 l0, l1;
 public:
-	void setUp() {
+	void setUp()
+	{
 		c0 = circle(real2(0_r,0_r), 0.75_r);
 		c1 = circle(real2(1_r,0_r), 0.75_r);
 		cm1 = circle(real2(-1_r,0_r), 0.75_r);
@@ -33,8 +34,20 @@ public:
 	CPPUNIT_TEST_SUITE( Test__shapes );
 		CPPUNIT_TEST( test_circle_circle );
 		CPPUNIT_TEST( test_line_circle );
+		CPPUNIT_TEST( test_line_line );
 	CPPUNIT_TEST_SUITE_END();
 
+	void test_line_line()
+	{
+		real2 p;
+		real f1;
+		real f2;
+		CPPUNIT_ASSERT( line_intersection(l0, l1, p, f1, f2) );
+		CPPUNIT_ASSERT( equals_about( real2(1-(0.75_r/SQRT(2_r)),0.75_r/SQRT(2_r)), p ) );
+		CPPUNIT_ASSERT( equals_about( 1 + (0.75_r/SQRT(2_r)), f1 ) );
+		CPPUNIT_ASSERT( equals_about( 2 + (0.75_r/SQRT(2_r)), f2 ) );
+	}
+	
 	void test_circle_circle()
 	{
 		real2 centroid;
