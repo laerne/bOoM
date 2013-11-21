@@ -1,5 +1,5 @@
-#ifndef H_simpleDisplayObject
-#define H_simpleDisplayObject
+#ifndef H_simpleDisplayer
+#define H_simpleDisplayer
 
 #include <chrono>
 #include <SDL2/SDL.h>
@@ -7,21 +7,19 @@
 //using namespace bOoM;
 namespace visualizer {
 
-class SimpleDisplayObject
+class SimpleDisplayer
 {
 public:
-	SimpleDisplayObject(int window_width, int window_height, std::chrono::milliseconds refresh_span);
-	~SimpleDisplayObject();
+	SimpleDisplayer(int window_width, int window_height, std::chrono::milliseconds refresh_span);
+	virtual ~SimpleDisplayer();
 
 	void loop();
 
 protected:
 	virtual void render();
 
-private:
 	SDL_Window *sdl_window;
 	SDL_Renderer *sdl_renderer;
-
 
 	std::chrono::milliseconds const refresh_span;
 };

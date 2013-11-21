@@ -22,13 +22,13 @@ struct Entity
 	 * Note the returned image must be deleted with EntityType::del__rendered_image(Image*&)
 	 */
 	//TODO should return bool or a pointer to Image ?
-	virtual bool new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, Image*& res__image, aabr& res__rendered_zone);
+	virtual bool new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, Image*& res__image, aabr& res__rendered_zone) const;
 	/*! \brief deletes a rendered image.
 	 *
 	 * This function is trivial in most useful cases, but it is important to allow the programmer of a rendering function
 	 * to undo actions it might have done during the rendering.
 	 */
-	virtual bool del__rendered_image(Image*& to_be_deleted);
+	virtual bool del__rendered_image(Image*& to_be_deleted) const;
 };
 
 } //namespace bOoM

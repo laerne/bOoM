@@ -1,37 +1,43 @@
 //Trivial displayer <NOT THREAD SAFE>
-#include <cppa/cppa.hpp>
 #include <SDL2/SDL.h>
 
 #include <chrono>
 #include <exception>
 #include <iostream>
+#include <vector>
+#include <memory>
 
-#include "SimpleDisplayObject.hpp"
-//#include "SimpleDisplayActor.hpp"
-//#include "SimpleInputActor.hpp"
+#include <bOoM/math2d.hpp>
+#include <bOoM/aabr.hpp>
+#include <bOoM/entities/world_boundary/WorldBoundary.hpp>
+
+#include "SimpleDisplayer.hpp"
+#include "CompileTimeDisplayer.hpp"
 
 //using namespace bOoM;
 using namespace visualizer;
 
 void on_crash_exit()
 {
-	cppa::shutdown();
 	SDL_Quit();
 }
 
 int main(int argc, char **argv)
 {
 	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_EVENTS ) != 0)
-		cppa::aout << "SDL failed to initiate." << std::endl;
+		std::cout << "SDL failed to initiate." << std::endl;
 	atexit(on_crash_exit);
-
-	//cppa::actor_ptr a_display = cppa::spawn<SimpleDisplayActor>( 1024, 768, std::chrono::milliseconds(100) );
-	//cppa::actor_ptr a_keyboardManager = cppa::spawn<SimpleInputActor, cppa::detached>( cppa::self );
 	
-	//cppa::await_all_others_done();
-	//cppa::shutdown();
-
-	SimpleDisplayObject display( 1024, 768, std::chrono::milliseconds(20) );
+	std::vector<std::shared_ptr<bOoM::Entity>> starting_entities;
+	starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2_id));
+	
+	CompileTimeDisplayer display(
+			bOoM::size_t_2(1024,768),
+			bOoM::aabr(12.f,-16.f,-12.f,16.f),
+			std::chrono::milliseconds(20),
+			starting_entities
+	);
+	//SimpleDisplayer display( 1024, 768, std::chrono::milliseconds(20) );
 	display.loop();
 
 

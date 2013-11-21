@@ -8,6 +8,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 #include <bOoM/color.hpp>
+//#include <bOoM/colorf.hpp>
 
 #include <iostream>
 
@@ -21,25 +22,34 @@ class Test__color : public CppUnit::TestFixture
 public:
 	void setUp()
 	{
-		yellow = color(1.f,1.f,0.f);
-		magenta = color(1.f,0.f,1.f);
-		purple = color(0.4f,0.f,0.8f);
-		rose = color(0.8f,0.f,0.4f);
-		orange = color(1.f,0.4f,0.f);
-		brown = color(0.5f,0.2f,0.f);
+		yellow =  color::from_rgbaFFFF(1.f,1.f,0.f);
+		magenta = color::from_rgbaFFFF(1.f,0.f,1.f);
+		purple =  color::from_rgbaFFFF(0.4f,0.f,0.8f);
+		rose =    color::from_rgbaFFFF(0.8f,0.f,0.4f);
+		orange =  color::from_rgbaFFFF(1.f,0.4f,0.f);
+		brown =   color::from_rgbaFFFF(0.5f,0.2f,0.f);
 	}
 	void tearDown() {}
 
 	CPPUNIT_TEST_SUITE( Test__color );
 		CPPUNIT_TEST( test_arithmetic );
+		CPPUNIT_TEST( test_constructors );
 	CPPUNIT_TEST_SUITE_END();
 
 	void test_arithmetic()
 	{
-		CPPUNIT_ASSERT_EQUAL( yellow, tone::red + tone::green );
-		CPPUNIT_ASSERT_EQUAL( magenta, tone::red + tone::blue );
-		CPPUNIT_ASSERT_EQUAL( purple, tone::red*0.4 + tone::blue*0.8 );
+		CPPUNIT_ASSERT_EQUAL( yellow, color::red + color::green );
+		CPPUNIT_ASSERT_EQUAL( magenta, color::red + color::blue );
+		CPPUNIT_ASSERT_EQUAL( purple, color::red*0.4 + color::blue*0.8 );
 		CPPUNIT_ASSERT_EQUAL( brown, orange*0.5 );
+	}
+	
+	void test_constructors()
+	{
+		CPPUNIT_ASSERT_EQUAL( orange, color::from_rgba8888(orange.to_rgba8888() ) );
+		CPPUNIT_ASSERT_EQUAL( 0xFFFF00FFu, yellow.to_rgba8888() );
+		CPPUNIT_ASSERT_EQUAL( brown, color::from_rgba8888(0x7F3300FFu) );
+		CPPUNIT_ASSERT_EQUAL( 0x3780F0FFu, color::from_rgba8888(0x3780F0FFu).to_rgba8888() );
 	}
 };
 

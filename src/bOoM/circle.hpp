@@ -24,6 +24,9 @@ struct circle
 	real radius;  //!< radius of the circle, i.e. the distance between the center and the boundaries of the circle.
 };
 
+inline std::ostream& operator<<(std::ostream& s, circle const& c)
+	{ return s <<"(c:" << c.center <<",c:" << c.radius <<")"; }
+	
 } //namespace bOoM
 #endif
 

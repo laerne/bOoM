@@ -1,6 +1,7 @@
 #ifndef H_aabr
 #define H_aabr
 
+#include <iostream>
 #include "math2d.hpp"
 
 namespace bOoM {
@@ -61,6 +62,9 @@ inline aabr aabr_biggest_inner_aabr( aabr const& b1, aabr const& b2 )
 	             MAX(b1.bottom,b2.bottom),
 	             MAX(b1.right,b2.right) );
 }
+
+inline std::ostream& operator<<(std::ostream& s, aabr const& r)
+	{ return s <<"(t:" << r.top <<",r:" << r.right <<"(b:" << r.bottom <<",l:" << r.left <<")"; }
 
 } //namespace bOoM
 #endif

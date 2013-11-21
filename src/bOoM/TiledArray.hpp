@@ -11,6 +11,8 @@
 #include "color.hpp"
 
 namespace bOoM {
+
+#define STD_TILE_SIZE size_t_2(16,16)
 /*! \brief A two-dimensional array optimized for both vertical and horizontal acces performance.
  *
  * A tiled array has indices redistributed such that caching neighboring cells
@@ -40,16 +42,17 @@ namespace bOoM {
 template<typename A>
 class TiledArray {
 public:
-	/*! \brief Construct a tiled array data structure, with size `totalSize` and
+	/*! \brief Construct a tiled array data structure, with size `msize` and
 	 *  made of tiles of size `tileSize`.
 	 */
-	TiledArray(size_t_2 totalSize, size_t_2 tileSize);
+	TiledArray(size_t_2 msize, size_t_2 tileSize = STD_TILE_SIZE);
 	/*! \brief Destruct a TiledArray.
 	 *
 	 *  If the TiledArray was an array of pointer, the pointer are just
 	 *  forgotten, as destructing a regular array would do.
 	 */
 	~TiledArray();
+	//! \brief Move constructor.  Unallocate the currently allocated array.
 	TiledArray(TiledArray<A> const& other) = delete;
 	TiledArray(TiledArray<A> && other);
 
@@ -87,13 +90,13 @@ public:
 	//! \brief The size of a tile.
 	size_t_2 const localSize;
 	//! \brief The total size of the TiledArray.
-	size_t_2 const totalSize;
+	size_t_2 const msize;
 	//! \brief The number of elements per tile.
 	size_t const tileArea;
 	
-	size_t totalWidth() { return totalSize.x; }
-	size_t totalHeight() { return totalSize.y; }
-private:
+	size_t width() { return msize.x; }
+	size_t height() { return msize.y; }
+protected:
 	//! \brief Build TiledArray::fastArray_x and TiledArray::fastArray_y
 	void build_fastArrays(size_t_2 const& sizeInTiles);
 	//! \brief Build TiledArray::reverseFastArray_tile and TiledArray::reverseFastArray_local
@@ -116,13 +119,13 @@ std::ostream& operator<<(std::ostream& s, TiledArray<A> const& tarray);
 
 namespace TiledArrayUtils {
 	//! \brief Round up each component of `n` such that it is a multiple of the correspondant component of `t`.
-	size_t_2 paddedToTile(size_t_2 n, size_t_2 t);
+	inline size_t_2 paddedToTile(size_t_2 n, size_t_2 t);
 	//! \brief Return the number of times `t` must be fit in `n` to cover it all, per component.
-	size_t_2 inTileUnits(size_t_2 n, size_t_2 t);
+	inline size_t_2 inTileUnits(size_t_2 n, size_t_2 t);
 	//! \brief Round up `n` such that it is a multiple of `t`.
-	size_t paddedToTile(size_t n, size_t t);
+	inline size_t paddedToTile(size_t n, size_t t);
 	//! \brief Return the minimal `k` such that `k*t >= n`.
-	size_t inTileUnits(size_t n, size_t t);
+	inline size_t inTileUnits(size_t n, size_t t);
 } //namespace TiledArrayUtils
 
 } //namespace bOoM

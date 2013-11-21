@@ -3,7 +3,7 @@
 
 #include<bOoM/math2d.hpp>
 
-#include "../entity.hpp"
+#include "../Entity.hpp"
 
 namespace bOoM {
 
@@ -17,8 +17,8 @@ struct WorldBoundary : Entity
 	
 	move2 orientation;
 
-	virtual bool new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, Image*& res__image, aabr& res__rendered_zone);
-	virtual bool del__rendered_image(Image*& to_be_deleted);
+	virtual bool new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, Image*& res__image, aabr& res__rendered_zone) const;
+	//virtual bool del__rendered_image(Image*& to_be_deleted) const;
 };
 
 

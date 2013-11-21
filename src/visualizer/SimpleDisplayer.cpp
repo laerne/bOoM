@@ -1,23 +1,26 @@
-#include "SimpleDisplayObject.hpp"
+#include "SimpleDisplayer.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <thread>
 
 namespace visualizer {
 
-SimpleDisplayObject::SimpleDisplayObject(int window_width, int window_height, std::chrono::milliseconds refresh_span)
+SimpleDisplayer::SimpleDisplayer(int window_width, int window_height, std::chrono::milliseconds refresh_span)
 	: refresh_span(refresh_span)
 {
 	SDL_CreateWindowAndRenderer(window_width, window_height, SDL_WINDOW_SHOWN, &sdl_window, &sdl_renderer);
 	if( sdl_window == NULL || sdl_renderer == NULL )
 		throw std::runtime_error("SDL failed to create a window.");
-	SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(sdl_renderer, 32, 0, 32, 255);
 }
 
-SimpleDisplayObject::~SimpleDisplayObject()
-	{}
+SimpleDisplayer::~SimpleDisplayer()
+{
+	SDL_DestroyRenderer(sdl_renderer);
+	SDL_DestroyWindow(sdl_window);
+}
 
-void SimpleDisplayObject::loop()
+void SimpleDisplayer::loop()
 {
 	bool looping = true;
 	
@@ -37,8 +40,7 @@ void SimpleDisplayObject::loop()
 				case SDL_QUIT:
 				case SDL_KEYDOWN:
 					looping = false;
-					return;
-					//break;
+					return; //break;
 			}
 		}
 		render();
@@ -54,10 +56,10 @@ void SimpleDisplayObject::loop()
 	remaining_span = refresh_span;
 }
 
-void SimpleDisplayObject::render()
+void SimpleDisplayer::render()
 {
+	std::cout << "Clearing image" << std::endl;
 	SDL_RenderClear(sdl_renderer);
-	std::cout << "Generation of a new image" << std::endl;
 	SDL_RenderPresent(sdl_renderer);
 }
 

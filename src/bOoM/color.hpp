@@ -8,23 +8,33 @@
 namespace bOoM
 {
 
-//typedef SDL_Color color;
-
-typedef float colorChannel;
+typedef uint8_t colorChannel;
+#define COLORCHANNEL_RANGE_MIN 0x00
+#define COLORCHANNEL_RANGE_MAX 0xFF
 
 struct color
 {
-	color() {};
-	explicit color( colorChannel red, colorChannel green, colorChannel blue, colorChannel alpha = 1.f )
-    : r(red), g(green), b(blue), a(alpha) {}
-	explicit color( uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255)
-    : color( float(red)/255, float(green)/255, float(blue)/255, float(alpha)/255 ) {}
-	explicit color( uint32_t rgba )
-    : color( float(rgba&0xFF)/255, float((rgba>>8)&0xFF)/255, float((rgba>>16)&0xFF)/255, float(rgba>>24)/255 ) {}
+	color() = default;
+	explicit constexpr color( colorChannel red, colorChannel green, colorChannel blue, colorChannel alpha = COLORCHANNEL_RANGE_MAX )
+		: r(red), g(green), b(blue), a(alpha) {}
+	static constexpr color from_rgba8888(uint32_t rgba)
+	{
+		return color( uint8_t(rgba>>24       ),
+		              uint8_t(rgba>>16 & 0xFF),
+		              uint8_t(rgba>>8  & 0xFF),
+		              uint8_t(rgba     & 0xFF) );
+	}
+	static constexpr color from_rgbaFFFF(float red, float green, float blue, float alpha = 1.f)
+	{
+		return color( uint8_t( red   * 255 ),
+		              uint8_t( green * 255 ),
+		              uint8_t( blue  * 255 ),
+		              uint8_t( alpha * 255 ) );
+	}
 	color( color const& other ) = default;
 	color& operator= ( color const& other ) = default;
-	explicit operator uint32_t()
-    { return uint32_t(a*255)<<24 | uint32_t(b*255)<<16 | uint32_t(g*255)<<8 | uint32_t(r*255); }
+	uint32_t to_rgba8888() const
+		{ return r<<24 | g<<16 | b<<8 | a ; }
 
 	colorChannel r;
 	colorChannel g;
@@ -35,105 +45,84 @@ struct color
 	//!
 	//! Simply sum the two color per channel (exept alpha) and store the result to `*this`.
 	color& operator+= (color const& c)
-  	{ r+=c.r; g+=c.g; b+=c.b; /* *this+=c.*this; */ return *this; }
+		{ r+=c.r; g+=c.g; b+=c.b; /* *this+=c.*this; */ return *this; }
 	//! \brief Filter the color `*this` with the color `c` (for example the color of *this ligth source).
 	//!
 	//! Simply do *this per channel (exept alpha) product.
 	color& operator*= (color const& c)
-  	{ r*=c.r; g*=c.g; b*=c.b; /* *this*=c.*this; */ return *this; }
+	{
+		r=uint_fast16_t(r)*c.r/COLORCHANNEL_RANGE_MAX;
+		g=uint_fast16_t(g)*c.g/COLORCHANNEL_RANGE_MAX;
+		b=uint_fast16_t(b)*c.b/COLORCHANNEL_RANGE_MAX;
+		return *this;
+	}
 	//! \brief Change luminosity of the color by factor `t`
 	//
 	//! Simply do *this per channel (exept alpha) product by the factor.
 	color& operator*= (real t)
-  	{ r*=t; g*=t; b*=t; /* *this*=t; */ return *this; }
+		{ r= uint8_t( real(r)*t ); g= uint8_t( real(g)*t ); b= uint8_t( real(b)*t ); return *this; }
 	//! \brief Change luminosity of the color by factor `1/t`
 	color& operator/= (real t)
-  	{ r/=t; g/=t; b/=t; /* *this/=t; */ return *this; }
+		{ r= uint8_t( real(r)/t ); g= uint8_t( real(g)/t ); b= uint8_t( real(b)/t ); return *this; }
+
+
+	static color const red;
+	static color const green;
+	static color const blue;
+	static color const white;
+	static color const black;
+	static color const transparent;
 };
 
-// approximative comparators
-inline bool equals_about(color const& a, color const& b)
-	{ return equals_about(a.r,b.r)
-	      && equals_about(a.g,b.g)
-	      && equals_about(a.b,b.b)
-	      && equals_about(a.a,b.a); }
-bool operator== (color const& a, color const& b)
-//  { return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a; }
-	{ return equals_about(a,b); }
-bool operator!= (color const& a, color const& b)
-//  { return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a; }
-	{ return !equals_about(a,b); }
+inline bool operator== (color const& a, color const& b)
+  { return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a; }
+inline bool operator!= (color const& a, color const& b)
+  { return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a; }
 
 //TODO better handling of alpha below ??
 
 //! \brief Add the contribution of two colors `a` and `b` together and return it in a new color.
 //!
 //! Simply the two colors `a` and `b` per channel (exept alpha).
-color operator+ (color const& a, color const& b)
+inline color operator+ (color const& a, color const& b)
   { return color(a)+=b; }
 //! \brief Filter the color `a` with the color `b` and return the result in a new color.
 //!
 //! Simply do a per channel (exept alpha) product.
-color operator* (color const& a, color const& b)
+inline color operator* (color const& a, color const& b)
   { return color(a)*=b; }
 //! \brief Return the color with same hue and saturation but with luminosity scaled by factor `t`.
-color operator* (color const& a, real t)
+inline color operator* (color const& a, real t)
   { return color(a)*=t; }
 //! \brief Return the color with same hue and saturation but with luminosity scaled by factor `1/t`.
-color operator/ (color const& a, real t)
+inline color operator/ (color const& a, real t)
   { return color(a)/=t; }
 
-colorChannel& red(color& c) { return c.r; }
-colorChannel& green(color& c) { return c.g; }
-colorChannel& blue(color& c) { return c.b; }
-colorChannel& alpha(color& c) { return c.a; }
+inline colorChannel& red(color& c) { return c.r; }
+inline colorChannel& green(color& c) { return c.g; }
+inline colorChannel& blue(color& c) { return c.b; }
+inline colorChannel& alpha(color& c) { return c.a; }
 
-////! \brief Clamp color channel so that they fit in the displayable range
-////!
-////! Store the result in a.
-//color& do_clamp(color & a)
-//{
-//  a.r= CLAMP(0.f, a.r, 1.f);
-//  a.g= CLAMP(0.f, a.g, 1.f);
-//  a.b= CLAMP(0.f, a.b, 1.f);
-//  a.a= CLAMP(0.f, a.a, 1.f);
-//  return *this;
-//}
-  
 //! \brief Clamp color channel so that they fit in the displayable range.
-color clamp(color const& a)
-  { return color( CLAMP(0.f, a.r, 1.f), CLAMP(0.f, a.g, 1.f), CLAMP(0.f, a.b, 1.f), CLAMP(0.f, a.a, 1.f) ); }
-
-
-
-////! \brief Complement of the color `a`.
-////!
-////! Store the result in a.
-//color& do_complement (color & a)
-//  { a.r= 1.f -a.r; a.g= 1.f -a.g; a.b= 1.f -a.b; a.a= 1.f -a.a; return *this; }
+inline color clamp(color const& a)
+	{ return color( CLAMP(COLORCHANNEL_RANGE_MIN, a.r, COLORCHANNEL_RANGE_MAX),
+	                CLAMP(COLORCHANNEL_RANGE_MIN, a.g, COLORCHANNEL_RANGE_MAX),
+	                CLAMP(COLORCHANNEL_RANGE_MIN, a.b, COLORCHANNEL_RANGE_MAX),
+	                CLAMP(COLORCHANNEL_RANGE_MIN, a.a, COLORCHANNEL_RANGE_MAX) ); }
 
 //! \brief Complement of the color `a`.
 //! 
 //! `a` and `complement(a)` are linked by `a + complement(a) = white`,
 //! where white is the color with full intensity in each channel.
-color complement (color const& a)
-  { return color( 1.f -a.r, 1.f -a.g, 1.f -a.b, 1.f -a.a ); }
+inline color complement (color const& a)
+	{ return color( COLORCHANNEL_RANGE_MAX -a.r, COLORCHANNEL_RANGE_MAX -a.g, COLORCHANNEL_RANGE_MAX -a.b, COLORCHANNEL_RANGE_MAX -a.a ); }
 
 
 
 //! \brief basic string representation of the color.
-std::ostream& operator<<(std::ostream& s, color const& c)
-	{ return s <<"(r:" <<c.r <<",g:" <<c.g <<",b:" <<c.b <<",a:" <<c.a <<")"; }
-
-namespace tone {
-color const red(1.f,0.f,0.f);
-color const green(0.f,1.f,0.f);
-color const blue(0.f,0.f,1.f);
-color const white(1.f,1.f,1.f);
-color const black(0.f,0.f,0.f);
-color const transparent(0.f,0.f,0.f,1.f);
-} //namespace tone
-
+inline std::ostream& operator<<(std::ostream& s, color const& c)
+	{ return s <<"#" <<int(c.r) <<"." <<int(c.g) <<"." <<int(c.b) <<"." <<int(c.a) ; }
+	//{ return s <<"#" <<std::hex<<std::setfill('0')<<std::setw(2) <<int(c.r) <<std::hex<<std::setfill('0')<<std::setw(2) <<int(c.g) <<std::hex<<std::setfill('0')<<std::setw(2) <<int(c.b) <<std::hex<<std::setfill('0')<<std::setw(2) <<int(c.a) ; }
 
 } //namespace bOoM
 #endif
