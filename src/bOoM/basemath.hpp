@@ -13,7 +13,7 @@ namespace bOoM {
  *  The typename exists to use a real number representation easily modifiable
  *  throughout Slava Bogomthe software.
  */
-typedef float real;
+typedef double real;
 
 //! \brief real type literals, from decimal notation.
 constexpr bOoM::real operator"" _r(long double const x)

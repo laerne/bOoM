@@ -15,6 +15,10 @@
 
 //using namespace bOoM;
 using namespace visualizer;
+using bOoM::real;
+using bOoM::real2;
+using bOoM::move2;
+using bOoM::operator "" _r;
 
 void on_crash_exit()
 {
@@ -29,6 +33,7 @@ int main(int argc, char **argv)
 	
 	std::vector<std::shared_ptr<bOoM::Entity>> starting_entities;
 	starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2_id));
+	starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(move2(bOoM::rot2_fromRadian(CST_PI/6_r),bOoM::zero2)));
 	
 	SimpleDisplayer display(
 			bOoM::size_t_2(1024,768),

@@ -13,11 +13,15 @@ SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& 
 	if( sdl_window == NULL || sdl_renderer == NULL )
 		throw std::runtime_error("SDL failed to create a window.");
 	sdl_screen_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_size.x, window_size.y);
-	sdl_screen_surface = SDL_CreateRGBSurface(0, window_size.x, window_size.y, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	sdl_screen_surface = SDL_CreateRGBSurface(0,                                                            //unused flags
+			window_size.x, window_size.y,                                                                       //dimentions
+			bOoM::Image::depth(),                                                                               //pixel format
+			bOoM::Image::redMask(), bOoM::Image::greenMask(), bOoM::Image::blueMask(), bOoM::Image::alphaMask() //pixel masks
+	);
 	
 	//Comment the following line if you do not wish to use transparency in the screen texture so that on can see the clear color.
-	SDL_SetTextureBlendMode(sdl_screen_texture, SDL_BLENDMODE_BLEND);
-	SDL_SetRenderDrawColor(sdl_renderer, 0, 32, 0, 255);
+	//SDL_SetTextureBlendMode(sdl_screen_texture, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 255);
 }
 
 SimpleDisplayer::~SimpleDisplayer()
@@ -25,7 +29,7 @@ SimpleDisplayer::~SimpleDisplayer()
 	SDL_DestroyRenderer(sdl_renderer);
 	SDL_DestroyWindow(sdl_window);
 	SDL_DestroyTexture(sdl_screen_texture);
-	free(sdl_screen_surface);
+	SDL_FreeSurface(sdl_screen_surface);
 }
 
 void SimpleDisplayer::loop()
@@ -37,16 +41,16 @@ void SimpleDisplayer::loop()
 	
 	SDL_Event e;
 
-	int iters=32;
+	//int iters=32;
 	
 	while( looping )
 	{
-		if(--iters < 0)
-		{
-			looping = false;
-			break;
-		}
 		//std::cout << "New loop" << std::endl;
+		//if(--iters < 0)
+		//{
+		//	looping = false;
+		//	break;
+		//}
 		while( remaining_span > std::chrono::milliseconds(0) && SDL_PollEvent(&e) == 1)
 		{
 			std::cout << "Event type " << e.type << std::endl;
@@ -75,27 +79,41 @@ void SimpleDisplayer::loop()
 void SimpleDisplayer::render()
 {
 	//std::cout << "Generation of a new image" << std::endl;
+	SDL_FillRect( sdl_screen_surface, NULL, SDL_MapRGBA(sdl_screen_surface->format,255,0,0,0) );
 
-	SDL_FillRect( sdl_screen_surface, NULL, 0xFF100010 );
-	if(SDL_UpdateTexture(sdl_screen_texture, NULL, sdl_screen_surface->pixels, window_size.x*4 ) < 0 )
-	{
-		std::cout << "Error: SDL_UpdateTexture: " << SDL_GetError() << std::endl;
-	}
 	
 	for( shared_ptr<bOoM::Entity> e : entities )
 	{
-		//std::cout << "Working with a new Entity" << std::endl;
 		bOoM::Image* image;
 		bOoM::aabr bOoMzone;
+		
 		if(e->new__rendered_image(screen_zone, window_size, image, bOoMzone))
 		{
-			//std::cout <<"Generated bOoM::Image of size " <<image->width() <<"x" <<image->height() <<std::endl;
-			//std::cout <<"Edge Pixel value example : " << std::hex << *(uint32_t*)(image->argb8888_buffer()) << std::dec << std::endl;
+			//Convert the bOoM::Image to a SDL_Surface
 			SDL_Rect sdlzone = to_screenCoord(screen_zone, window_size, bOoMzone);
-			if( SDL_UpdateTexture(sdl_screen_texture, &sdlzone, image->argb8888_buffer(), image->pitch() ) < 0)
-				std::cout <<"Error: SDL_UpdateTexture: " <<SDL_GetError() <<std::endl;
+			SDL_Surface* imageSurface = SDL_CreateRGBSurfaceFrom(
+					image->argb8888_buffer(),                                                                           //data
+					image->width(), image->height(),                                                                    //dimension
+					bOoM::Image::depth(), image->pitch(),                                                               //pixel format
+					bOoM::Image::redMask(), bOoM::Image::greenMask(), bOoM::Image::blueMask(), bOoM::Image::alphaMask() //pixel masks
+			);
+			if(imageSurface == NULL)
+			{
+				std::cout <<"Error: SDL_CreateRGBSurfaceFrom: " <<SDL_GetError() <<std::endl;
+				e->del__rendered_image(image);
+				continue;
+			}
+			//Blit it to the screen surface
+			if( SDL_BlitSurface(imageSurface, NULL, sdl_screen_surface, NULL ) < 0)
+				std::cout <<"Error: SDL_BlitSurface: " <<SDL_GetError() <<std::endl;
+			SDL_FreeSurface(imageSurface);
 			e->del__rendered_image(image);
 		}
+	}
+	
+	if(SDL_UpdateTexture(sdl_screen_texture, NULL, sdl_screen_surface->pixels, window_size.x*4 ) < 0 )
+	{
+		std::cout << "Error: SDL_UpdateTexture: " << SDL_GetError() << std::endl;
 	}
 
 	SDL_RenderClear(sdl_renderer);
