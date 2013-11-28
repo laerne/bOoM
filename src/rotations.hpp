@@ -12,16 +12,15 @@ The operation matrix deduced from this sine and cosine is :
   \right).
 \f]
 
-Since it has only to remebre two components, the rotation matrix can be stored in a vector `V2`.
-This make sense if we view that a rotation matrix is equivalant of the angle of
-the rotation which is itself equivalent to the vector of that angle in polar
-coordinates, but specified in Cartesian coordinates.
+Since it has only to remember two components, the rotation matrix can be stored in a vector `V2`.
 In that respect, the cosine is stored as the `x` component of the vector and the sine as the `y` component.
+This make sense because \f$(c,s)\f$ is the vector obtained by applying the rotation on the unit vector pointing along
+the `x`-axis.
 
 Nothing enforce you to use actual sine and cosine values, i.e values such that
 \f$\texttt{c}^2+\texttt{s}^2=1\f$.
 In the case this last equality is no verified, the matrix represents a
-scale-$-then-rotate operation :
+scale-then-rotate operation :
 \f[
   \left(
   \begin{array}{cc}

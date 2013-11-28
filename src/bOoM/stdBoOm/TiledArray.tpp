@@ -121,9 +121,7 @@ std::string toString(const A& typeinstance)
 //</TODO>
 
 
-static size_t maxCellLen=7, sepLen=1;
-
-template<typename A>
+template<typename A, int maxCellLen=7, int sepLen=1>
 std::ostream& operator<<(std::ostream& s, TiledArray<A> const& tarray)
 {
 	s <<"TiledArray[V]" << std::endl;

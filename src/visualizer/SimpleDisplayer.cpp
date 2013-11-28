@@ -36,10 +36,17 @@ void SimpleDisplayer::loop()
 	std::chrono::steady_clock::time_point last_time;
 	
 	SDL_Event e;
+
+	int iters=32;
 	
 	while( looping )
 	{
-		std::cout << "New loop" << std::endl;
+		if(--iters < 0)
+		{
+			looping = false;
+			break;
+		}
+		//std::cout << "New loop" << std::endl;
 		while( remaining_span > std::chrono::milliseconds(0) && SDL_PollEvent(&e) == 1)
 		{
 			std::cout << "Event type " << e.type << std::endl;
@@ -60,13 +67,14 @@ void SimpleDisplayer::loop()
 		last_time = current_time;
 		
 		SDL_Delay(remaining_span.count());
+
 	}
 	remaining_span = refresh_span;
 }
 
 void SimpleDisplayer::render()
 {
-	std::cout << "Generation of a new image" << std::endl;
+	//std::cout << "Generation of a new image" << std::endl;
 
 	SDL_FillRect( sdl_screen_surface, NULL, 0xFF100010 );
 	if(SDL_UpdateTexture(sdl_screen_texture, NULL, sdl_screen_surface->pixels, window_size.x*4 ) < 0 )
@@ -79,15 +87,15 @@ void SimpleDisplayer::render()
 		//std::cout << "Working with a new Entity" << std::endl;
 		bOoM::Image* image;
 		bOoM::aabr bOoMzone;
-		//if(e->new__rendered_image(screen_zone, window_size, image, bOoMzone))
-		//{
-		//	//std::cout <<"Generated bOoM::Image of size " <<image->width() <<"x" <<image->height() <<std::endl;
-		//	//std::cout <<"Edge Pixel value example : " << std::hex << *(uint32_t*)(image->argb8888_buffer()) << std::dec << std::endl;
-		//	SDL_Rect sdlzone = to_screenCoord(screen_zone, window_size, bOoMzone);
-		//	if( SDL_UpdateTexture(sdl_screen_texture, &sdlzone, image->argb8888_buffer(), image->byteWidth() ) < 0)
-		//		std::cout << "Error: SDL_UpdateTexture: " << SDL_GetError() << std::endl;
-		//	e->del__rendered_image(image);
-		//}
+		if(e->new__rendered_image(screen_zone, window_size, image, bOoMzone))
+		{
+			//std::cout <<"Generated bOoM::Image of size " <<image->width() <<"x" <<image->height() <<std::endl;
+			//std::cout <<"Edge Pixel value example : " << std::hex << *(uint32_t*)(image->argb8888_buffer()) << std::dec << std::endl;
+			SDL_Rect sdlzone = to_screenCoord(screen_zone, window_size, bOoMzone);
+			if( SDL_UpdateTexture(sdl_screen_texture, &sdlzone, image->argb8888_buffer(), image->pitch() ) < 0)
+				std::cout <<"Error: SDL_UpdateTexture: " <<SDL_GetError() <<std::endl;
+			e->del__rendered_image(image);
+		}
 	}
 
 	SDL_RenderClear(sdl_renderer);

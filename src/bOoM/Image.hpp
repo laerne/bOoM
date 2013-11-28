@@ -14,7 +14,7 @@ public:
 		{ return (uint32_t*) array; }
 	uint32_t const* argb8888_buffer() const
 		{ return (uint32_t*) array; }
-	size_t byteWidth()
+	size_t pitch()
 		{ return width() * sizeof(uint32_t); }
 };
 
