@@ -100,7 +100,7 @@ bool intersection( aabr const& r1, aabr const& r2, real2& centroid, real& mesure
 {
 	if( ! has_intersection(r1,r2) )
 		return false;
-	aabr inner_r = aabr_biggest_inner_aabr(r1,r2);
+	aabr inner_r = aabr_intersection(r1,r2);
 	centroid = inner_r.bottom_left() +(inner_r.size()) *0.5_r;
 	mesure = inner_r.width() *inner_r.height();
 	return true;
@@ -244,23 +244,6 @@ bool line_intersection( aabr const& r, move2 const& line,
 		std::swap(hitpoint1, hitpoint2);
 	}
 	return true;
-}
-
-bool aabr_smallest_subaabr_containing_line( aabr const& r, move2 const& line, aabr& res__aabr)
-{
-	real2 p1,p2;
-	real unused, thouShaltNotPass;
-	if(     line_intersection(r, line, p1, unused, p2, thouShaltNotPass)
-		&& (   (  (p1.x == r.left || p1.x == r.right )
-	         && (p2.x == r.left || p2.x == r.right )  )
-	      || (  (p1.y == r.top  || p1.y == r.bottom)
-	         && (p2.y == r.top  || p2.y == r.bottom)  )   )     )
-	{
-		res__aabr = aabr( MAX(p1.y,p2.y), MIN(p1.x,p2.x), MIN(p1.y,p2.y), MAX(p1.x,p2.x) );
-		return true;
-	}
-	else
-	  return false;
 }
 
 /***************************

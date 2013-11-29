@@ -162,13 +162,16 @@ bool line_intersection( aabr const& r, move2 const& line, real2& hitpoint, real&
  * 
  *  \retval `true` if an intersection occurred, `false` else.
  *  
- *  Beside the input rectangle `r` and input line `line`, the function requires four arguments by reference for outputting where exactly the intersection occurs.
+ *  Beside the input rectangle `r` and input line `line`, the function requires four arguments by reference for
+ *  outputting where exactly the intersection occurs.
  *  
- *  \param hitpoint1 Position of the _first_ hit between the line and the rectangle.  The direction of the line is the direction of vector `line.r`.
+ *  \param hitpoint1 Position of the _first_ hit between the line and the rectangle.  The direction of the line is the
+ *         direction of vector `line.r`.
  *  \param hitpoint1_factor Factor `f` such that at the end of the function
  *  ``` hitpoint1 == line.t + hitpoint1_factor*line.r ```
  *  
- *  \param hitpoint2 Position of the _first_ hit between the line and the rectangle.  The direction of the line is the direction of vector `line.r`.
+ *  \param hitpoint2 Position of the _first_ hit between the line and the rectangle.  The direction of the line is the
+ *         direction of vector `line.r`.
  *  \param hitpoint2_factor Factor `f` such that at the end of the function
  *  ``` hitpoint2 == line.t + hitpoint2_factor*line.r ```
  *  
@@ -178,7 +181,6 @@ bool line_intersection( aabr const& r, move2 const& line, real2& hitpoint, real&
 bool line_intersection( aabr const& r, move2 const& line,
 		real2& hitpoint1, real& hitpoint1_factor, real2& hitpoint2, real& hitpoint2_factor );
 		
-bool aabr_smallest_subaabr_containing_line( aabr const& r, move2 const& line, aabr& res__aabr);
 
 /****************************
  * CIRCLE-AABR INTERSECTION *

@@ -13,10 +13,10 @@ SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& 
 	if( sdl_window == NULL || sdl_renderer == NULL )
 		throw std::runtime_error("SDL failed to create a window.");
 	sdl_screen_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_size.x, window_size.y);
-	sdl_screen_surface = SDL_CreateRGBSurface(0,                                                            //unused flags
-			window_size.x, window_size.y,                                                                       //dimentions
-			bOoM::Image::depth(),                                                                               //pixel format
-			bOoM::Image::redMask(), bOoM::Image::greenMask(), bOoM::Image::blueMask(), bOoM::Image::alphaMask() //pixel masks
+	sdl_screen_surface = SDL_CreateRGBSurface(0, //unused flags
+			window_size.x, window_size.y,            //dimentions
+			bOoM::Image::depth(),                    //pixel format
+			0, 0, 0, 0                               //pixel masks
 	);
 	
 	//Comment the following line if you do not wish to use transparency in the screen texture so that on can see the clear color.
@@ -79,7 +79,7 @@ void SimpleDisplayer::loop()
 void SimpleDisplayer::render()
 {
 	//std::cout << "Generation of a new image" << std::endl;
-	SDL_FillRect( sdl_screen_surface, NULL, SDL_MapRGBA(sdl_screen_surface->format,255,0,0,0) );
+	SDL_FillRect( sdl_screen_surface, NULL, SDL_MapRGBA(sdl_screen_surface->format,32,0,32,0) );
 
 	
 	for( shared_ptr<bOoM::Entity> e : entities )
@@ -92,7 +92,7 @@ void SimpleDisplayer::render()
 			//Convert the bOoM::Image to a SDL_Surface
 			SDL_Rect sdlzone = to_screenCoord(screen_zone, window_size, bOoMzone);
 			SDL_Surface* imageSurface = SDL_CreateRGBSurfaceFrom(
-					image->argb8888_buffer(),                                                                           //data
+					image->rgba8888_buffer(),                                                                           //data
 					image->width(), image->height(),                                                                    //dimension
 					bOoM::Image::depth(), image->pitch(),                                                               //pixel format
 					bOoM::Image::redMask(), bOoM::Image::greenMask(), bOoM::Image::blueMask(), bOoM::Image::alphaMask() //pixel masks
@@ -104,7 +104,7 @@ void SimpleDisplayer::render()
 				continue;
 			}
 			//Blit it to the screen surface
-			if( SDL_BlitSurface(imageSurface, NULL, sdl_screen_surface, NULL ) < 0)
+			if( SDL_BlitSurface(imageSurface, NULL, sdl_screen_surface, &sdlzone ) < 0)
 				std::cout <<"Error: SDL_BlitSurface: " <<SDL_GetError() <<std::endl;
 			SDL_FreeSurface(imageSurface);
 			e->del__rendered_image(image);
@@ -132,8 +132,8 @@ bOoM::aabr to_physicalCoord(bOoM::aabr const& screen_zone, bOoM::size_t_2 screen
 	
 	bOoMrect.left =   screen_zone.left + ( bOoM::real(sdlrect.x) * pixel_factor.x );
 	bOoMrect.top =    screen_zone.top  - ( bOoM::real(sdlrect.y) * pixel_factor.y );
-	bOoMrect.bottom = screen_zone.top  - ( bOoM::real(sdlrect.x+sdlrect.w) * pixel_factor.x );
-	bOoMrect.right =  screen_zone.left + ( bOoM::real(sdlrect.y+sdlrect.h) * pixel_factor.y );
+	bOoMrect.bottom = screen_zone.top  - ( bOoM::real(sdlrect.x+sdlrect.w) * pixel_factor.y );
+	bOoMrect.right =  screen_zone.left + ( bOoM::real(sdlrect.y+sdlrect.h) * pixel_factor.x );
 	return bOoMrect;
 }
 

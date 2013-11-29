@@ -36,8 +36,8 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 	//		return false;
 	//}
 	//else
-	//{
-	  res__rendered_zone = screen_zone; //TODO use `aabr_smallest_subaabr_containing_line`
+	//{ //TODO use `aabr_smallest_subaabr_containing_line`
+	  res__rendered_zone = screen_zone;
 		size_t_2 image_resolution;
 		//size_t_2 image_resolution = screen_resolution;
 		//We must round up not to miss any colored pixel, so we're using ceil.
@@ -48,11 +48,10 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 		for(p.x = 0        ; p.x < image_resolution.x; ++p.x)
 		{
 			real2 q; //center of pixel
-			q.x = 0; q.y = 0;
 			q.x = screen_zone.left + (real(p.x) + 0.5_r) /real(image_resolution.x) *screen_zone.width();
 			q.y = screen_zone.bottom + (real(p.y) + 0.5_r) /real(image_resolution.y) *screen_zone.height();
 
-			(*res__image)[p] = crossProduct_z( orientation.r, q-orientation.t ) > 0 ? color::white : color::transparent;
+			(*res__image)[p] = crossProduct_z( orientation.r, q-orientation.t ) <= 0 ? color::white : color::transparent;
 			
 			//std::cout <<p <<" " <<q <<" " <<(*res__image)[p] <<std::endl;
 			//std::cout <<"    " <<color::white <<color::blue <<std::endl;

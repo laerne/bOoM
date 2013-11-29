@@ -11,9 +11,9 @@ namespace bOoM {
  * 
  * We assume the identity-oriented WorldBoundary is the half-plane whose area is on the area below of the x-axis.
  */
-struct WorldBoundary : Entity
+struct WorldBoundary : public Entity
 {
-	WorldBoundary(move2 orientation);
+	explicit WorldBoundary(move2 orientation);
 	
 	move2 orientation;
 
@@ -24,5 +24,4 @@ struct WorldBoundary : Entity
 
 } //namespace bOoM
 #endif
-
 
