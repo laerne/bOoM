@@ -1,4 +1,5 @@
 #include "SimpleDisplayer.hpp"
+#include <bOoM/entities/Entity.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <thread>
@@ -53,13 +54,16 @@ void SimpleDisplayer::loop()
 		//}
 		while( remaining_span > std::chrono::milliseconds(0) && SDL_PollEvent(&e) == 1)
 		{
-			std::cout << "Event type " << e.type << std::endl;
+			//std::cout << "Event type " << e.type << std::endl;
 			switch(e.type)
 			{
 				case SDL_QUIT:
 				case SDL_KEYDOWN:
 					looping = false;
 					return; //break;
+				case SDL_MOUSEBUTTONDOWN:
+					bOoM::size_t_2 p( e.button.x, window_size.y -1 -e.button.y );
+					std::cout <<"Position is " <<to_physical_coordinates(screen_zone, window_size, p) <<std::endl;
 			}
 		}
 		render();

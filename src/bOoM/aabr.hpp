@@ -38,13 +38,13 @@ struct rectangle {
 	R top;     //! top edge's ordinate
 
 	//! \brief returns the bottom-left vertice of the rectangle.
-	V2<R> bottom_left() const { return V2<R>(bottom,left); };
+	V2<R> bottom_left() const { return V2<R>(left,bottom); };
 	//! \brief returns the bottom-right vertice of the rectangle.
-	V2<R> bottom_right() const { return V2<R>(bottom,right); };
+	V2<R> bottom_right() const { return V2<R>(right,bottom); };
 	//! \brief returns the top-left vertice of the rectangle.
-	V2<R> top_left() const { return V2<R>(top,left); };
+	V2<R> top_left() const { return V2<R>(left,top); };
 	//! \brief returns the top-right vertice of the rectangle.
-	V2<R> top_right() const { return V2<R>(top,right); };
+	V2<R> top_right() const { return V2<R>(right,top); };
 	
 	//! \brief returns the width of the rectangle.
 	R width() const { return right - left; };

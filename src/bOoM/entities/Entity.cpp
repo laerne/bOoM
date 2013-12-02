@@ -42,10 +42,10 @@ rectangle<int> to_screen_coordinates (aabr const& screen_zone, size_t_2 screen_r
 	
 	pixel_factor_inv.x = real(screen_resolution.x) / screen_zone.width() ;
 	pixel_factor_inv.y = real(screen_resolution.y) / screen_zone.height();
-	pixelRect.left   = int( (realRect.left-screen_zone.left)     * pixel_factor_inv.x );
-	pixelRect.right  = int( (realRect.right-screen_zone.left)    * pixel_factor_inv.x );
-	pixelRect.bottom = int( (realRect.bottom-screen_zone.bottom) * pixel_factor_inv.y );
-	pixelRect.top    = int( (realRect.top-screen_zone.bottom)    * pixel_factor_inv.y );
+	pixelRect.left   = int( std::floor( (realRect.left-screen_zone.left)     * pixel_factor_inv.x ) );
+	pixelRect.right  = int( std::ceil ( (realRect.right-screen_zone.left)    * pixel_factor_inv.x ) );
+	pixelRect.bottom = int( std::floor( (realRect.bottom-screen_zone.bottom) * pixel_factor_inv.y ) );
+	pixelRect.top    = int( std::ceil ( (realRect.top-screen_zone.bottom)    * pixel_factor_inv.y ) );
 	return pixelRect;
 }
 	

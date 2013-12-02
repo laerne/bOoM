@@ -1,5 +1,6 @@
 #source files to compile
 set(stdBoOm_src
+		stdBoOm/aabr.cpp
 		stdBoOm/basemath.cpp
 		stdBoOm/color.cpp
 		stdBoOm/intersection.cpp

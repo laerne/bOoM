@@ -134,11 +134,11 @@ bool line_intersection( aabr const& r, move2 const& line,
 	real2 left_hitpoint, right_hitpoint;
 	real left_factor, right_factor;
 	
-	line_intersection( line, move2(r.top_left(),real2(0,-1_r)),   left_hitpoint,  left_factor);
-	line_intersection( line, move2(r.top_right(), real2(0,-1_r)), right_hitpoint, right_factor);
+	line_intersection( line, move2( real2(0,-1_r), r.top_left()  ), left_hitpoint,  left_factor);
+	line_intersection( line, move2( real2(0,-1_r), r.top_right() ), right_hitpoint, right_factor);
 	
 	// Division by case.
-	// Comment shows a visual representation of the rectangle with '-', '|' and '+' and of the line with '*'
+	// Comment shows a visual representation of the rectangle made with '-', '|' and '+' and of the line made with '*'
 	if(  left_hitpoint.y <= r.top && left_hitpoint.y >= r.bottom  )
 	{
 		hitpoint1 = left_hitpoint;
