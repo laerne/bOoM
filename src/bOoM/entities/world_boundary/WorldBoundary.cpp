@@ -43,29 +43,34 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 		{
 			if(orientation.r.y < 0)
 			{
-				res__rendered_zone.top = screen_zone.top;
-				res__rendered_zone.left = screen_zone.left;
+				//contains the top left screen vertex
+				res__rendered_zone.s.x += res__rendered_zone.left() - screen_zone.left() ;
+				res__rendered_zone.s.y += screen_zone.top() - res__rendered_zone.top() ;
+				res__rendered_zone.v.x = screen_zone.left() ;
 			}
 			else //(orientation.r.y >= 0)
 			{
-				res__rendered_zone.top = screen_zone.top;
-				res__rendered_zone.right = screen_zone.right;
+				//contains the top right screen vertex
+				res__rendered_zone.s += screen_zone.top_right() - res__rendered_zone.top_right() ;
 			}
 		}
 		else //(orientation.r.x >= 0)
 		{
 			if(orientation.r.y < 0)
 			{
-				res__rendered_zone.bottom = screen_zone.bottom;
-				res__rendered_zone.left = screen_zone.left;
+				//contains the bottom left screen vertex
+				res__rendered_zone.s += res__rendered_zone.bottom_left() - screen_zone.bottom_left() ;
+				res__rendered_zone.v = screen_zone.bottom_left() ;
 			}
 			else //(orientation.r.y >= 0)
 			{
-				res__rendered_zone.bottom = screen_zone.bottom;
-				res__rendered_zone.right = screen_zone.right;
+				//contains the bottom right screen vertex
+				res__rendered_zone.s.x += screen_zone.right() - res__rendered_zone.right() ;
+				res__rendered_zone.s.y += res__rendered_zone.bottom() - screen_zone.bottom() ;
+				res__rendered_zone.v.y = screen_zone.bottom() ;
 			}
 		}
-		rectangle<int> rendered_pixel_zone = to_screen_coordinates(screen_zone, screen_resolution, res__rendered_zone);
+		rect rendered_pixel_zone = to_screen_coordinates(screen_zone, screen_resolution, res__rendered_zone);
 		size_t_2 image_resolution = rendered_pixel_zone.size();
 		res__image = new Image(image_resolution);
 		//std::cout <<"!!! " <<image_resolution <<", " <<rendered_pixel_zone <<std::endl;

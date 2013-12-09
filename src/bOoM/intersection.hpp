@@ -127,10 +127,10 @@ bool line_intersection( circle const& c, move2 const& line, real2 & hitpoint, re
  **************************/
 inline bool has_intersection( aabr const& r1, aabr const& r2 )
 {
-	return r1.right > r2.left
-	    && r1.left < r2.right
-	    && r1.bottom < r2.top
-	    && r1.top > r2.bottom ;
+	return r1.right() > r2.left()
+	    && r1.left() < r2.right()
+	    && r1.bottom() < r2.top()
+	    && r1.top() > r2.bottom() ;
 }
 
 bool intersection( aabr const& r1, aabr const& r2, real2& centroid, real& mesure );
@@ -189,7 +189,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 //! \retval `true` if there is an intersection, `false` else.
 inline bool has_intersection( circle const& c, aabr const& r )
 {
-	real2 closest_point( CLAMP(r.left,c.center.x,r.right), CLAMP(r.bottom,c.center.x,r.top) );
+	real2 closest_point( CLAMP(r.left(),c.center.x,r.right()), CLAMP(r.bottom(),c.center.x,r.top()) );
 	return dist2sq(c.center, closest_point) <= SQ(c.radius);
 }
 

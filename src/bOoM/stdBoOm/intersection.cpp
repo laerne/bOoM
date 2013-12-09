@@ -117,8 +117,8 @@ bool has_intersection( aabr const& r, move2 const& line )
 	line_intersection( line, move2(r.top_left(),real2(0,-1_r)),   left_hitpoint,  useless);
 	line_intersection( line, move2(r.top_right(), real2(0,-1_r)), right_hitpoint, useless);
 
-	return !(  ( left_hitpoint.y < r.bottom && right_hitpoint.y < r.bottom )
-	       ||  ( left_hitpoint.y > r.top    && right_hitpoint.y > r.top )  );
+	return !(  ( left_hitpoint.y < r.bottom() && right_hitpoint.y < r.bottom() )
+	       ||  ( left_hitpoint.y > r.top()    && right_hitpoint.y > r.top() )  );
 }
 
 bool line_intersection( aabr const& r, move2 const& line, real2& hitpoint, real& hitpoint_factor )
@@ -139,7 +139,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 	
 	// Division by case.
 	// Comment shows a visual representation of the rectangle made with '-', '|' and '+' and of the line made with '*'
-	if(  left_hitpoint.y <= r.top && left_hitpoint.y >= r.bottom  )
+	if(  left_hitpoint.y <= r.top() && left_hitpoint.y >= r.bottom()  )
 	{
 		hitpoint1 = left_hitpoint;
 		hitpoint1_factor = left_factor;
@@ -148,7 +148,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// ************
 		// |          |
 		// +----------+
-		if(  right_hitpoint.y <= r.top && right_hitpoint.y >= r.bottom  )
+		if(  right_hitpoint.y <= r.top() && right_hitpoint.y >= r.bottom()  )
 		{
 			hitpoint2 = right_hitpoint;
 			hitpoint2_factor = right_factor;
@@ -158,7 +158,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// **         |
 		// | **       |
 		// +---**-----+
-		else if(  right_hitpoint.y < r.bottom )
+		else if(  right_hitpoint.y < r.bottom() )
 		{
 			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
 		}
@@ -167,19 +167,19 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// ***        |
 		// |          |
 		// +----------+
-		else // (  right_hitpoint.y > r.top  )
+		else // (  right_hitpoint.y > r.top()  )
 		{
 			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
 		}
 	}
-	else if(  left_hitpoint.y < r.bottom )
+	else if(  left_hitpoint.y < r.bottom() )
 	{
 		// +----------+
 		// |          |
 		// |        ***
 		// |     ***  |
 		// +--***-----+
-		if(  ( right_hitpoint.y <= r.top && right_hitpoint.y >= r.bottom )  )
+		if(  ( right_hitpoint.y <= r.top() && right_hitpoint.y >= r.bottom() )  )
 		{
 			hitpoint1 = right_hitpoint;
 			hitpoint1_factor = right_factor;
@@ -192,27 +192,27 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// |          |
 		// +----------+
 		// ************
-		else if(  right_hitpoint.y < r.bottom )
+		else if(  right_hitpoint.y < r.bottom() )
 			return false;
 		// +---*------+
 		// |    *     |
 		// |    *     |
 		// |     *    |
 		// +-----*----+
-		else // (  right_hitpoint.y > r.top  )
+		else // (  right_hitpoint.y > r.top()  )
 		{
 			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint1,  hitpoint1_factor );
 			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
 		}
 	}
-	else // (  left_hitpoint.y > r.top )
+	else // (  left_hitpoint.y > r.top() )
 	{
 		// +-***------+
 		// |    **    |
 		// |      *** |
 		// |         **
 		// +----------+
-		if(  ( right_hitpoint.y <= r.top && right_hitpoint.y >= r.bottom )  )
+		if(  ( right_hitpoint.y <= r.top() && right_hitpoint.y >= r.bottom() )  )
 		{
 			hitpoint1 = right_hitpoint;
 			hitpoint1_factor = right_factor;
@@ -223,7 +223,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// |    *     |
 		// |    *     |
 		// +-----*----+
-		else if(  right_hitpoint.y < r.bottom )
+		else if(  right_hitpoint.y < r.bottom() )
 		{
 			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint1,  hitpoint1_factor );
 			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
@@ -234,7 +234,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// |          |
 		// |          |
 		// +----------+
-		else // (  right_hitpoint.y > r.top  )
+		else // (  right_hitpoint.y > r.top()  )
 			return false;
 	}
 

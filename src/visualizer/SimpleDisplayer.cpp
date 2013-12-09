@@ -6,6 +6,9 @@
 
 namespace visualizer {
 
+//Small utility to cast
+SDL_Rect to_SDL_Rect( bOoM::rect const& r ) { return { static_cast<int>(r.v.x), static_cast<int>(r.v.y), static_cast<int>(r.s.x), static_cast<int>(r.s.y) }; }
+
 SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& screen_zone, std::chrono::milliseconds refresh_span, std::vector<shared_ptr<bOoM::Entity>> const& starting_entities)
 	: refresh_span(refresh_span), window_size(window_size), screen_zone(screen_zone), entities(starting_entities)
 {
@@ -63,7 +66,8 @@ void SimpleDisplayer::loop()
 					return; //break;
 				case SDL_MOUSEBUTTONDOWN:
 					bOoM::size_t_2 p( e.button.x, window_size.y -1 -e.button.y );
-					std::cout <<"Position is " <<to_physical_coordinates(screen_zone, window_size, p) <<std::endl;
+					std::cout <<"Position is " <<to_physical_coordinates(screen_zone, window_size, p) <<" in bOoM and " <<p <<" on screen." <<std::endl;
+					break;
 			}
 		}
 		render();
@@ -94,7 +98,7 @@ void SimpleDisplayer::render()
 		if(e->new__rendered_image(screen_zone, window_size, image, bOoMzone))
 		{
 			//Convert the bOoM::Image to a SDL_Surface
-			SDL_Rect sdlzone = to_screenCoord(screen_zone, window_size, bOoMzone);
+			SDL_Rect sdlzone = to_SDL_Rect(   to_screen_coordinates(screen_zone, window_size, bOoMzone)   );
 			SDL_Surface* imageSurface = SDL_CreateRGBSurfaceFrom(
 					image->rgba8888_buffer(),                                                                           //data
 					image->width(), image->height(),                                                                    //dimension
@@ -124,35 +128,6 @@ void SimpleDisplayer::render()
 	SDL_RenderCopy(sdl_renderer, sdl_screen_texture, NULL, NULL);
 	SDL_RenderPresent(sdl_renderer);
 
-}
-
-bOoM::aabr to_physicalCoord(bOoM::aabr const& screen_zone, bOoM::size_t_2 screen_resolution, SDL_Rect const& sdlrect)
-{
-	bOoM::real2 pixel_factor;
-	bOoM::aabr bOoMrect;
-	
-	pixel_factor.x = screen_zone.width()  / bOoM::real(screen_resolution.x);
-	pixel_factor.y = screen_zone.height() / bOoM::real(screen_resolution.y);
-	
-	bOoMrect.left =   screen_zone.left + ( bOoM::real(sdlrect.x) * pixel_factor.x );
-	bOoMrect.top =    screen_zone.top  - ( bOoM::real(sdlrect.y) * pixel_factor.y );
-	bOoMrect.bottom = screen_zone.top  - ( bOoM::real(sdlrect.x+sdlrect.w) * pixel_factor.y );
-	bOoMrect.right =  screen_zone.left + ( bOoM::real(sdlrect.y+sdlrect.h) * pixel_factor.x );
-	return bOoMrect;
-}
-
-SDL_Rect to_screenCoord(bOoM::aabr const& screen_zone, bOoM::size_t_2 screen_resolution, bOoM::aabr const& bOoMrect)
-{
-	bOoM::real2 pixel_factor_inv;
-	SDL_Rect sdlrect;
-	
-	pixel_factor_inv.x = bOoM::real(screen_resolution.x)  / screen_zone.width() ;
-	pixel_factor_inv.y = bOoM::real(screen_resolution.y) / screen_zone.height();
-	sdlrect.x = int( (bOoMrect.left-screen_zone.left) * pixel_factor_inv.x );
-	sdlrect.y = int( (screen_zone.top-bOoMrect.top) * pixel_factor_inv.x );
-	sdlrect.w = int( bOoMrect.width()  * pixel_factor_inv.x );
-	sdlrect.h = int( bOoMrect.height() * pixel_factor_inv.y );
-	return sdlrect;
 }
 
 } //namespace visualizer

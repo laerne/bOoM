@@ -40,10 +40,6 @@ protected:
 	std::vector< shared_ptr<bOoM::Entity> > entities;
 };
 
-//NOTE: y-axis orientation is inverted between bOoM'sphysical engine and SDL2
-bOoM::aabr to_physicalCoord(bOoM::aabr const& screen_zone, bOoM::size_t_2 screen_resolution, SDL_Rect const& sdlrect);
-SDL_Rect to_screenCoord(bOoM::aabr const& screen_zone, bOoM::size_t_2 screen_resolution, bOoM::aabr const& bOoMrect);
-
 } //namespace visualizer
 #endif
 
