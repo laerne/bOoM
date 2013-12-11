@@ -38,6 +38,9 @@ protected:
 	bOoM::aabr screen_zone;
 
 	std::vector< shared_ptr<bOoM::Entity> > entities;
+
+private:
+	SDL_Rect to_SDL_Rect( bOoM::rect const& r );
 };
 
 } //namespace visualizer

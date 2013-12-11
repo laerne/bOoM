@@ -6,19 +6,11 @@ bool aabr_smallest_subaabr_containing_line (aabr const& r, move2 const& line, aa
 {
 	real2 p1,p2;
 	real unused, thouShaltNotPass;
-	if(     line_intersection(r, line, p1, unused, p2, thouShaltNotPass)
-	  && (   (  (p1.x == r.left()  || p1.x == r.right() )
-	         && (p2.x == r.left()  || p2.x == r.right() )
-	         )
-	     ||  (  (p1.y == r.top()   || p1.y == r.bottom())
-	         && (p2.y == r.top()   || p2.y == r.bottom())
-	         )
-	     )     
-	  )
+	if(   line_intersection(r, line, p1, unused, p2, thouShaltNotPass)   )
 	{
-		real2 vertex( MIN(p1.x,p2.x), MIN(p1.y,p2.y));
-		real2 size = real2( MIN(p1.x,p2.x), MIN(p1.y,p2.y)) - vertex;
-		res__aabr = aabr( vertex, size );
+		real2 bottom_left( MIN(p1.x,p2.x), MIN(p1.y,p2.y));
+		real2 top_right( MAX(p1.x,p2.x), MAX(p1.y,p2.y));
+		res__aabr = aabr( bottom_left, top_right - bottom_left );
 		return true;
 	}
 	else

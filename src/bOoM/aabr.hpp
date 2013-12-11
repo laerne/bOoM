@@ -9,16 +9,18 @@ namespace bOoM {
 //TODO change rectagle to be bottom, left, width, height.
 //Easier to think when reversing or for conversion.
 
-//! \brief data structure for a 2D axis-aligned bounding rectangle.
-//
-//  The rectangle is determined by its width and height and by the coordinate of one of its four corners.
-//  Which corner is chosen is conventionnal.
-//  In bOoM, physical rectangles (over the type `real`) uses the bottom left vertice as the reference point,
-//  while pixel coordinates for an image uses the top left verticies as the reference point.
-//  Do not forget the minus sign when convert a rectangle from a system to another.
-//  Function TODO and TODO helps to convert rectangle according to screens.
-//  
-//! \relates aabr_biggest_inner_aabr
+/*! \brief data structure for a 2D axis-aligned bounding rectangle.
+ *
+ *  The rectangle is determined by its width and height and by the coordinate of one of its four corners.
+ *  Which corner is chosen is conventionnal.
+ *  In bOoM, physical rectangles (over the type `real`) uses the bottom left vertice as the reference point,
+ *  while pixel coordinates for an image uses the top left verticies as the reference point.
+ *  Do not forget the minus sign when convert a rectangle from a system to another.
+ *  Function bOoM::to_physical_coordinates and bOoM::to_screen_coordinates helps to convert rectangle
+ *  and points from a physical space to a screen space.
+ *  
+ * \relates aabr_biggest_inner_aabr
+ */
 template<typename R>
 struct rectangle {
 
@@ -80,9 +82,9 @@ struct rectangle {
 template<typename R>
 inline rectangle<R> rectangle_intersection( rectangle<R> const& b1, rectangle<R> const& b2 )
 {
-	return rectangle<R>( V2<R>( MIN(b1.right(),b2.right()), MIN(b1.top(), b2.top()) ),
-	                     V2<R>( MAX(b1.left(),b2.left()), MAX(b1.bottom(),b2.bottom()) ) );
-	                     
+	real2 bottom_left = V2<R>( MAX(b1.left(),b2.left()),   MAX(b1.bottom(), b2.bottom()) );
+	real2 top_right =   V2<R>( MIN(b1.right(),b2.right()), MIN(b1.top(), b2.top()) );
+	return rectangle<R>( bottom_left, top_right - bottom_left );
 }
 
 template<typename R>
@@ -156,7 +158,7 @@ inline aabr aabr_of(aabr const& r)
 	{ return r; }
 //! \brief Returns the smallest aabr containing the given circle.
 inline aabr aabr_of(circle const& c)
-	{ real2 r2(c.radius,c.radius); return aabr( c.center+r2, r2*2_r ); }
+	{ real2 r2(c.radius,c.radius); return aabr( c.center-r2, r2*2_r ); }
 
 
 } //namespace bOoM

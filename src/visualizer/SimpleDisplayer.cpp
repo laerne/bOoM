@@ -7,7 +7,8 @@
 namespace visualizer {
 
 //Small utility to cast
-SDL_Rect to_SDL_Rect( bOoM::rect const& r ) { return { static_cast<int>(r.v.x), static_cast<int>(r.v.y), static_cast<int>(r.s.x), static_cast<int>(r.s.y) }; }
+SDL_Rect SimpleDisplayer::to_SDL_Rect( bOoM::rect const& r )
+	{ return { int(r.v.x), int(r.v.y), int(r.s.x), int(r.s.y) }; }
 
 SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& screen_zone, std::chrono::milliseconds refresh_span, std::vector<shared_ptr<bOoM::Entity>> const& starting_entities)
 	: refresh_span(refresh_span), window_size(window_size), screen_zone(screen_zone), entities(starting_entities)

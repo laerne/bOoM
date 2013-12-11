@@ -15,11 +15,10 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 	//std::cout <<"screen_zone = " <<screen_zone <<std::endl;
 	//std::cout <<"screen_resolution = " <<screen_resolution <<std::endl;
 	//std::cout <<"orientation = " <<orientation <<std::endl;
-	//std::cout <<"aabr_intersection( screen_zone, orientation, res__rendered_zone ) = "
-	//	<<aabr_intersection( screen_zone, orientation, res__rendered_zone ) <<std::endl;
+	//std::cout <<"box containing line = " <<res__rendered_zone <<std::endl;
 	if(!  aabr_smallest_subaabr_containing_line( screen_zone, orientation, res__rendered_zone )  )
 	{
-		if(  crossProduct_z( orientation.r, screen_zone.top_left()-orientation.t ) <= 0  )
+		if(  crossProduct_z( orientation.r, screen_zone.v-orientation.t ) <= 0  )
 		{
 			//every pixel must be rendered
 			res__rendered_zone = screen_zone;
@@ -27,7 +26,7 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 			for(size_t_2 p(0,0); p.y < screen_resolution.y; ++p.y)
 			for(p.x = 0        ; p.x < screen_resolution.x;  ++p.x)
 			{
-				(*res__image)[p] = color::white;
+				(*res__image)[p] = color::blue;
 			}
 		}
 		else
@@ -70,6 +69,7 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 				res__rendered_zone.v.y = screen_zone.bottom() ;
 			}
 		}
+		//std::cout <<"boundary = " <<res__rendered_zone <<std::endl;
 		rect rendered_pixel_zone = to_screen_coordinates(screen_zone, screen_resolution, res__rendered_zone);
 		size_t_2 image_resolution = rendered_pixel_zone.size();
 		res__image = new Image(image_resolution);
@@ -81,7 +81,7 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 		{
 			real2 q = to_physical_coordinates(res__rendered_zone, image_resolution, p);
 
-			(*res__image)[p] = crossProduct_z( orientation.r, q-orientation.t ) <= 0 ? color::blue : color::black;
+			(*res__image)[p] = crossProduct_z( orientation.r, q-orientation.t ) <= 0 ? color::blue : color::transparent;
 			
 			//std::cout <<p <<" " <<q <<" " <<(*res__image)[p] <<std::endl;
 			//std::cout <<"    " <<color::white <<color::blue <<std::endl;

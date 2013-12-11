@@ -33,12 +33,12 @@ int main(int argc, char **argv)
 	
 	std::vector<std::shared_ptr<bOoM::Entity>> starting_entities;
 	//starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2_id));
-	//starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2(bOoM::rot2_fromRadian(CST_PI/6_r),bOoM::zero2)));
-	//starting_entities.push_back(std::make_shared<bOoM::Balloon>(bOoM::circle(0_r,3_r,1_r)));
+	starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2(bOoM::rot2_fromRadian(CST_PI/6_r),bOoM::zero2)));
+	starting_entities.push_back(std::make_shared<bOoM::Balloon>(bOoM::circle(0_r,3_r,1_r)));
 	
 	SimpleDisplayer display(
-			bOoM::size_t_2(1024,768),
-			bOoM::aabr(real2(-12_r,-16_r),real2(24_r,32_r)),
+			bOoM::size_t_2(1280,720),
+			bOoM::aabr( real2(-8_r,0_r), real2(32_r,18_r) ),
 			std::chrono::milliseconds(40),
 			starting_entities
 	);

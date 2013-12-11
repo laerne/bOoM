@@ -160,7 +160,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// +---**-----+
 		else if(  right_hitpoint.y < r.bottom() )
 		{
-			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
+			line_intersection( move2(real2(1_r,0),r.bottom_left()),  line,  hitpoint2,  hitpoint2_factor );
 		}
 		// +----***---+
 		// |  **      |
@@ -169,7 +169,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// +----------+
 		else // (  right_hitpoint.y > r.top()  )
 		{
-			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
+			line_intersection( move2(real2(0,1_r),r.top_left()),  line,  hitpoint2,  hitpoint2_factor );
 		}
 	}
 	else if(  left_hitpoint.y < r.bottom() )
@@ -184,7 +184,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 			hitpoint1 = right_hitpoint;
 			hitpoint1_factor = right_factor;
 			
-			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
+			line_intersection( move2(real2(1_r,0),r.bottom_left()),  line,  hitpoint2,  hitpoint2_factor );
 		}
 		// +----------+
 		// |          |
@@ -201,8 +201,8 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// +-----*----+
 		else // (  right_hitpoint.y > r.top()  )
 		{
-			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint1,  hitpoint1_factor );
-			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
+			line_intersection( move2(real2(1_r,0),r.bottom_left()),  line,  hitpoint1,  hitpoint1_factor );
+			line_intersection( move2(real2(1_r,0),r.top_left()),     line,  hitpoint2,  hitpoint2_factor );
 		}
 	}
 	else // (  left_hitpoint.y > r.top() )
@@ -216,7 +216,7 @@ bool line_intersection( aabr const& r, move2 const& line,
 		{
 			hitpoint1 = right_hitpoint;
 			hitpoint1_factor = right_factor;
-			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
+			line_intersection( move2(real2(1_r,0),r.top_left()),  line,  hitpoint2,  hitpoint2_factor );
 		}
 		// +---*------+
 		// |   *      |
@@ -225,8 +225,8 @@ bool line_intersection( aabr const& r, move2 const& line,
 		// +-----*----+
 		else if(  right_hitpoint.y < r.bottom() )
 		{
-			line_intersection( line, move2(r.top_left(),real2(0,1_r)),  hitpoint1,  hitpoint1_factor );
-			line_intersection( line, move2(r.bottom_left(),real2(0,1_r)),  hitpoint2,  hitpoint2_factor );
+			line_intersection( move2(real2(1_r,0),r.top_left()),     line,  hitpoint1,  hitpoint1_factor );
+			line_intersection( move2(real2(1_r,0),r.bottom_left()),  line,  hitpoint2,  hitpoint2_factor );
 		}
 		// ************
 		// +----------+
