@@ -45,6 +45,9 @@ void SimpleDisplayer::loop()
 	std::chrono::steady_clock::time_point last_time;
 	
 	SDL_Event e;
+	bool screenIsMoving;
+	bOoM::real2 moveOriginalQixel;
+	bOoM::aabr moveOriginalScreen;
 
 	//int iters=32;
 	
@@ -66,8 +69,35 @@ void SimpleDisplayer::loop()
 					looping = false;
 					return; //break;
 				case SDL_MOUSEBUTTONDOWN:
-					bOoM::size_t_2 p( e.button.x, window_size.y -1 -e.button.y );
-					std::cout <<"Position is " <<to_physical_coordinates(screen_zone, window_size, p) <<" in bOoM and " <<p <<" on screen." <<std::endl;
+					switch(e.button.button)
+					{
+						case SDL_BUTTON_LEFT:
+						{
+							bOoM::size_t_2 p( e.button.x, window_size.y -1 -e.button.y );
+							std::cout <<"Position is " <<to_physical_coordinates(screen_zone, window_size, p) <<" in bOoM and " <<p <<" on screen." <<std::endl;
+							break;
+						}
+						case SDL_BUTTON_RIGHT:
+							screenIsMoving = true;
+							moveOriginalScreen = screen_zone;
+							moveOriginalQixel = to_physical_coordinates(moveOriginalScreen, window_size, bOoM::size_t_2(e.button.x,e.button.y) );
+							break;
+					}
+					break;
+				case SDL_MOUSEBUTTONUP:
+					switch(e.button.button)
+					{
+						case SDL_BUTTON_RIGHT:
+							screenIsMoving = false;
+							break;
+					}
+					break;
+				case SDL_MOUSEMOTION:
+					if( screenIsMoving )
+					{
+						bOoM::real2 currentQixel = to_physical_coordinates(moveOriginalScreen, window_size, bOoM::size_t_2(e.button.x,e.button.y) );
+						screen_zone.v = moveOriginalScreen.v + (moveOriginalQixel-currentQixel);
+					}
 					break;
 			}
 		}
