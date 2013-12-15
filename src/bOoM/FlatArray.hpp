@@ -43,12 +43,12 @@ public:
 	//! \brief Returns a reference to the element at index `idx`.
 	A& operator[](size_t idx);
 
-	//! \brief The total size of the flatArray.
-	size_t_2 const msize;
-	
-	size_t width() { return msize.x; }
-	size_t height() { return msize.y; }
+	size_t_2 size() const { return msize; }
+	size_t width()  const { return msize.x; }
+	size_t height() const { return msize.y; }
 protected:
+	
+	size_t_2 const msize; //!< \brief The total size of the flatArray.
 	A *array; //!< Array containing the actual contents.
 };
 

@@ -3,14 +3,14 @@
 
 namespace bOoM {
 
-bool Balloon::new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, Image*& res__image, aabr& res__rendered_zone) const
+bool Balloon::new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, graphic::Image*& res__image, aabr& res__rendered_zone) const
 {
 	aabr displayzone = aabr_intersection( aabr_of(disk), screen_zone );
 	if( displayzone.exists() )
 	{
 		res__rendered_zone = displayzone;
 		rect rendered_pixel_zone = to_screen_coordinates(screen_zone, screen_resolution, displayzone);
-		res__image = new Image(rendered_pixel_zone.size());
+		res__image = new graphic::Image(rendered_pixel_zone.size());
 
 		//TODO syntaxic sugar to iterate on every pixel
 		for( size_t_2 p(0,0); p.y < rendered_pixel_zone.height(); ++p.y )
@@ -29,5 +29,12 @@ bool Balloon::new__rendered_image(aabr const& screen_zone, size_t_2 screen_resol
 	}
 }
 
+bool Balloon::del__rendered_image(graphic::Image*& to_be_deleted) const
+{
+	delete(to_be_deleted);
+	to_be_deleted = nullptr;
+	return true;
+}
+	
 } //namespace bOoM
 

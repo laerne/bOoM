@@ -20,7 +20,7 @@ SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& 
 	sdl_screen_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_size.x, window_size.y);
 	sdl_screen_surface = SDL_CreateRGBSurface(0, //unused flags
 			window_size.x, window_size.y,            //dimentions
-			bOoM::Image::depth(),                    //pixel format
+			bOoM::graphic::bit_depth(),              //pixel format
 			0, 0, 0, 0                               //pixel masks
 	);
 	
@@ -123,18 +123,18 @@ void SimpleDisplayer::render()
 	
 	for( shared_ptr<bOoM::Entity> e : entities )
 	{
-		bOoM::Image* image;
+		bOoM::graphic::Image* image;
 		bOoM::aabr bOoMzone;
 		
 		if(e->new__rendered_image(screen_zone, window_size, image, bOoMzone))
 		{
-			//Convert the bOoM::Image to a SDL_Surface
+			//Convert the bOoM::graphic::Image to a SDL_Surface
 			SDL_Rect sdlzone = to_SDL_Rect(   to_screen_coordinates(screen_zone, window_size, bOoMzone)   );
 			SDL_Surface* imageSurface = SDL_CreateRGBSurfaceFrom(
 					image->rgba8888_buffer(),                                                                           //data
 					image->width(), image->height(),                                                                    //dimension
-					bOoM::Image::depth(), image->pitch(),                                                               //pixel format
-					bOoM::Image::redMask(), bOoM::Image::greenMask(), bOoM::Image::blueMask(), bOoM::Image::alphaMask() //pixel masks
+					bOoM::graphic::bit_depth(), pitch(*image),                                                          //pixel format FIXME use a custom pitch
+					bOoM::graphic::redMask(), bOoM::graphic::greenMask(), bOoM::graphic::blueMask(), bOoM::graphic::alphaMask() //pixel masks
 			);
 			if(imageSurface == NULL)
 			{

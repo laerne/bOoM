@@ -10,7 +10,7 @@ namespace bOoM {
 WorldBoundary::WorldBoundary(move2 orientation)
 	: orientation(orientation) {}
 
-bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, Image*& res__image, aabr& res__rendered_zone) const
+bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, graphic::Image*& res__image, aabr& res__rendered_zone) const
 {
 	//std::cout <<"screen_zone = " <<screen_zone <<std::endl;
 	//std::cout <<"screen_resolution = " <<screen_resolution <<std::endl;
@@ -22,7 +22,7 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 		{
 			//every pixel must be rendered
 			res__rendered_zone = screen_zone;
-			res__image = new Image(screen_resolution);
+			res__image = new graphic::Image(screen_resolution);
 			for(size_t_2 p(0,0); p.y < screen_resolution.y; ++p.y)
 			for(p.x = 0        ; p.x < screen_resolution.x;  ++p.x)
 			{
@@ -72,7 +72,7 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 		//std::cout <<"boundary = " <<res__rendered_zone <<std::endl;
 		rect rendered_pixel_zone = to_screen_coordinates(screen_zone, screen_resolution, res__rendered_zone);
 		size_t_2 image_resolution = rendered_pixel_zone.size();
-		res__image = new Image(image_resolution);
+		res__image = new graphic::Image(image_resolution);
 		//std::cout <<"!!! " <<image_resolution <<", " <<rendered_pixel_zone <<std::endl;
 		//std::cout <<"!!! " <<res__rendered_zone <<to_physical_coordinates(res__rendered_zone,image_resolution,real2(0,image_resolution.y-1)) <<std::endl;
 		
@@ -91,7 +91,7 @@ bool WorldBoundary::new__rendered_image(aabr const& screen_zone, size_t_2 screen
 	return true;
 };
 
-//bool WorldBoundary::del__rendered_image( Image*& image ) const
+//bool WorldBoundary::del__rendered_image( graphic::Image*& image ) const
 //{
 //	delete image;
 //	//image = nullptr;

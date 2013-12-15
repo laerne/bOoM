@@ -87,6 +87,10 @@ public:
 	//! \brief Returns a reference to the element at index `idx`.
 	A& operator[](size_t idx);
 
+	size_t_2 size() const { return msize; }
+	size_t width()  const { return msize.x; }
+	size_t height() const { return msize.y; }
+protected:
 	//! \brief The size of a tile.
 	size_t_2 const localSize;
 	//! \brief The total size of the TiledArray.
@@ -94,9 +98,6 @@ public:
 	//! \brief The number of elements per tile.
 	size_t const tileArea;
 	
-	size_t width() { return msize.x; }
-	size_t height() { return msize.y; }
-protected:
 	//! \brief Build TiledArray::fastArray_x and TiledArray::fastArray_y
 	void build_fastArrays(size_t_2 const& sizeInTiles);
 	//! \brief Build TiledArray::reverseFastArray_tile and TiledArray::reverseFastArray_local
