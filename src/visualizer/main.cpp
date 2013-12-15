@@ -9,8 +9,8 @@
 
 #include <bOoM/math2d.hpp>
 #include <bOoM/aabr.hpp>
-#include <bOoM/entities/world_boundary/WorldBoundary.hpp>
-#include <bOoM/entities/balloon/Balloon.hpp>
+//#include <bOoM/entities/world_boundary/WorldBoundary.hpp>
+//#include <bOoM/entities/balloon/Balloon.hpp>
 
 #include "SimpleDisplayer.hpp"
 
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	std::vector<std::shared_ptr<bOoM::Entity>> starting_entities;
 	//starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2_id));
 	//starting_entities.push_back(std::make_shared<bOoM::WorldBoundary>(bOoM::move2(bOoM::rot2_fromRadian(-CST_PI/6_r),bOoM::zero2)));
-	starting_entities.push_back(std::make_shared<bOoM::Balloon>(bOoM::circle(0_r,3_r,1_r)));
+	//starting_entities.push_back(std::make_shared<bOoM::Balloon>(bOoM::circle(0_r,3_r,1_r)));
 	
 	SimpleDisplayer display(
 			bOoM::size_t_2(1024,512),

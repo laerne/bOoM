@@ -1,36 +1,64 @@
 #ifndef H_entity
 #define H_entity
 
-#include<bOoM/aabr.hpp>
-#include<bOoM/color.hpp>
-#include<bOoM/math2d.hpp>
-#include<bOoM/entities/common/Image.hpp>
+#include <tuple>
+#include "common/graphic.hpp"
 
 namespace bOoM {
 
-struct Entity
+/***********
+ * WARNING *
+ ***********/
+// The following code is for advanced level C++ programmers.
+// It is a quite straightforward mix of the non-trivial ''Type Erasure'' pattern, template templates and variadic template concept.
+// Make sure you have an in-depth understanding of how the Type Erasure pattern, template templates and the variadic templates work
+// before trying to undestand the following code
+
+template<typename DataType, template<typename> class... Components>
+struct ComponentPack;
+
+template<typename DataType, template<typename> class Component0, template<typename> class... Components>
+struct ComponentPack<DataType, Component0, Components...> : Component0<DataType>, ComponentPack<DataType, Components...>
+{};
+
+template<typename DataType>
+struct ComponentPack<DataType>
+{};
+
+//This is the common interface to all entity tuple
+template< template<typename> class... Components >
+struct ErasedEntity
 {
-	/*! \brief Renders the entity.
-	 * 
-	 * \param screen_zone What space must be rendered in the video game coordinate system.
-	 * \param screen_resolution The number of pixels, vertically and horizontally.
-	 * \param res__image The returned image.
-	 * \param res__rendered_zone The object may not create an image that fill the full given screen.
-	 *    The actual rendered zone of the screen (in pixels) is stored in this variable.
-	 *    
-	 * Note the returned image must be deleted with Entity::del__rendered_image(graphic::Image*&)
-	 */
-	//TODO should return bool or a pointer to Image ?
-	//TODO should use physical coordinates for actual rendered zone or screen coordinates ?
-	//virtual bool new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, graphic::Image*& res__image, rect& res__rendered_zone, size_t& res__pitch, size_t& res__shift) const;
-	virtual bool new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, graphic::Image*& res__image, aabr& res__rendered_zone) const;
-	/*! \brief deletes a rendered image.
-	 *
-	 * This function is trivial in most useful cases, but it is important to allow the programmer of a rendering function
-	 * to undo actions it might have done during the rendering.
-	 */
-	virtual bool del__rendered_image(graphic::Image*& to_be_deleted) const;
+public:
+	//TODO interface
 };
+
+//This is the template tuple of a datatype and a component
+template<typename DataType, template<typename> class... Components >
+//How to specify "Component0<DataType>, Component1<DataType>, Component2<Datatype>, ..."
+struct UnerasedEntity : public ErasedEntity<Components...>, public ComponentPack<DataType, Components...>
+{
+public:
+	UnerasedEntity( DataType const&& data )
+		: data(std::forward(data)) {}
+protected:
+	DataType data;
+};
+
+//This is the pointer towards the intanciated UnerasedEntity so that the interface ErasedEntity can be virtual.
+template< template<typename> class... Components >
+struct GenericEntity
+{
+public:
+	template <typename DataType>
+	GenericEntity( DataType const&& data )
+		: ptr( new UnerasedEntity<DataType,Components...>(std::forward(data)) ) {}
+protected:
+	ErasedEntity<Components...>* ptr;
+};
+
+//This is the entity with standard bOoM components.
+using Entity = GenericEntity<graphic::Renderable>;
 
 } //namespace bOoM
 #endif

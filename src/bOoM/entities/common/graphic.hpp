@@ -3,14 +3,38 @@
 
 #include <memory>
 #include "Image.hpp"
+#include <bOoM/math2d.hpp>
+#include <bOoM/aabr.hpp>
 
 namespace bOoM{
 namespace graphic {
+
+template<typename DATA>
+struct Renderable
+{
+	Renderable() = default;
+	/*! \brief Renders the entity.
+	 * 
+	 * \param screen_zone What space must be rendered in the video game coordinate system.
+	 * \param screen_resolution The number of pixels, vertically and horizontally.
+	 * \param res__image The returned image.
+	 * \param res__rendered_zone The object may not create an image that fill the full given screen.
+	 *    The actual rendered zone of the screen (in pixels) is stored in this variable.
+	 *    
+	 * Note the returned image must be deleted with Entity::del__rendered_image(graphic::Image*&)
+	 */
+	Image* new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, rect& result__rendered_zone, size_t& result__pitch, size_t& result__shift) const;
+	/*! \brief deletes a rendered image.
+	 *
+	 * This function might be trivial, but it is important to allow the programmer of a rendering function to undo actions
+	 * it might have done during the rendering.
+	 */
+	void   del__rendered_image(Image* image);
+};
+
+
+//TODO move this in another file.
 using std::unique_ptr;
-
-
-//TODO manage layers/halo, ...
-//
 struct SingleImageEntity
 {
 public:
@@ -44,14 +68,6 @@ public:
 protected:
 	unique_ptr<Image> images[N];
 };
-
-//TODO : the following classes
-//
-//Use lemon graph library for the following :
-//struct GraphedImageEntity
-//{
-//};
-
 
 } //namespace graphic
 } //namespace bOoM

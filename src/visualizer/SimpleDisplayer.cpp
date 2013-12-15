@@ -120,34 +120,8 @@ void SimpleDisplayer::render()
 	//std::cout << "Generation of a new image" << std::endl;
 	SDL_FillRect( sdl_screen_surface, NULL, SDL_MapRGBA(sdl_screen_surface->format,32,0,32,0) );
 
-	
 	for( shared_ptr<bOoM::Entity> e : entities )
 	{
-		bOoM::graphic::Image* image;
-		bOoM::aabr bOoMzone;
-		
-		if(e->new__rendered_image(screen_zone, window_size, image, bOoMzone))
-		{
-			//Convert the bOoM::graphic::Image to a SDL_Surface
-			SDL_Rect sdlzone = to_SDL_Rect(   to_screen_coordinates(screen_zone, window_size, bOoMzone)   );
-			SDL_Surface* imageSurface = SDL_CreateRGBSurfaceFrom(
-					image->rgba8888_buffer(),                                                                           //data
-					image->width(), image->height(),                                                                    //dimension
-					bOoM::graphic::bit_depth(), pitch(*image),                                                          //pixel format FIXME use a custom pitch
-					bOoM::graphic::redMask(), bOoM::graphic::greenMask(), bOoM::graphic::blueMask(), bOoM::graphic::alphaMask() //pixel masks
-			);
-			if(imageSurface == NULL)
-			{
-				std::cout <<"Error: SDL_CreateRGBSurfaceFrom: " <<SDL_GetError() <<std::endl;
-				e->del__rendered_image(image);
-				continue;
-			}
-			//Blit it to the screen surface
-			if( SDL_BlitSurface(imageSurface, NULL, sdl_screen_surface, &sdlzone ) < 0)
-				std::cout <<"Error: SDL_BlitSurface: " <<SDL_GetError() <<std::endl;
-			SDL_FreeSurface(imageSurface);
-			e->del__rendered_image(image);
-		}
 	}
 	
 	if(SDL_UpdateTexture(sdl_screen_texture, NULL, sdl_screen_surface->pixels, window_size.x*4 ) < 0 )
