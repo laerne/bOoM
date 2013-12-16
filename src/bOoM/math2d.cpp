@@ -1,4 +1,4 @@
-#include <bOoM/math2d.hpp>
+#include "math2d.hpp"
 
 namespace bOoM {
 

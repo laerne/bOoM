@@ -1,5 +1,5 @@
-#include <bOoM/aabr.hpp>
-#include <bOoM/intersection.hpp>
+#include "aabr.hpp"
+#include "intersection.hpp"
 namespace bOoM {
 
 bool aabr_smallest_subaabr_containing_line (aabr const& r, move2 const& line, aabr& res__aabr)

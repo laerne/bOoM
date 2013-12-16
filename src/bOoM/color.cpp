@@ -1,4 +1,4 @@
-#include <bOoM/color.hpp>
+#include "color.hpp"
 namespace bOoM {
 
 color const color::red         = color( COLORCHANNEL_RANGE_MAX, COLORCHANNEL_RANGE_MIN, COLORCHANNEL_RANGE_MIN );

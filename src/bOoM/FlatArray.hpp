@@ -55,7 +55,7 @@ protected:
 
 } //namespace bOoM
 
-#include "stdBoOm/FlatArray.tpp"
+#include "FlatArray.tpp"
 #endif
 
 

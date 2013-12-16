@@ -1,12 +1,12 @@
 #source files to compile
 set(stdBoOm_src
-		stdBoOm/aabr.cpp
-		stdBoOm/basemath.cpp
-		stdBoOm/color.cpp
-		stdBoOm/intersection.cpp
-		stdBoOm/math2d.cpp
+		aabr.cpp
+		basemath.cpp
+		color.cpp
+		intersection.cpp
+		math2d.cpp
 		entities/Entity.cpp
-		entities/common/graphic.cpp
+		entities/balloon/graphic.cpp
 )
 
 #build object files

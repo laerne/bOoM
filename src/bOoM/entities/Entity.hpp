@@ -27,7 +27,7 @@ struct ComponentPack<DataType>
 
 //This is the common interface to all entity tuple
 template< template<typename> class... Components >
-struct ErasedEntity
+struct ErasedEntity : public ComponentPack<void, Components...>
 {
 public:
 	//TODO interface
@@ -40,7 +40,7 @@ struct UnerasedEntity : public ErasedEntity<Components...>, public ComponentPack
 {
 public:
 	UnerasedEntity( DataType const&& data )
-		: data(std::forward(data)) {}
+		: data(std::forward<DataType const&&>(data)) {}
 protected:
 	DataType data;
 };
@@ -52,8 +52,8 @@ struct GenericEntity
 public:
 	template <typename DataType>
 	GenericEntity( DataType const&& data )
-		: ptr( new UnerasedEntity<DataType,Components...>(std::forward(data)) ) {}
-protected:
+		: ptr( new UnerasedEntity<DataType,Components...>(std::forward<DataType const&&>(data)) ) {}
+//protected:
 	ErasedEntity<Components...>* ptr;
 };
 

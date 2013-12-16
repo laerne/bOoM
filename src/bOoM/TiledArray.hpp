@@ -131,6 +131,6 @@ namespace TiledArrayUtils {
 
 } //namespace bOoM
 
-#include "stdBoOm/TiledArray.tpp"
+#include "TiledArray.tpp"
 #endif
 
