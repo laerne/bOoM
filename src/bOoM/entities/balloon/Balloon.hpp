@@ -1,5 +1,5 @@
-#ifndef H_data
-#define H_data
+#ifndef H_Balloon
+#define H_Balloon
 
 namespace bOoM {
 

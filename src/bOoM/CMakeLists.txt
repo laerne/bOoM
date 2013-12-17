@@ -6,6 +6,7 @@ set(stdBoOm_src
 		intersection.cpp
 		math2d.cpp
 		entities/Entity.cpp
+		entities/common/graphic.cpp
 		entities/balloon/graphic.cpp
 )
 

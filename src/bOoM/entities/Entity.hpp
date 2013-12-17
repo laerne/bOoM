@@ -6,55 +6,81 @@
 
 namespace bOoM {
 
-/***********
- * WARNING *
- ***********/
+// ! WARNING !
 // The following code is for advanced level C++ programmers.
-// It is a quite straightforward mix of the non-trivial ''Type Erasure'' pattern, template templates and variadic template concept.
-// Make sure you have an in-depth understanding of how the Type Erasure pattern, template templates and the variadic templates work
-// before trying to undestand the following code
+// It is a quite straightforward mix of the non-trivial ''Type Erasure'' pattern, variadic template and curiously
+// recurring template.  Make sure you have an in-depth understanding of how those concepts works before trying to
+// undestand the following code.
+// 
+// You may also which to see the chart "EntityUML.odg" to see how class behave one to the other.
+// The names are change in the files, as following~:
+// * GE for GenericEntity
+// * EE for ErasedEntity
+// * UE for UnerasedEntity
+// * Beta for ComponentWithData
+// * Gamma for ComponentImplementation
+// * Delta for ExecutableComponent
 
-template<typename DataType, template<typename> class... Components>
-struct ComponentPack;
 
-template<typename DataType, template<typename> class Component0, template<typename> class... Components>
-struct ComponentPack<DataType, Component0, Components...> : Component0<DataType>, ComponentPack<DataType, Components...>
-{};
-
-template<typename DataType>
-struct ComponentPack<DataType>
-{};
-
-//This is the common interface to all entity tuple
-template< template<typename> class... Components >
-struct ErasedEntity : public ComponentPack<void, Components...>
+template<typename D, class C>
+struct ComponentWithData : virtual C
 {
-public:
-	//TODO interface
+	virtual D& data() = 0;
+	virtual D const& data() const = 0;
 };
 
-//This is the template tuple of a datatype and a component
-template<typename DataType, template<typename> class... Components >
-//How to specify "Component0<DataType>, Component1<DataType>, Component2<Datatype>, ..."
-struct UnerasedEntity : public ErasedEntity<Components...>, public ComponentPack<DataType, Components...>
+template<typename D, class C>
+struct ComponentImplementation : ComponentWithData<D,C>
 {
-public:
-	UnerasedEntity( DataType const&& data )
-		: data(std::forward<DataType const&&>(data)) {}
-protected:
-	DataType data;
 };
 
-//This is the pointer towards the intanciated UnerasedEntity so that the interface ErasedEntity can be virtual.
-template< template<typename> class... Components >
+template<typename D, class C, typename UnerasedEntity_D_Cs>
+struct ExecutableComponent : ComponentImplementation<D, C>
+{
+	virtual D& data()
+		{ return static_cast<UnerasedEntity_D_Cs*>(this)->data_; }
+	virtual D const& data() const
+		{ return static_cast<UnerasedEntity_D_Cs const*>(this)->data_; }
+};
+
+template<class... Cs> struct ErasedEntity;
+template<> struct ErasedEntity<> {};
+template<class C0, class... Cs>
+struct ErasedEntity<C0, Cs...> : virtual C0, virtual ErasedEntity<Cs...>
+{};
+
+template<typename D, class... Cs>
+struct UnerasedEntity;
+
+template<typename D>
+struct UnerasedEntity<D> : virtual ErasedEntity<>
+{
+	UnerasedEntity(D const&& initialData)
+		: data_(std::forward<D const&&>(initialData)) {}
+	UnerasedEntity(D const& initialData)
+		: data_(std::forward<D const&>(initialData)) {}
+	D data_;
+};
+
+template<typename D, class C0, class... Cs>
+struct UnerasedEntity<D, C0, Cs...> : ExecutableComponent<D,C0,UnerasedEntity<D, C0, Cs...>>, virtual ErasedEntity<C0, Cs...>, UnerasedEntity<D, Cs...>
+{
+	UnerasedEntity(D const&& initialData)
+		: UnerasedEntity<D, Cs...>(std::forward<D const&&>(initialData)) {}
+	UnerasedEntity(D const& initialData)
+		: UnerasedEntity<D, Cs...>(std::forward<D const&>(initialData)) {}
+};
+
+template<class... Cs>
 struct GenericEntity
 {
-public:
-	template <typename DataType>
-	GenericEntity( DataType const&& data )
-		: ptr( new UnerasedEntity<DataType,Components...>(std::forward<DataType const&&>(data)) ) {}
-//protected:
-	ErasedEntity<Components...>* ptr;
+	template<typename D>
+	GenericEntity(D const&& initialData)
+		: ptr( new UnerasedEntity<D,Cs...>(std::forward<D const&&>(initialData)) ) {}
+	template<typename D>
+	GenericEntity(D const& initialData)
+		: ptr( new UnerasedEntity<D,Cs...>(std::forward<D const&>(initialData)) ) {}
+	ErasedEntity<Cs...>* ptr;
 };
 
 //This is the entity with standard bOoM components.

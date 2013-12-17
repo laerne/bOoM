@@ -1,5 +1,5 @@
-#ifndef H_solid_graphic
-#define H_solid_graphic
+#ifndef H_common_graphic
+#define H_common_graphic
 
 #include <bOoM/Image.hpp>
 #include <bOoM/math2d.hpp>
@@ -8,7 +8,6 @@
 namespace bOoM {
 namespace graphic {
 
-template<typename DATA>
 struct Renderable
 {
 	/*! \brief 
@@ -32,8 +31,6 @@ struct Renderable
 
 } //namespace graphic
 } //namespace bOoM
-
-#include "graphic.tpp"
 
 #endif
 
