@@ -1,5 +1,5 @@
-#ifndef H_fields
-#define H_fields
+#ifndef HEADERBoOm__fields
+#define HEADERBoOm__fields
 
 #include "basemath.hpp"
 namespace bOoM {

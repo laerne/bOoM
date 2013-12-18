@@ -1,7 +1,6 @@
-#ifndef H_ImageEnitity
-#define H_ImageEnitity
+#ifndef HEADERBoOm__ImageEntity
+#define HEADERBoOm__ImageEntity
 namespace bOoM {
-namespace graphic {
 
 using std::unique_ptr;
 struct SingleImageEntity
@@ -38,7 +37,6 @@ protected:
 	unique_ptr<Image> images[N];
 };
 
-} //namespace graphic
 } //namespace bOoM
 #endif
 

@@ -1,5 +1,5 @@
-#ifndef H_circle
-#define H_circle
+#ifndef HEADERBoOm__circle
+#define HEADERBoOm__circle
 
 #include "math2d.hpp"
 

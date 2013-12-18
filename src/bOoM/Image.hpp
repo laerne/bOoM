@@ -1,11 +1,10 @@
-#ifndef H_Image
-#define H_Image
+#ifndef HEADERBoOm__Image
+#define HEADERBoOm__Image
 
 #include <bOoM/TiledArray.hpp>
 #include <bOoM/FlatArray.hpp>
 
 namespace bOoM {
-namespace graphic {
 
 
 class Image : public FlatArray<color>
@@ -34,7 +33,6 @@ inline constexpr int bit_depth()
 inline int pitch( Image const& img )
 	{ return img.width() * byte_depth(); }
 
-} //namespace graphic
 } //namespace bOoM
 #endif
 

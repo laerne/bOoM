@@ -1,5 +1,5 @@
-#ifndef H_TiledArray
-#define H_TiledArray
+#ifndef HEADERBoOm__TiledArray
+#define HEADERBoOm__TiledArray
 /*! \file TiledArray.hpp
  *  \brief File where TiledArray is defined.
  *  \sa TiledArray

@@ -1,5 +1,5 @@
-#ifndef H_intersection
-#define H_intersection
+#ifndef HEADERBoOm__intersection
+#define HEADERBoOm__intersection
 /*! \file
  *  \brief Provides basic method to compute the intersection of basic real 2D shapes.
  */

@@ -1,5 +1,5 @@
-#ifndef H_Balloon
-#define H_Balloon
+#ifndef HEADERBALLOON__Balloon
+#define HEADERBALLOON__Balloon
 
 namespace bOoM {
 

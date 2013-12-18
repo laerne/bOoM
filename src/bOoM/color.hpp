@@ -1,8 +1,7 @@
-#ifndef H_color
-#define H_color
+#ifndef HEADERBoOm__color
+#define HEADERBoOm__color
 
 #include <iostream>
-#include <SDL2/SDL.h>
 #include "basemath.hpp"
 
 namespace bOoM

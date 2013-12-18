@@ -1,8 +1,5 @@
 #include "SimpleDisplayer.hpp"
-#include <bOoM/entities/Entity.hpp>
 #include <iostream>
-#include <stdexcept>
-#include <thread>
 
 namespace visualizer {
 
@@ -20,7 +17,7 @@ SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& 
 	sdl_screen_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_size.x, window_size.y);
 	sdl_screen_surface = SDL_CreateRGBSurface(0, //unused flags
 			window_size.x, window_size.y,            //dimentions
-			bOoM::graphic::bit_depth(),              //pixel format
+			bOoM::bit_depth(),                       //pixel format
 			0, 0, 0, 0                               //pixel masks
 	);
 	

@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 #include <bOoM/aabr.hpp>
-#include <bOoM/entities/Entity.hpp>
+#include <bOoM/Entity.hpp>
 #include <SDL2/SDL.h>
 
 //using namespace bOoM;

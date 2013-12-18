@@ -1,5 +1,5 @@
-#ifndef H_FlatArray
-#define H_FlatArray
+#ifndef HEADERBoOm__FlatArray
+#define HEADERBoOm__FlatArray
 namespace bOoM {
 
 template<typename A>

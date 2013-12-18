@@ -1,5 +1,5 @@
-#ifndef H_aabr
-#define H_aabr
+#ifndef HEADERBoOm__aabr
+#define HEADERBoOm__aabr
 
 #include <iostream>
 #include "math2d.hpp"

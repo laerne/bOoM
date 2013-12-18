@@ -1,16 +1,16 @@
-#ifndef H_balloon_graphic
-#define H_balloon_graphic
+#ifndef HEADERBALLOON_graphic
+#define HEADERBALLOON_graphic
 
-#include <bOoM/entities/Entity.hpp>
-#include <bOoM/entities/common/graphic.hpp>
+#include <bOoM/GenericEntity.hpp>
+#include <bOoM/components/graphic.hpp>
 #include "Balloon.hpp"
 
 namespace bOoM {
 
 template<>
-struct ComponentImplementation<Balloon, graphic::Renderable> : ComponentWithData<Balloon, graphic::Renderable>
+struct ComponentImplementation<Balloon, Renderable> : ComponentWithData<Balloon, Renderable>
 {
-	virtual void   graphic__del__rendered_image(graphic::Image* image);
+	virtual void   graphic__del__rendered_image(Image* image);
 };
 
 } //namespace bOoM

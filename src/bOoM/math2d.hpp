@@ -1,5 +1,5 @@
-#ifndef H_math2d
-#define H_math2d
+#ifndef HEADERBoOm__math2d
+#define HEADERBoOm__math2d
 /*! \file math2d.hpp
  *  \brief Define two-dimensional vector space data types.
  *

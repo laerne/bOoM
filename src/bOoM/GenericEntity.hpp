@@ -1,8 +1,7 @@
-#ifndef H_entity
-#define H_entity
+#ifndef HEADERBoOm__GenericEntity
+#define HEADERBoOm__GenericEntity
 
 #include <tuple>
-#include "common/graphic.hpp"
 
 namespace bOoM {
 
@@ -13,13 +12,12 @@ namespace bOoM {
 // undestand the following code.
 // 
 // You may also which to see the chart "EntityUML.odg" to see how class behave one to the other.
-// The names are change in the files, as following~:
+// The names are abbreviated in the files, as follow :
 // * GE for GenericEntity
 // * EE for ErasedEntity
 // * UE for UnerasedEntity
-// * Beta for ComponentWithData
-// * Gamma for ComponentImplementation
-// * Delta for ExecutableComponent
+// * CWD for ComponentWithData
+// * CI for ComponentImplementation
 
 
 template<typename D, class C>
@@ -34,41 +32,22 @@ struct ComponentImplementation : ComponentWithData<D,C>
 {
 };
 
-template<typename D, class C, typename UnerasedEntity_D_Cs>
-struct ExecutableComponent : ComponentImplementation<D, C>
-{
-	virtual D& data()
-		{ return static_cast<UnerasedEntity_D_Cs*>(this)->data_; }
-	virtual D const& data() const
-		{ return static_cast<UnerasedEntity_D_Cs const*>(this)->data_; }
-};
-
-template<class... Cs> struct ErasedEntity;
-template<> struct ErasedEntity<> {};
-template<class C0, class... Cs>
-struct ErasedEntity<C0, Cs...> : virtual C0, virtual ErasedEntity<Cs...>
+template<class... Cs>
+struct ErasedEntity : virtual Cs...
 {};
 
 template<typename D, class... Cs>
-struct UnerasedEntity;
-
-template<typename D>
-struct UnerasedEntity<D> : virtual ErasedEntity<>
+struct UnerasedEntity : ComponentImplementation<D,Cs>..., ErasedEntity<Cs...>
 {
 	UnerasedEntity(D const&& initialData)
 		: data_(std::forward<D const&&>(initialData)) {}
 	UnerasedEntity(D const& initialData)
 		: data_(std::forward<D const&>(initialData)) {}
+	virtual D& data()
+		{ return static_cast<UnerasedEntity<D,Cs...>*>(this)->data_; }
+	virtual D const& data() const
+		{ return static_cast<UnerasedEntity<D,Cs...> const*>(this)->data_; }
 	D data_;
-};
-
-template<typename D, class C0, class... Cs>
-struct UnerasedEntity<D, C0, Cs...> : ExecutableComponent<D,C0,UnerasedEntity<D, C0, Cs...>>, virtual ErasedEntity<C0, Cs...>, UnerasedEntity<D, Cs...>
-{
-	UnerasedEntity(D const&& initialData)
-		: UnerasedEntity<D, Cs...>(std::forward<D const&&>(initialData)) {}
-	UnerasedEntity(D const& initialData)
-		: UnerasedEntity<D, Cs...>(std::forward<D const&>(initialData)) {}
 };
 
 template<class... Cs>
@@ -83,8 +62,7 @@ struct GenericEntity
 	ErasedEntity<Cs...>* ptr;
 };
 
-//This is the entity with standard bOoM components.
-using Entity = GenericEntity<graphic::Renderable>;
+
 
 } //namespace bOoM
 #endif

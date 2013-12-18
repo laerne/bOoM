@@ -1,5 +1,5 @@
-#ifndef H_basemath
-#define H_basemath
+#ifndef HEADERBoOm__basemath
+#define HEADERBoOm__basemath
 /*! \file basemath.hpp
  *  \brief Various basic mathematic utilities.
  */

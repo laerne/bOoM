@@ -5,8 +5,7 @@ set(stdBoOm_src
 		color.cpp
 		intersection.cpp
 		math2d.cpp
-		entities/Entity.cpp
-		entities/common/graphic.cpp
+		components/graphic.cpp
 		entities/balloon/graphic.cpp
 )
 

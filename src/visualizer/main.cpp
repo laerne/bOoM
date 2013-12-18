@@ -10,7 +10,7 @@
 #include <bOoM/math2d.hpp>
 #include <bOoM/aabr.hpp>
 //#include <bOoM/entities/world_boundary/WorldBoundary.hpp>
-#include <bOoM/entities/Entity.hpp>
+#include <bOoM/Entity.hpp>
 #include <bOoM/entities/balloon/Balloon.hpp>
 #include <bOoM/entities/balloon/graphic.hpp>
 
@@ -27,6 +27,9 @@ void on_crash_exit()
 	SDL_Quit();
 }
 
+struct Void {};
+struct Void0 {};
+
 int main(int argc, char **argv)
 {
 	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_EVENTS ) != 0)
@@ -40,6 +43,7 @@ int main(int argc, char **argv)
 	
 	bOoM::Entity e ( bOoM::Balloon(bOoM::circle(0_r,3_r,1_r)) );
 	e.ptr->graphic__del__rendered_image(nullptr);
+	bOoM::GenericEntity<bOoM::Renderable, Void, Void0> f ( bOoM::Balloon(bOoM::circle(0_r,3_r,1_r)) );
 	
 	SimpleDisplayer display(
 			bOoM::size_t_2(1024,512),

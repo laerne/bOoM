@@ -1,12 +1,11 @@
-#ifndef H_common_graphic
-#define H_common_graphic
+#ifndef HEADERBoOm__graphic
+#define HEADERBoOm__graphic
 
 #include <bOoM/Image.hpp>
 #include <bOoM/math2d.hpp>
 #include <bOoM/aabr.hpp>
 
 namespace bOoM {
-namespace graphic {
 
 struct Renderable
 {
@@ -15,7 +14,7 @@ struct Renderable
 	 * \param screen_zone What space must be rendered in the video game coordinate system.
 	 * \param screen_resolution The number of pixels, vertically and horizontally.
 	 *    
-	 * Note the returned image must be deleted with graphic::Renderable::graphic__del__rendered_image(graphic::Image*&)
+	 * Note the returned image must be deleted with Renderable::graphic__del__rendered_image(Image*&)
 	 * The pixel value of rendered image may not be precisely computed from the center of the pixel, but from some other point in
 	 * the pixel square.
 	 * This is to enable reusability of images, where only a shift smaller than half the size of a pixel may change a few pixel colors
@@ -29,7 +28,6 @@ struct Renderable
 };
 
 
-} //namespace graphic
 } //namespace bOoM
 
 #endif
