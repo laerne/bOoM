@@ -1,5 +1,7 @@
 # cppunit test
-add_executable(boomtest test.cpp)
-target_link_libraries (boomtest m boom cppunit dl)
-add_test(boomtest ${EXECUTABLE_OUTPUT_PATH}/boomtest)
+add_executable(bOoMtest test.cpp)
+target_link_libraries (bOoMtest m bOoM cppunit dl)
+add_executable(bOoMsandbox sandbox.cpp)
+target_link_libraries (bOoMsandbox m bOoM bOoMengine)
+add_test(bOoMtest ${EXECUTABLE_OUTPUT_PATH}/boomtest)
 

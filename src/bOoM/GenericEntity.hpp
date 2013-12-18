@@ -1,9 +1,10 @@
 #ifndef HEADERBoOm__GenericEntity
 #define HEADERBoOm__GenericEntity
 
-#include <tuple>
+#include <memory>
 
 namespace bOoM {
+using std::shared_ptr;
 
 // ! WARNING !
 // The following code is for advanced level C++ programmers.
@@ -59,7 +60,20 @@ struct GenericEntity
 	template<typename D>
 	GenericEntity(D const& initialData)
 		: ptr( new UnerasedEntity<D,Cs...>(std::forward<D const&>(initialData)) ) {}
-	ErasedEntity<Cs...>* ptr;
+	GenericEntity(GenericEntity<Cs...> const& other)
+		: ptr( std::forward<shared_ptr<ErasedEntity<Cs...>>&>(other.ptr) ) {}
+	GenericEntity(GenericEntity<Cs...> const&& other)
+		: ptr( std::forward<shared_ptr<ErasedEntity<Cs...>>&&>(other.ptr) ) {}
+	GenericEntity& operator=(GenericEntity<Cs...> const& other)
+		{ ptr = std::forward<shared_ptr<ErasedEntity<Cs...>>&> (other.ptr) ; }
+	GenericEntity& operator=(GenericEntity<Cs...> const&& other)
+		{ ptr = std::forward<shared_ptr<ErasedEntity<Cs...>>&&> (other.ptr) ; }
+	ErasedEntity<Cs...>& operator*()
+		{ return ptr.operator*(); }
+	ErasedEntity<Cs...>& operator->()
+		{ return ptr.operator->(); }
+		
+	shared_ptr<ErasedEntity<Cs...>> ptr;
 };
 
 

@@ -14,7 +14,7 @@
 #include <bOoM/entities/balloon/Balloon.hpp>
 #include <bOoM/entities/balloon/graphic.hpp>
 
-#include "SimpleDisplayer.hpp"
+#include <bOoMengine/SimpleDisplayer.hpp>
 
 //using namespace bOoM;
 using namespace visualizer;

@@ -10,4 +10,4 @@ set(stdBoOm_src
 )
 
 #build object files
-add_library(boom ${stdBoOm_src})
+add_library(bOoM ${stdBoOm_src})

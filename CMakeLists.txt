@@ -7,7 +7,7 @@ set( bOoM_VERSION_MINOR 0 )
 set( bOoM_VERSION_PATCH 0 )
 
 # Set verbose
-#set (CMAKE_VERBOSE_MAKEFILE true)
+set (CMAKE_VERBOSE_MAKEFILE true)
 
 # Set environment
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -pedantic -Wall -Wextra")
@@ -18,9 +18,9 @@ include_directories("${CMAKE_SOURCE_DIR}/src")
 
 # Build library, tests, ...
 add_subdirectory(src/bOoM)
-get_property(libboom_path TARGET boom PROPERTY location)
+get_property(libbOoM_path TARGET bOoM PROPERTY location)
+
+add_subdirectory(src/bOoMengine)
 
 enable_testing()
 add_subdirectory(src/test)
-
-add_subdirectory(src/visualizer)
