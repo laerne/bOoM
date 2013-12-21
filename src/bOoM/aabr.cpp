@@ -17,62 +17,60 @@ bool aabr_smallest_subaabr_containing_line (aabr const& r, move2 const& line, aa
 	  return false;
 }
 
-aabr to_physical_coordinates (aabr const& screen_zone, size_t_2 screen_resolution, rect const& pixelRect)
+real2 to_physical_coordinates_factor (aabr const& screen_zone, size_t_2 screen_resolution)
 {
-	real2 qixel_factor;
+	return real2(
+		screen_zone.width()  / real(screen_resolution.x) ,
+		screen_zone.height() / real(screen_resolution.y) );
+}
+
+aabr to_physical_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, rect const& pixelRect, real2 const& precomputedFactor)
+{
 	aabr physRect;
 	
-	qixel_factor.x = screen_zone.width()  / real(screen_resolution.x);
-	qixel_factor.y = screen_zone.height() / real(screen_resolution.y);
-	
-	physRect.s.x =  real(pixelRect.s.x)  *  qixel_factor.x ;
-	physRect.s.y =  real(pixelRect.s.y)  *  qixel_factor.y ;
-	physRect.v.x =  screen_zone.v.x  +                      ( real(pixelRect.v.x) * qixel_factor.x );
-	physRect.v.y =  screen_zone.v.y  +  screen_zone.s.y  -  ( real(pixelRect.v.y - pixelRect.s.y) * qixel_factor.y ) ;
+	physRect.s.x =  real(pixelRect.s.x)  *  precomputedFactor.x ;
+	physRect.s.y =  real(pixelRect.s.y)  *  precomputedFactor.y ;
+	physRect.v.x =  screen_zone.v.x  +                      ( real(pixelRect.v.x) * precomputedFactor.x );
+	physRect.v.y =  screen_zone.v.y  +  screen_zone.s.y  -  ( real(pixelRect.v.y - pixelRect.s.y) * precomputedFactor.y ) ;
 	return physRect;
 }
 
-real2 to_physical_coordinates (aabr const& screen_zone, size_t_2 screen_resolution, size_t_2 pixel)
+real2 to_physical_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, size_t_2 const pixel, real2 const& precomputedFactor)
 {
-	real2 qixel_factor;
 	real2 qixel;
 	
-	qixel_factor.x = screen_zone.width()  / real(screen_resolution.x);
-	qixel_factor.y = screen_zone.height() / real(screen_resolution.y);
-	
-	qixel.x =   screen_zone.v.x   +                      ( real(pixel.x) * qixel_factor.x );
-	qixel.y =   screen_zone.v.y   +  screen_zone.s.y  -  ( real(pixel.y) * qixel_factor.y );
+	qixel.x =   screen_zone.v.x   +                      ( real(pixel.x) * precomputedFactor.x );
+	qixel.y =   screen_zone.v.y   +  screen_zone.s.y  -  ( real(pixel.y) * precomputedFactor.y );
 
 	return qixel;
 }
 
-rect to_screen_coordinates (aabr const& screen_zone, size_t_2 screen_resolution, aabr const& physRect)
+real2    to_screen_coordinates_factor   (aabr const& screen_zone, size_t_2 screen_resolution)
 {
-	real2 pixel_factor;
+	return real2(
+		real(screen_resolution.x) / screen_zone.width()  ,
+		real(screen_resolution.y) / screen_zone.height() );
+}
+
+rect to_screen_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, aabr const& physRect, real2 const& precomputedFactor)
+{
 	rect pixelRect;
 	
-	pixel_factor.x = real(screen_resolution.x) / screen_zone.width() ;
-	pixel_factor.y = real(screen_resolution.y) / screen_zone.height();
-	
-	pixelRect.s.x =      size_t(std::ceil ( physRect.s.x * pixel_factor.x ));
-	pixelRect.s.y =      size_t(std::ceil ( physRect.s.y * pixel_factor.y ));
-	pixelRect.v.x =      size_t(std::floor(  ( physRect.v.x - screen_zone.v.x )  *  pixel_factor.x  ));
-	pixelRect.v.y = -(   size_t(std::floor(  ( physRect.v.y - screen_zone.v.y )  *  pixel_factor.y  ))   +   pixelRect.s.y   -   screen_resolution.y   );
-	// -screen_resolution.y = -screen_zone.s.y * pixel_factor.y )  ----------^-----------------------------------------------^
-	// So screen_zone.s.y is factored out because integer arithmetic is faster
+	pixelRect.s.x =      size_t(std::ceil ( physRect.s.x * precomputedFactor.x ));
+	pixelRect.s.y =      size_t(std::ceil ( physRect.s.y * precomputedFactor.y ));
+	pixelRect.v.x =      size_t(std::floor(  ( physRect.v.x - screen_zone.v.x )  *  precomputedFactor.x  ));
+	pixelRect.v.y = -(   size_t(std::floor(  ( physRect.v.y - screen_zone.v.y )  *  precomputedFactor.y  ))   +   pixelRect.s.y   -   screen_resolution.y   );
+	// -screen_resolution.y = -screen_zone.s.y * precomputedFactor.y )  -----^----------------------------------------------------^
+	// So screen_zone.s.y is factored out because integer arithmetic should be faster
 	return pixelRect;
 }
 
-size_t_2 to_screen_coordinates (aabr const& screen_zone, size_t_2 screen_resolution, real2 physPoint)
+size_t_2 to_screen_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, real2 const physPoint, real2 const& precomputedFactor)
 {
-	real2 pixel_factor;
 	size_t_2 pixel;
 	
-	pixel_factor.x = real(screen_resolution.x) / screen_zone.width() ;
-	pixel_factor.y = real(screen_resolution.y) / screen_zone.height();
-	
-	pixel.x =      size_t(std::floor(  ( physPoint.x - screen_zone.v.x )  *  pixel_factor.x  ));
-	pixel.y = -(   size_t(std::floor(  ( physPoint.y - screen_zone.v.y )  *  pixel_factor.y  ))   -   screen_resolution.y   );
+	pixel.x =      size_t(std::floor(  ( physPoint.x - screen_zone.v.x )  *  precomputedFactor.x  ));
+	pixel.y = -(   size_t(std::floor(  ( physPoint.y - screen_zone.v.y )  *  precomputedFactor.y  ))   -   screen_resolution.y   );
 	return pixel;
 }
 	

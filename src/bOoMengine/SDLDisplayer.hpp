@@ -1,5 +1,5 @@
-#ifndef H_simpleDisplayer
-#define H_simpleDisplayer
+#ifndef HEADERBoOmENGINE_SDLDisplayer
+#define HEADERBoOmENGINE_SDLDisplayer
 
 #include <chrono>
 #include <vector>
@@ -9,18 +9,22 @@
 #include <SDL2/SDL.h>
 
 //using namespace bOoM;
-namespace visualizer {
+namespace bOoM {
+
 using std::shared_ptr;
 
-class SimpleDisplayer
+//Small utility to cast
+SDL_Rect to_SDL_Rect( bOoM::rect const& r );
+
+class SDLDisplayer
 {
 public:
-	SimpleDisplayer(
+	SDLDisplayer(
 			bOoM::size_t_2 window_size,
 			bOoM::aabr const& screen_zone,
 			std::chrono::milliseconds refresh_span,
 			std::vector<shared_ptr<bOoM::Entity>> const& starting_entities);
-	virtual ~SimpleDisplayer();
+	virtual ~SDLDisplayer();
 
 	void loop();
 
@@ -39,11 +43,9 @@ protected:
 
 	std::vector< shared_ptr<bOoM::Entity> > entities;
 
-private:
-	SDL_Rect to_SDL_Rect( bOoM::rect const& r );
 };
 
-} //namespace visualizer
+} //namespace bOoM
 #endif
 
 

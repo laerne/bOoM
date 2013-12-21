@@ -127,14 +127,30 @@ inline rect rect_intersection( rect b1, rect b2 ) { return rectangle_intersectio
  * Converting between aabr and rect *
  ************************************/
  
-//! \brief Convert the screen area delimited by `pixelRect` from the screen of resolution `screen_resolution`,
-//         into a physical screen area corresponding to the subarea of `screen_zone`, if this was the screen.
-aabr     to_physical_coordinates (aabr const& screen_zone, size_t_2 screen_resolution, rect const& pixelRect);
-real2    to_physical_coordinates (aabr const& screen_zone, size_t_2 screen_resolution, size_t_2 pixel);
-//! \brief Convert the area delimited by `pixelRect` from the visible are `screen_zone`, into an actual screen area
-//         (in pixels) of resolution `screen_resolution`.
-rect     to_screen_coordinates   (aabr const& screen_zone, size_t_2 screen_resolution, aabr const& physRect);
-size_t_2 to_screen_coordinates   (aabr const& screen_zone, size_t_2 screen_resolution, real2 physPoint);
+//! \brief Computes the x/y scaling factor from the screen rectangle (with origin at 0,0) to the physical rectangle.
+real2    to_physical_coordinates_factor (aabr const& screen_zone, size_t_2 screen_resolution);
+//! \brief Convert the screen subarea delimited by `pixelRect` from the screen of resolution `screen_resolution`,
+//!        into the corresponding physical subarea of physical area `screen_zone`,
+//!        where `screen_resolution`, viewed as a rectangle of origin `(0,0)`, is expected to be mapped to `screen_zone`
+//!        and conversely.
+aabr     to_physical_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, rect const& pixelRect, real2 const& precomputedFactor);
+real2    to_physical_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, size_t_2 const pixel, real2 const& precomputedFactor);
+inline aabr     to_physical_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, rect const& pixelRect)
+	{ return to_physical_coordinates(screen_zone, screen_resolution, pixelRect, to_physical_coordinates_factor(screen_zone, screen_resolution) );}
+inline real2    to_physical_coordinates (aabr const& screen_zone, size_t_2 const screen_resolution, size_t_2 const pixel)
+	{ return to_physical_coordinates(screen_zone, screen_resolution, pixel, to_physical_coordinates_factor(screen_zone, screen_resolution) );}
+
+//! \brief Computes the x/y scaling factor from the physical rectangle to the screen rectangle (with origin at 0,0).
+real2    to_screen_coordinates_factor   (aabr const& screen_zone, size_t_2 screen_resolution);
+//! \brief Convert the area delimited by `pixelRect` into an actual screen subarea (in pixels) of a screen of resolution `screen_resolution`,
+//!        where `screen_resolution`, viewed as a rectangle of origin `(0,0)`, is expected to be mapped to `screen_zone`
+//!        and conversely.
+rect     to_screen_coordinates   (aabr const& screen_zone, size_t_2 const screen_resolution, aabr const& physRect, real2 const& precomputedFactor);
+size_t_2 to_screen_coordinates   (aabr const& screen_zone, size_t_2 const screen_resolution, real2 const physPoint, real2 const& precomputedFactor);
+inline rect     to_screen_coordinates   (aabr const& screen_zone, size_t_2 const screen_resolution, aabr const& physRect)
+	{ return to_screen_coordinates(screen_zone, screen_resolution, physRect, to_screen_coordinates_factor(screen_zone, screen_resolution) );}
+inline size_t_2 to_screen_coordinates   (aabr const& screen_zone, size_t_2 const screen_resolution, real2 const physPoint)
+	{ return to_screen_coordinates(screen_zone, screen_resolution, physPoint, to_screen_coordinates_factor(screen_zone, screen_resolution) );}
 
 
 

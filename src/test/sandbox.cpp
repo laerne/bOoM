@@ -14,13 +14,10 @@
 #include <bOoM/entities/balloon/Balloon.hpp>
 #include <bOoM/entities/balloon/graphic.hpp>
 
-#include <bOoMengine/SimpleDisplayer.hpp>
+#include <bOoMengine/SDLWindowDisplayer.hpp>
 
 //using namespace bOoM;
-using namespace visualizer;
-using bOoM::real;
-using bOoM::real2;
-using bOoM::operator "" _r;
+using namespace bOoM;
 
 void on_crash_exit()
 {
@@ -45,7 +42,7 @@ int main(int argc, char **argv)
 	e.ptr->graphic__del__rendered_image(nullptr);
 	bOoM::GenericEntity<bOoM::Renderable, Void, Void0> f ( bOoM::Balloon(bOoM::circle(0_r,3_r,1_r)) );
 	
-	SimpleDisplayer display(
+	bOoM::SDLDisplayer display(
 			bOoM::size_t_2(1024,512),
 			bOoM::aabr( real2(-16_r,-4_r), real2(32_r,18_r) ),
 			std::chrono::milliseconds(40),

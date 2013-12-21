@@ -1,13 +1,12 @@
-#include "SimpleDisplayer.hpp"
+#include "SDLDisplayer.hpp"
 #include <iostream>
 
-namespace visualizer {
+namespace bOoM {
 
-//Small utility to cast
-SDL_Rect SimpleDisplayer::to_SDL_Rect( bOoM::rect const& r )
+SDL_Rect to_SDL_Rect( bOoM::rect const& r )
 	{ return { int(r.v.x), int(r.v.y), int(r.s.x), int(r.s.y) }; }
 
-SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& screen_zone, std::chrono::milliseconds refresh_span, std::vector<shared_ptr<bOoM::Entity>> const& starting_entities)
+SDLDisplayer::SDLDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& screen_zone, std::chrono::milliseconds refresh_span, std::vector<shared_ptr<bOoM::Entity>> const& starting_entities)
 	: refresh_span(refresh_span), window_size(window_size), screen_zone(screen_zone), entities(starting_entities)
 {
 	//FIXME check return errors
@@ -16,9 +15,9 @@ SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& 
 		throw std::runtime_error("SDL failed to create a window.");
 	sdl_screen_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_size.x, window_size.y);
 	sdl_screen_surface = SDL_CreateRGBSurface(0, //unused flags
-			window_size.x, window_size.y,            //dimentions
-			bOoM::bit_depth(),                       //pixel format
-			0, 0, 0, 0                               //pixel masks
+			window_size.x, window_size.y, //dimentions
+			bOoM::bit_depth(), //pixel format
+			0, 0, 0, 0 //pixel masks
 	);
 	
 	//Comment the following line if you do not wish to use transparency in the screen texture so that on can see the clear color.
@@ -26,7 +25,7 @@ SimpleDisplayer::SimpleDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& 
 	SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 255);
 }
 
-SimpleDisplayer::~SimpleDisplayer()
+SDLDisplayer::~SDLDisplayer()
 {
 	SDL_DestroyRenderer(sdl_renderer);
 	SDL_DestroyWindow(sdl_window);
@@ -34,7 +33,7 @@ SimpleDisplayer::~SimpleDisplayer()
 	SDL_FreeSurface(sdl_screen_surface);
 }
 
-void SimpleDisplayer::loop()
+void SDLDisplayer::loop()
 {
 	bool looping = true;
 	
@@ -101,7 +100,7 @@ void SimpleDisplayer::loop()
 		render();
 		
 		std::chrono::steady_clock::time_point current_time= std::chrono::steady_clock::now();
-		remaining_span = std::max( 
+		remaining_span = std::max(
 				refresh_span -std::chrono::duration_cast<std::chrono::milliseconds>(current_time - last_time),
 				std::chrono::milliseconds(0) );
 		last_time = current_time;
@@ -112,7 +111,7 @@ void SimpleDisplayer::loop()
 	remaining_span = refresh_span;
 }
 
-void SimpleDisplayer::render()
+void SDLDisplayer::render()
 {
 	//std::cout << "Generation of a new image" << std::endl;
 	SDL_FillRect( sdl_screen_surface, NULL, SDL_MapRGBA(sdl_screen_surface->format,32,0,32,0) );
@@ -132,5 +131,7 @@ void SimpleDisplayer::render()
 
 }
 
-} //namespace visualizer
+
+
+} //namespace bOoM
 
