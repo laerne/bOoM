@@ -2,79 +2,94 @@
 #define HEADERBoOm__GenericEntity
 
 #include <memory>
+#include <functional>
+
 
 namespace bOoM {
 using std::shared_ptr;
 
-// ! WARNING !
-// The following code is for advanced level C++ programmers.
-// It is a quite straightforward mix of the non-trivial ''Type Erasure'' pattern, variadic template and curiously
-// recurring template.  Make sure you have an in-depth understanding of how those concepts works before trying to
-// undestand the following code.
-// 
-// You may also which to see the chart "EntityUML.odg" to see how class behave one to the other.
-// The names are abbreviated in the files, as follow :
-// * GE for GenericEntity
-// * EE for ErasedEntity
-// * UE for UnerasedEntity
-// * CWD for ComponentWithData
-// * CI for ComponentImplementation
+/******************************************************************************
+ * TODO : replace the cmpnt_t as a tuple                                      *
+ * //example of how a component should be declared                            *
+ * struct component { static std::tuple<                                      *
+ *        decltype(fct1), decltype(fct2), decltype(fct3)                      *
+ *     > const pack; };                                                       *
+ * fct_idx should use   decltype<C::pack>   to recurse on the given tuple     *
+ *                                                                            *
+ * TODO : commit before                                                       *
+ * similarly, entity_components<D,GenericEntity<Cs...>> should hold           *
+ * std::tuple< decltype(<Cs::pack>)... > pack;                                *
+ ******************************************************************************/
 
+using fct_t = void(*)(...);
+using cmpnt_t = fct_t const*;
+using fct_idx_t = size_t;
+using cmpnt_idx_t = size_t;
 
-template<typename D, class C>
-struct ComponentWithData : virtual C
+/******************************************************************************
+ * //example of how a component should be declared                            *
+ * struct component { static fct_t const table[]; };                          *
+ ******************************************************************************/
+template<template<typename> class... Cs>
+class GenericEntity;
+	
+
+//The following function computes the index of element 'e' in array 'a' at compile-time.
+template<typename T>
+constexpr size_t arrayidx( T const a[], T const& e, size_t current_idx )
+	{ return (a[current_idx] == e) ? current_idx : arrayidx<T>(a, e, current_idx+1); }
+template<typename T>
+constexpr size_t arrayidx( T const a[], T const& e)
+	{ return arrayidx<T>(a, e, 0); }
+	
+//The following function computes the index of function f in component C at compile-time.
+#define fct_idx(C,f) arrayidx<fct_t>(C<void>::table, f<void>)
+
+//A table of each component's table
+template<typename D, class GE>
+struct entity_components;
+template<typename D, template<typename> class... Cs>
+struct entity_components<D, GenericEntity<Cs...>>
 {
-	virtual D& data() = 0;
-	virtual D const& data() const = 0;
+	static cmpnt_t const table[];
+};
+template<typename D, template<typename> class... Cs>
+cmpnt_t const entity_components<D, GenericEntity<Cs...>>::table[] = { Cs<D>::table... };
+#define cmpnt_idx(E,C) arrayidx<cmpnt_t>( entity_components<void,E>::table, C<void>::table)
+
+	
+//An entity, with a virtual method to get the function associated with the entity.
+template<template<typename> class... Cs>
+class VirtualEntity
+{
+public:
+	virtual cmpnt_t operator[](cmpnt_idx_t) = 0;
 };
 
-template<typename D, class C>
-struct ComponentImplementation : ComponentWithData<D,C>
+//An entity with a data component.
+template<typename D, template<typename> class... Cs>
+class DataEntity : VirtualEntity<Cs...>
 {
+public:
+	virtual cmpnt_t operator[](cmpnt_idx_t cmpnt)
+		{ return entity_components<D,GenericEntity<Cs...>>::table[cmpnt]; }
+	static cmpnt_t const table[];
 };
 
-template<class... Cs>
-struct ErasedEntity : virtual Cs...
-{};
-
-template<typename D, class... Cs>
-struct UnerasedEntity : ComponentImplementation<D,Cs>..., ErasedEntity<Cs...>
+//pointer to an entity
+template<template<typename> class... Cs>
+class GenericEntity
 {
-	UnerasedEntity(D const&& initialData)
-		: data_(std::forward<D const&&>(initialData)) {}
-	UnerasedEntity(D const& initialData)
-		: data_(std::forward<D const&>(initialData)) {}
-	virtual D& data()
-		{ return static_cast<UnerasedEntity<D,Cs...>*>(this)->data_; }
-	virtual D const& data() const
-		{ return static_cast<UnerasedEntity<D,Cs...> const*>(this)->data_; }
-	D data_;
+public:
+	template<GenericEntity> void call(cmpnt_idx_t cidx, fct_idx fidx, ...)
+	{
+		return (*ptr)[cidx][fidx](args);
+	}
+protected:
+	shared_ptr<VirtualEntity<Cs...>> ptr;
 };
 
-template<class... Cs>
-struct GenericEntity
-{
-	template<typename D>
-	GenericEntity(D const&& initialData)
-		: ptr( new UnerasedEntity<D,Cs...>(std::forward<D const&&>(initialData)) ) {}
-	template<typename D>
-	GenericEntity(D const& initialData)
-		: ptr( new UnerasedEntity<D,Cs...>(std::forward<D const&>(initialData)) ) {}
-	GenericEntity(GenericEntity<Cs...> const& other)
-		: ptr( std::forward<shared_ptr<ErasedEntity<Cs...>>&>(other.ptr) ) {}
-	GenericEntity(GenericEntity<Cs...> const&& other)
-		: ptr( std::forward<shared_ptr<ErasedEntity<Cs...>>&&>(other.ptr) ) {}
-	GenericEntity& operator=(GenericEntity<Cs...> const& other)
-		{ ptr = std::forward<shared_ptr<ErasedEntity<Cs...>>&> (other.ptr) ; }
-	GenericEntity& operator=(GenericEntity<Cs...> const&& other)
-		{ ptr = std::forward<shared_ptr<ErasedEntity<Cs...>>&&> (other.ptr) ; }
-	ErasedEntity<Cs...>& operator*()
-		{ return ptr.operator*(); }
-	ErasedEntity<Cs...>& operator->()
-		{ return ptr.operator->(); }
-		
-	shared_ptr<ErasedEntity<Cs...>> ptr;
-};
+
 
 
 

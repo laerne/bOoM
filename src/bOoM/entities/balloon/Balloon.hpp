@@ -3,13 +3,8 @@
 
 namespace bOoM {
 
-struct Balloon
+struct balloon
 {
-	explicit Balloon(real2 center, real radius)
-	        : disk(center,radius) {}
-	explicit Balloon(circle disk)
-	        : disk(disk) {}
-	
 	circle disk;
 };
 

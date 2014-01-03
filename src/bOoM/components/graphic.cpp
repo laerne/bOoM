@@ -2,11 +2,7 @@
 #include <iostream>
 namespace bOoM {
 
-//Default behaviour of Renderable items : Do not render.
-Image* Renderable::graphic__new__rendered_image(aabr const& screen_zone, size_t_2 screen_resolution, rect& result__rendered_zone, size_t& result__pitch, size_t& result__shift)
-	{ return nullptr; }
-void Renderable::graphic__del__rendered_image(Image* image)
-	{ delete image; }
+//TO_DEL
 
 } //namespace bOoM
 

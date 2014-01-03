@@ -6,13 +6,13 @@
 #include "Balloon.hpp"
 
 namespace bOoM {
+namespace graphic {
 
 template<>
-struct ComponentImplementation<Balloon, Renderable> : ComponentWithData<Balloon, Renderable>
-{
-	virtual void   graphic__del__rendered_image(Image* image);
-};
+color f_color(balloon const& data, real2 const& q)
+	{ return color::red; }
 
+} //namespace graphic
 } //namespace bOoM
 #endif
 
