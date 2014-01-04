@@ -2,7 +2,5 @@
 #include <iostream>
 namespace bOoM {
 
-//TO_DEL
-
 } //namespace bOoM
 

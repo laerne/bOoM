@@ -11,11 +11,8 @@ namespace graphic {
 
 
 template<typename D>
-struct Renderable
-{
-	static color f_color(D& data, real2 const& q)
-		{ return color::transparent; }
-};
+static color f_color(D& data, real2 const& q)
+	{ return color::transparent; }
 
 
 } //namespace graphic

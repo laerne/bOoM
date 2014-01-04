@@ -9,7 +9,7 @@ namespace bOoM {
 namespace graphic {
 
 template<>
-color f_color(balloon const& data, real2 const& q)
+color f_color(balloon& data, real2 const& q)
 	{ return color::red; }
 
 } //namespace graphic
