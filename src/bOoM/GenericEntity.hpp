@@ -119,7 +119,7 @@ template<int I, typename E, typename T> struct tuple_idx_iter;
 //If this element is e, then we return its index, else we recurse with the next element of type E in the tuple.
 template<int I, typename E, typename... Es> struct tuple_idx_iter<I,E,std::tuple<Es...>>
 {
-	static constexpr int solve(std::tuple<Es...> t, E e)
+	static constexpr int solve(std::tuple<Es...> const& t, E const& e)
 	{
 		using nextI = next_type<I+1,E,std::tuple<Es...>>;
 		return ( std::get<I>(t) == e ) ?
@@ -132,43 +132,105 @@ template<int I, typename E, typename... Es> struct tuple_idx_iter<I,E,std::tuple
 //so when it recurse with this error_index, it will call this function that ensures the error index is returned.
 template<typename E, typename... Es > struct tuple_idx_iter<error_index,E,std::tuple<Es...>>
 {
-	static constexpr int solve(std::tuple<Es...> t, E e)
+	static constexpr int solve(std::tuple<Es...> const& t, E const& e)
 		{ return error_index; }
 };
 
 template<typename E, typename... Es>
-constexpr int tuple_idx(std::tuple<Es...> t, E e)
+constexpr int tuple_idx(std::tuple<Es...> const& t, E const& e)
 { 
 	using firstI = first_type<E,std::tuple<Es...>>;
 	return (firstI::index >= 0)? tuple_idx_iter<firstI::index,E,std::tuple<Es...>>::solve(t,e) : error_index;
 }
 
 
-// Macro that gives the index of a component of a DataEntity////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// 2D tuple of function utilities                                             //
+////////////////////////////////////////////////////////////////////////////////
+
+//! \brief gives the index of the function of a component.
 #define fct_idx(C,f) tuple_idx(C<void>::functions, f<void>)
 
-template<typename E> struct void_components;
+template<typename ENTITY> struct void_components;
 
 template<template <typename> class... Cs> struct void_components<GenericEntity<Cs...>>
-	{ static constexpr std::tuple<decltype(Cs<void>::functions)*...> const& components = DataEntity<void, Cs...>::components ; };
-#define cmpnt_idx(E,C) tuple_idx( void_components<E>::components, &C<void>::functions )
-
-////////////////////////////////////////////////////////////////////////////////
-// Definition of DataEntity<D,Cs...>                                          //
-// contains the tuple of each component (also tuples) as a static member      //
-////////////////////////////////////////////////////////////////////////////////
-
-template<typename D, template<typename> class... Cs>
-class DataEntity : VirtualEntity<Cs...>
 {
-public:
-	static std::tuple<decltype(Cs<D>::functions)*...> const components;
+	// FIXME the following declaration should be constexpr :
+	// This is not possible because tuple as parameters are NEVER constexpr.
+	// How should it be done ?
+	// The entire above code about finding an index should be re-written not to use a tuple and an element as parameter,
+	// but should take no parameter at all and be 100% template by augmenting the parameter list with a list of pointer
+	// types.
+	// The user could define a component by specialiazin the struct component.
+	// This should look like :
+	//     template<typename... T,> component<T... t>
+	// but this does not works !
+	//static constexpr std::tuple<decltype(Cs<void>::functions)*...> components { &(Cs<void>::functions)... };
+	static const std::tuple<decltype(Cs<void>::functions)*...> components;
 };
-template<typename D, template<typename> class... Cs>
-// FIXME initialization : make sure there is only one per compilation unit
-std::tuple<decltype(Cs<D>::functions)*...> const DataEntity<D, Cs...>::components( &Cs<D>::functions... );
+template<template <typename> class... Cs>
+const std::tuple<decltype(Cs<void>::functions)*...> void_components<GenericEntity<Cs...>>::components { &(Cs<void>::functions)... };
 
-	
+//! \brief gives the index of a component of a DataEntity.
+#define cmpnt_idx(ENTITY,C) tuple_idx( bOoM::void_components<ENTITY>::components, &C<void>::functions )
+
+//FIXME-C++14 : replace constexpr no argument functions with constexpr variables.
+template<typename ENTITY, int CIDX> using component_table_signature    = decltype(                 std::get<CIDX>(void_components<ENTITY>::components)  );
+template<typename ENTITY, int CIDX, int FIDX> using function_signature = decltype( std::get<FIDX>(*std::get<CIDX>(void_components<ENTITY>::components)) );
+//FIXME-C++14 : this function can only work in C++14
+//template<typename ENTITY> constexpr size_t table_of_components_size(void)          { return std::tuple_size< decltype(                void_components<ENTITY>::components)  >::value; }
+template<typename ENTITY, int CIDX> constexpr size_t table_of_functions_size(void)
+	{ return std::tuple_size< typename std::remove_reference<decltype(*std::get<CIDX>(void_components<ENTITY>::components))>::type >::value; }
+template<template<typename>class C> constexpr size_t component_size(void)
+	{ return std::tuple_size< decltype(C<void>::functions) >::value; }
+
+////////////////////////////////////////////////////////////////////////////////
+// Computation of the list of pair indexes (the component and the functional  //
+// one) and the function type associated with it)                             //
+////////////////////////////////////////////////////////////////////////////////
+//It is not very efficient but it reuse the above code, most notably function_signature<I,J>
+
+template<int CIDX, int FIDX, typename FType> struct full_function_signature {};
+
+template<typename... Ts> struct flatten_tuples;
+template<typename... E1s, typename... E2s, typename... Ts>
+struct flatten_tuples<std::tuple<E1s...>,std::tuple<E2s...>,Ts...>
+	{ using flat_tuple = typename flatten_tuples<std::tuple<E1s...,E2s...>,Ts...>::flat_tuple; };
+template<typename T> struct flatten_tuples<T>
+	{ using flat_tuple = T; };
+
+template<typename ENTITY, cmpnt_idx_t CIDX, fct_idx_t FIDX>
+struct cmpnt_full_fct_signatures_iter
+{
+	using this_level_signature = full_function_signature<CIDX,FIDX,function_signature<ENTITY,CIDX,FIDX>>;
+	using tuple = typename flatten_tuples<   typename cmpnt_full_fct_signatures_iter<ENTITY,CIDX,FIDX-1>::tuple,   typename std::tuple<this_level_signature>   >::flat_tuple;
+};
+template<typename ENTITY, cmpnt_idx_t CIDX>
+struct cmpnt_full_fct_signatures_iter<ENTITY, CIDX, -1>
+	{ using tuple = std::tuple<>; };
+
+template<typename ENTITY, cmpnt_idx_t CIDX>
+struct cmpnt_full_fct_signatures
+	{ using tuple = typename cmpnt_full_fct_signatures_iter<ENTITY,CIDX,table_of_functions_size<ENTITY,CIDX>()-1>::tuple; };
+
+template<typename ENTITY, cmpnt_idx_t CIDX> struct entity_full_fct_signatures_iter
+{
+	using this_level_signature = typename cmpnt_full_fct_signatures<ENTITY,CIDX>::tuple;
+	using tuple = typename flatten_tuples<   typename entity_full_fct_signatures_iter<ENTITY,CIDX-1>::tuple,   this_level_signature   >::flat_tuple;
+};
+
+template<typename ENTITY> struct entity_full_fct_signatures_iter<ENTITY,-1>
+	{ using tuple = std::tuple<>; };
+
+template<typename ENTITY> struct entity_full_fct_signatures;
+template<template<typename>class... Cs> struct entity_full_fct_signatures<GenericEntity<Cs...>>
+{
+	using tuple = typename entity_full_fct_signatures_iter<GenericEntity<Cs...>,sizeof...(Cs)-1>::tuple;
+	//FIXME-C++14 use the following line rather than the above one.
+	//using tuple = typename entity_full_fct_signatures_iter<GenericEntity<Cs...>,table_of_components_size<GenericEntity<Cs...>>()-1>::tuple;
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Definition of VirtualEntity<D,Cs...>                                       //
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,6 +241,22 @@ class VirtualEntity
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+// Definition of DataEntity<D,Cs...>                                          //
+// contains the tuple of each component (also tuples) as a static member      //
+////////////////////////////////////////////////////////////////////////////////
+
+template<typename D, template<typename> class... Cs>
+class DataEntity : VirtualEntity<Cs...>
+{
+public:
+	//FIXME put the table protected (though it is const...) and name friend the various tuple index computation devices.
+	static std::tuple<decltype(Cs<D>::functions)*...> const components;
+};
+template<typename D, template<typename> class... Cs>
+// FIXME initialization : make sure there is only one per compilation unit
+std::tuple<decltype(Cs<D>::functions)*...> const DataEntity<D, Cs...>::components( &Cs<D>::functions... );
+
+////////////////////////////////////////////////////////////////////////////////
 // Definition of GenericEntity<D,Cs...>                                       //
 ////////////////////////////////////////////////////////////////////////////////
 template<template<typename> class... Cs>
@@ -187,6 +265,8 @@ class GenericEntity
 protected:
 	shared_ptr<VirtualEntity<Cs...>> ptr;
 };
+
+
 
 
 
