@@ -1,5 +1,5 @@
-#ifndef H_test__GenericEntity
-#define H_test__GenericEntity
+#ifndef HEADERBoOmTEST__GenericEntity
+#define HEADERBoOmTEST__GenericEntity
 
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestCase.h>

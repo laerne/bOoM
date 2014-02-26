@@ -1,5 +1,5 @@
-#ifndef H_test__math2d
-#define H_test__math2d
+#ifndef HEADERBoOmTEST__math2d
+#define HEADERBoOmTEST__math2d
 
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestCase.h>

@@ -1,5 +1,5 @@
-#ifndef H_test__TiledArray
-#define H_test__TiledArray
+#ifndef HEADERBoOmTEST__TiledArray
+#define HEADERBoOmTEST__TiledArray
 
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestCase.h>

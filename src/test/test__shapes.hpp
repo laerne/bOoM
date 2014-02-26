@@ -1,5 +1,5 @@
-#ifndef H_test__shapes
-#define H_test__shapes
+#ifndef HEADERBoOmTEST__shapes
+#define HEADERBoOmTEST__shapes
 
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestCase.h>

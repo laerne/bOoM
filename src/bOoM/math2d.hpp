@@ -191,7 +191,12 @@ V2<R> rot2_mult(V2<R> copy, V2<R> const& r)
 //! \relates bOoM::V2
 template<typename R>
 V2<R> rot2_inverse(V2<R> const& r) { return V2<R>(r.x, -r.y)/=norm2sq(r); }
-//TODO bypass the above division when norm of r is 1.
+
+//! \brief Return the inverse rotation, neglecting to inverse possible scaling occurring when `norm2sq(r)!=1`.
+//! \relates bOoM::V2
+template<typename R>
+V2<R> rot2_unscaled_inverse(V2<R> const& r) { return V2<R>(r.x, -r.y); }
+
 
 /*! \brief Two-dimensional moves, i.e. orientation-preserving isometries.
  *
@@ -281,6 +286,9 @@ inline bool equals_about(move2 const& a, move2 const& b)
 //! \brief Return a new real rotation object from `angle`, in radians.
 inline real2 rot2_fromRadian(real angle)
 	{ return real2(COS(angle), SIN(angle)); }
+//! \brief Return a new real rotation object from `angle`, in degrees.
+inline real2 rot2_fromDegrees(real angle)
+	{ return real2(COS(angle*(CST_PI/180)), SIN(angle*(CST_PI/180))); }
 //! \brief Return approximatively the angle in degrees between `p` and `(1,0)`.
 //!
 //! Tests suggests that the maximum error can rise up to four degrees.

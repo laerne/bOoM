@@ -1,5 +1,5 @@
-#ifndef H_test__color
-#define H_test__color
+#ifndef HEADERBoOmTEST__color
+#define HEADERBoOmTEST__color
 
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestCase.h>
