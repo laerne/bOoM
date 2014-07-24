@@ -1,5 +1,5 @@
-#ifndef HEADERBoOmENGINE_SDLDisplayer
-#define HEADERBoOmENGINE_SDLDisplayer
+#ifndef HEADERBoOm_SDLDisplayer
+#define HEADERBoOm_SDLDisplayer
 
 #include <chrono>
 #include <vector>

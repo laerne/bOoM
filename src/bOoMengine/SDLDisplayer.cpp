@@ -16,7 +16,7 @@ SDLDisplayer::SDLDisplayer( bOoM::size_t_2 window_size, bOoM::aabr const& screen
 	sdl_screen_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_size.x, window_size.y);
 	sdl_screen_surface = SDL_CreateRGBSurface(0, //unused flags
 			window_size.x, window_size.y, //dimentions
-			bOoM::bit_depth(), //pixel format
+			32, //pixel format
 			0, 0, 0, 0 //pixel masks
 	);
 	

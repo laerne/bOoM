@@ -5,8 +5,6 @@ set(stdBoOm_src
 		color.cpp
 		intersection.cpp
 		math2d.cpp
-		components/graphic.cpp
-		entities/balloon/graphic.cpp
 )
 
 #build object files
