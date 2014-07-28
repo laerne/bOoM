@@ -21,8 +21,6 @@ template< typename Ret, typename Arg> struct functionptr_repeat_arg<Ret,Arg,0>
 template<typename Fct> struct function_extract;
 template<typename CFct> struct function_extract< std::function<CFct> >
 	{ using type = CFct; };
-//template<typename Fct, int N, typename... NewArgs> struct function_bind_but_N =
-//	std::bind<
 
 template< typename Ret, typename Arg, int N> using function_repeat =
 	std::function<   typename functionptr_repeat_arg<Ret,Arg,N>::type   >;
@@ -50,6 +48,7 @@ template <unsigned int... Is> struct int_list<0,Is...>
 template <typename Ret, typename Arg, typename IntList> struct array_curry_invoker;
 template <typename Ret, typename Arg, unsigned int... Is> struct array_curry_invoker<Ret,Arg,int_list<Is...>>
 {
+	template <typename ArrayArg = Arg>
 	static inline Ret invoke( function_repeat<Ret,Arg const&,sizeof...(Is)> fct, std::array<Arg,sizeof...(Is)> const& args )
 	{
 		return fct( std::get<Is>(args)... );
@@ -60,6 +59,19 @@ template <typename Ret, typename Arg, unsigned int... Is> struct array_curry_inv
 		return fct( *std::get<Is>(args)... );
 	}
 };
+
+template <typename Ret, typename Arg, unsigned int N, typename ArrayArg = Arg>
+inline Ret array_curry_invoke( function_repeat<Ret,Arg const&,N> fct, std::array<ArrayArg,N> const& args )
+{
+	return array_curry_invoker< Ret, Arg, typename int_list<N>::up_to >::template invoke<ArrayArg>( fct, args );
+};
+
+template <typename Ret, typename Arg, unsigned int N, typename ArgPtr>
+inline Ret array_curry_deref_invoke( function_repeat<Ret,Arg const&,N> fct, std::array<ArgPtr,N> const& args )
+{
+	return array_curry_invoker< Ret, Arg, typename int_list<N>::up_to >::template deref_invoke<ArgPtr>( fct, args );
+};
+
 
 } //namespace bOoM
 #endif
