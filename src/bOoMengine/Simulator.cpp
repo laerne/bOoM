@@ -1,88 +1,186 @@
-#define SOURCEBoOm__Simulator
 #include "Simulator.hpp"
-#include "array_curry.hpp"
+#include <bOoM/base.hpp>
+#include <iostream>
+#include <mutex>
+#include <cassert>
 
 namespace bOoM {
-using std::lock_guard;
 
-template <unsigned int N>
-JobN<N>::JobN(   fct_t const& fct,   std::array<shared_ptr<Entity>,N> const& entities   )
-	: Job(), fct(fct), entities(entities) {}
+using std::unique_ptr;
 
-template <unsigned int N> void JobN<N>::work()
+/*
+ * Worker 
+ */
+Worker::Worker( Worker_Pool& pool )
+	: proceed( true )
+	, pool( pool )
+	, thread( &Worker::work, this )
+{}
+
+Worker::Worker( Worker&& former )
+	: proceed( former.proceed )
+	, pool( former.pool )
+	, thread( std::move( former.thread ) )
 {
-	array_curry_deref_invoke< void, Entity&, N >( fct, entities );
 }
 
-//Instanciate common instances of JobN in the library itself.
-template class JobN<0>;
-template class JobN<1>;
-template class JobN<2>;
-template class JobN<3>;
-template class JobN<4>;
-
-constexpr Job_delete::Job_delete( FIFOSequencer* sequencer )
-	: sequencer( sequencer ) {}
-void Job_delete::operator()(Job* ptr)
+void Worker::operator=( Worker&& former )
 {
-	//TODO : inherit from this class.
-	std::default_delete<Job> d;
-	if(sequencer)
-		sequencer->did_job(*ptr);
-	d( ptr );
+	assert( &pool == &former.pool );
+
+	if( !former.proceed )
+		proceed = false;
+	thread = std::move( former.thread );
 }
 
-void FIFOSequencer::offer_job(Job* job)
+void Worker::mark_termination()
 {
-	lock_guard<std::mutex> guard(queue_access);
-	queue.emplace_back( job, this );
+	proceed = false;
+	pool.jpool.monitor.notify_all();
 }
 
-
-FIFOSequencer::job_ptr FIFOSequencer::get_job()
+bool Worker::marked_for_termination()
 {
-	lock_guard<std::mutex> guard(queue_access);
-	for( auto i = queue.begin(); i != queue.end(); ++i )
+	return !proceed;
+}
+
+void Worker::join()
+{
+	thread.join();
+}
+
+void Worker::work()
+{
+	unique_ptr<Job> job;
+	
+	forever
 	{
-		if(   jobEntitiesAreAvailable( *(i->get()) )   )
+		scope
 		{
-			job_ptr ptr ( std::move(*i) );
-			queue.erase(i);
-			for( auto i = ptr->entities_cbegin(); i != ptr->entities_cend(); ++i )
-				working_entities.insert( i->get() );
+			Job_Pool_Consumer_Guard guard( pool.jpool, *this );
 			
-			return ptr;
+			// Both the return and the assignment below should delete former job.
+			if( !proceed )
+				return;
+			job = pool.jpool.pick();
 		}
+		
+		job->process();
 	}
-	return job_ptr( nullptr, this );
 }
 
-bool FIFOSequencer::jobEntitiesAreAvailable( Job const& job ) const
+/*
+ * Job_Pool 
+ */
+bool Job_Pool::has_available_job() const
 {
-	for( auto i = job.entities_cbegin(); i != job.entities_cend(); ++i )
-		if( working_entities.count( i->get() ) > 0 )
-			return false;
-	return true;
+	return !jobs.empty();
 }
 
-bool FIFOSequencer::empty() const
+unique_ptr<Job> Job_Pool::pick()
 {
-	return queue.empty();
+	unique_ptr<Job> front_elem( std::move( jobs.front() ) );
+	jobs.pop();
+	return std::move( front_elem );
 }
 
-void FIFOSequencer::did_job(Job const& job)
+void Job_Pool::add( unique_ptr<Job> job )
 {
-	for( auto i = job.entities_cbegin(); i != job.entities_cend(); ++i )
-		working_entities.erase( i->get() );
+	jobs.push( std::move(job) );
 }
 
+void Job_Pool::awake_all()
+{
+	monitor.notify_all();
+}
 
+/*
+ * Job_Pool_.*_Guard 
+ */
+Job_Pool_Consumer_Guard::Job_Pool_Consumer_Guard( Job_Pool& jpool, Worker& worker )
+	: lock( jpool.mutex )
+	, monitor( jpool.monitor )
+{
+	monitor.wait( lock, [&worker,&jpool](){ return worker.marked_for_termination() || jpool.has_available_job(); } );
+}
 
+Job_Pool_Consumer_Guard::~Job_Pool_Consumer_Guard()
+{
+	lock.unlock();
+	monitor.notify_one();
+}
+
+Job_Pool_Producer_Guard::Job_Pool_Producer_Guard( Job_Pool& jpool )
+	: guard( jpool.mutex )
+{}
+
+Job_Pool_Producer_Guard::~Job_Pool_Producer_Guard()
+{}
+
+/*
+ * Worker_Pool 
+ */
+Worker_Pool::Worker_Pool( size_t number_of_workers )
+	: jpool()
+	, workers()
+{
+	add_worker( number_of_workers );
+}
+	
+Worker_Pool::~Worker_Pool()
+{
+	remove_all_workers();
+}
+
+void Worker_Pool::add_job( unique_ptr<Job> job )
+{
+	Job_Pool_Producer_Guard guard( jpool );
+	jpool.add( std::move(job) );
+}
+
+void Worker_Pool::remove_all_workers()
+{
+	for( Worker& w : workers )
+		w.mark_termination();
+	jpool.awake_all();
+	for( Worker& w : workers )
+		w.join();
+	workers.clear();
+}
+
+void Worker_Pool::add_worker()
+{
+	workers.emplace_back(*this);
+}
+
+void Worker_Pool::remove_worker()
+{
+	Worker& wlast = workers.back();
+	wlast.mark_termination();
+	jpool.awake_all();
+	wlast.join();
+	workers.pop_back();
+}
+
+void Worker_Pool::add_worker( size_t n )
+{
+	workers.reserve( workers.size() + n );
+	for( size_t i = 0; i < n; ++i )
+		workers.emplace_back(*this);
+}
+
+void Worker_Pool::remove_worker( size_t n )
+{
+	auto const size = workers.size();
+	auto const new_size = size - n;
+	for( size_t i = new_size; i < size; ++i )
+		workers[i].mark_termination();
+	jpool.awake_all();
+	for( size_t i = new_size; i < size; ++i )
+		workers[i].join();
+	workers.erase( workers.end() - n, workers.end() );
+}
 
 } //namespace bOoM
 
-namespace std {
-//explicit instanciation of the unique_pointer used by the sequencers.
-template class unique_ptr< bOoM::Job, bOoM::Job_delete >;
-} //namespace std
 
